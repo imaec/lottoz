@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/designsystem.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottoz/ui/main/bottom_item_vo.dart';
 
@@ -22,12 +23,22 @@ class MainScreen extends StatelessWidget {
       tabs.firstWhere((tab) => tab.path == GoRouterState.of(context).matchedLocation),
     );
 
-    return Scaffold(
-      body: SafeArea(child: child),
-      bottomNavigationBar: _mainBottomNavigationBar(
-        context: context,
-        tabs: tabs,
-        currentIndex: currentIndex,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: currentIndex == 0 ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(MediaQuery.of(context).padding.top),
+          child: Container(
+            height: MediaQuery.of(context).padding.top,
+            color: currentIndex == 0 ? Colors.transparent : gray700,
+          ),
+        ),
+        body: child,
+        bottomNavigationBar: _mainBottomNavigationBar(
+          context: context,
+          tabs: tabs,
+          currentIndex: currentIndex,
+        ),
       ),
     );
   }

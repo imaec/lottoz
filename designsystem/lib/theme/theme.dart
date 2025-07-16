@@ -4,7 +4,7 @@ import 'colors.dart';
 
 final appTheme = ThemeData(
   colorScheme: _colorScheme,
-  useMaterial3: true
+  useMaterial3: true,
 );
 
 const _colorScheme = ColorScheme(
