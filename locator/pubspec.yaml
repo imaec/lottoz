@@ -1,0 +1,16 @@
+name: locator
+description: locator
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  get_it: ^8.0.3
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
