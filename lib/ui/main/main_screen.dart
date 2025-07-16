@@ -33,7 +33,7 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-_mainBottomNavigationBar({
+Widget _mainBottomNavigationBar({
   required BuildContext context,
   required List<BottomItemVo> tabs,
   required int currentIndex,
@@ -66,7 +66,7 @@ _mainBottomNavigationBar({
                       const SizedBox(height: 8),
                       Text(
                         tab.name,
-                        style: labelTag.copyWith(
+                        style: dockbar.copyWith(
                           color: isSelected ? gray800 : gray400,
                         ),
                       )
