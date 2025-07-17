@@ -1,10 +1,14 @@
-part of 'statistics_screen.dart';
+import 'package:core/utils/lotto_utils.dart';
+import 'package:designsystem/theme/colors.dart';
+import 'package:designsystem/theme/fonts.dart';
+import 'package:flutter/material.dart';
 
 enum NumberType {
-  small, medium;
+  small,
+  medium;
 }
 
-Widget _number({
+Widget lottoNumber({
   required int? number,
   NumberType numberType = NumberType.medium,
   Color? numberColor,

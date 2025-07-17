@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  core:
+    path: ../core
+
   flutter_svg: ^2.1.0
 
 dev_dependencies:

@@ -165,7 +165,7 @@ Widget _unPickNumbers() {
                       return Row(
                         children: [
                           SizedBox(width: index < range.value.length ? 8 : 0),
-                          _number(number: number),
+                          lottoNumber(number: number),
                         ],
                       );
                     }).toList(),

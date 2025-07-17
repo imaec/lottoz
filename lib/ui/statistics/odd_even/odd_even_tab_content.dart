@@ -67,7 +67,7 @@ Widget _oddEvenNumbers({required List<OddEvenStatisticsVo> oddEventNumbers}) {
                           return Row(
                             children: [
                               const SizedBox(width: 6),
-                              _number(number: number, numberType: NumberType.small),
+                              lottoNumber(number: number, numberType: NumberType.small),
                             ],
                           );
                         }).toList(),
@@ -79,7 +79,7 @@ Widget _oddEvenNumbers({required List<OddEvenStatisticsVo> oddEventNumbers}) {
                           return Row(
                             children: [
                               const SizedBox(width: 6),
-                              _number(number: number, numberType: NumberType.small),
+                              lottoNumber(number: number, numberType: NumberType.small),
                             ],
                           );
                         }).toList(),

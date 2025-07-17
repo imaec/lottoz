@@ -3,6 +3,7 @@ import 'package:core/utils/lotto_utils.dart';
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
+import 'package:designsystem/component/number/number.dart';
 import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,6 @@ part 'continuous/continuous_tab_content.dart';
 part 'odd_even/odd_even_tab_content.dart';
 part 'pick/pick_tab_content.dart';
 part 'statistics_header.dart';
-part 'statistics_number.dart';
 part 'sum/sum_tab_content.dart';
 part 'win/win_tab_content.dart';
 

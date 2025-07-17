@@ -53,7 +53,7 @@ Widget _continuousNumbers() {
                       return Row(
                         children: [
                           const SizedBox(width: 6),
-                          _number(
+                          lottoNumber(
                             number: number,
                             numberType: NumberType.small,
                             numberColor: isContinuous ? null : gray700,
