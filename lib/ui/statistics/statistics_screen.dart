@@ -1,14 +1,19 @@
+import 'package:collection/collection.dart';
+import 'package:core/utils/lotto_utils.dart';
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
 import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:lottoz/ui/statistics/pick/pick_statistics_vo.dart';
 import 'package:lottoz/ui/statistics/sum/sum_statistics_vo.dart';
 
 part 'continuous/continuous_tab_content.dart';
 part 'odd_even/odd_even_tab_content.dart';
 part 'pick/pick_tab_content.dart';
+part 'statistics_header.dart';
+part 'statistics_number.dart';
 part 'sum/sum_tab_content.dart';
 part 'win/win_tab_content.dart';
 

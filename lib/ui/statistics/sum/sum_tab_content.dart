@@ -3,65 +3,17 @@ part of '../statistics_screen.dart';
 Widget _sumTabContent() {
   return Column(
     children: [
-      _sumTabCondition(),
-      _sumTabGraphHeader(),
-      Expanded(child: _sumTabGraph()),
-    ],
-  );
-}
-
-Widget _sumTabCondition() {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            const Text('회차', style: bodyS),
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                border: Border.all(color: gray100),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: const Row(
-                children: [
-                  Text('1', style: subtitle2),
-                  SizedBox(width: 2),
-                  SvgIcon(asset: arrowDownIcon, size: 12),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text('-', style: subtitle2),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                border: Border.all(color: gray100),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: const Row(
-                children: [
-                  Text('1180', style: subtitle2),
-                  SizedBox(width: 2),
-                  SvgIcon(asset: arrowDownIcon, size: 12),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const Row(
+      _statisticsHeader(
+        rightWidget: const Row(
           children: [
             Text('1180회 평균 합계 : ', style: bodyS),
             Text('135', style: subtitle2),
           ],
         )
-      ],
-    ),
+      ),
+      _sumTabGraphHeader(),
+      Expanded(child: _sumTabGraph()),
+    ],
   );
 }
 
@@ -126,7 +78,13 @@ Widget _sumTabGraph() {
                           widthFactor: sum.count / maxCount,
                           child: Container(
                             height: 20,
-                            color: gray100,
+                            decoration: const BoxDecoration(
+                              color: gray100,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(4),
+                                bottomRight: Radius.circular(4),
+                              ),
+                            ),
                           ),
                         ),
                       ),
