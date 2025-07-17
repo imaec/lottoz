@@ -16,21 +16,21 @@ class HomeScreen extends StatelessWidget {
       body: _homeBody(),
     );
   }
-}
 
-_homeBody() {
-  return SingleChildScrollView(
-    child: SizedBox(
-      width: double.infinity,
-      child: Column(
-        children: [
-          _latestRoundWinningNumbers(),
-          const HorizontalDivider(),
-          _latestRounds(),
-          const HorizontalDivider(),
-          _homeStoreList()
-        ],
+  _homeBody() {
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: [
+            _latestRoundWinningNumbers(),
+            const HorizontalDivider(),
+            _latestRounds(),
+            const HorizontalDivider(),
+            _homeStoreList()
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

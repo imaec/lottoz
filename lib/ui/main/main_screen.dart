@@ -42,53 +42,53 @@ class MainScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-Widget _mainBottomNavigationBar({
-  required BuildContext context,
-  required List<BottomItemVo> tabs,
-  required int currentIndex,
-}) {
-  return SafeArea(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const HorizontalDivider(),
-        SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: Row(
-            children: tabs.mapIndexed((index, tab) {
-              var isSelected = index == currentIndex;
-              return Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    context.go(tab.path);
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SvgIcon(
-                        asset: tab.icon,
-                        size: 24,
-                        color: isSelected ? gray800 : gray400,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        tab.name,
-                        style: dockbar.copyWith(
+  Widget _mainBottomNavigationBar({
+    required BuildContext context,
+    required List<BottomItemVo> tabs,
+    required int currentIndex,
+  }) {
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const HorizontalDivider(),
+          SizedBox(
+            width: double.infinity,
+            height: 56,
+            child: Row(
+              children: tabs.mapIndexed((index, tab) {
+                var isSelected = index == currentIndex;
+                return Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      context.go(tab.path);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgIcon(
+                          asset: tab.icon,
+                          size: 24,
                           color: isSelected ? gray800 : gray400,
                         ),
-                      )
-                    ],
+                        const SizedBox(height: 8),
+                        Text(
+                          tab.name,
+                          style: dockbar.copyWith(
+                            color: isSelected ? gray800 : gray400,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }

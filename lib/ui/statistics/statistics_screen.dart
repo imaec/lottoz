@@ -1,12 +1,104 @@
+import 'package:designsystem/theme/colors.dart';
+import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
 
-class StatisticsScreen extends StatelessWidget {
+part 'continuous_tab_content.dart';
+part 'odd_even_tab_content.dart';
+part 'pick_tab_content.dart';
+part 'sum_tab_content.dart';
+part 'win_tab_content.dart';
+
+class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
 
   @override
+  State<StatisticsScreen> createState() => _StatisticsScreenState();
+}
+
+class _StatisticsScreenState extends State<StatisticsScreen> with SingleTickerProviderStateMixin {
+  late final TabController _tabController = TabController(
+    length: 5,
+    vsync: this,
+    initialIndex: 0,
+  );
+  late final PageController _pageController = PageController();
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Text('통계'),
+    return Scaffold(
+      body: _statisticsBody(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  Widget _statisticsBody() {
+    return Column(
+      children: [
+        Container(
+          color: gray700,
+          child: TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            dividerColor: Colors.transparent,
+            indicatorColor: white,
+            indicatorSize: TabBarIndicatorSize.label,
+            labelColor: white,
+            labelStyle: h5,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+            unselectedLabelColor: gray400,
+            unselectedLabelStyle: subtitle2,
+            tabAlignment: TabAlignment.start,
+            tabs: const [
+              Tab(text: '합계', height: 50),
+              Tab(text: '출현/미출현', height: 50),
+              Tab(text: '연속번호', height: 50),
+              Tab(text: '홀/짝', height: 50),
+              Tab(text: '당첨', height: 50),
+            ],
+            onTap: (index) {
+              setState(() {
+                _pageController.animateToPage(
+                  index,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                );
+              });
+            },
+          ),
+        ),
+        Expanded(
+          child: PageView.builder(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _tabController.animateTo(index);
+              });
+            },
+            itemBuilder: (context, index) {
+              switch (index) {
+                case 0:
+                  return _sumTabContent();
+                case 1:
+                  return _pickTabContent();
+                case 2:
+                  return _continuousTabContent();
+                case 3:
+                  return _oddEvenTabContent();
+                case 4:
+                  return _winTabContent();
+                default:
+                  return null;
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 }
