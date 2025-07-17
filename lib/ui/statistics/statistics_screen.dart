@@ -1,12 +1,16 @@
+import 'package:designsystem/assets/icons.dart';
+import 'package:designsystem/component/divider/horizontal_divider.dart';
+import 'package:designsystem/component/media/svg_icon.dart';
 import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:lottoz/ui/statistics/sum/sum_statistics_vo.dart';
 
-part 'continuous_tab_content.dart';
-part 'odd_even_tab_content.dart';
-part 'pick_tab_content.dart';
-part 'sum_tab_content.dart';
-part 'win_tab_content.dart';
+part 'continuous/continuous_tab_content.dart';
+part 'odd_even/odd_even_tab_content.dart';
+part 'pick/pick_tab_content.dart';
+part 'sum/sum_tab_content.dart';
+part 'win/win_tab_content.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
