@@ -6,8 +6,11 @@ import 'package:designsystem/component/media/svg_icon.dart';
 import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:lottoz/model/lotto_vo.dart';
 import 'package:lottoz/ui/statistics/pick/pick_statistics_vo.dart';
 import 'package:lottoz/ui/statistics/sum/sum_statistics_vo.dart';
+
+import 'continuous/continuous_statistics_vo.dart';
 
 part 'continuous/continuous_tab_content.dart';
 part 'odd_even/odd_even_tab_content.dart';
