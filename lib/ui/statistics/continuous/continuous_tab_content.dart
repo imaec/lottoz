@@ -46,6 +46,7 @@ Widget _continuousNumbers() {
               children: [
                 Expanded(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: item.numbers.mapIndexed((index, number) {
                       final isContinuous = continuousSet.contains(number);
 

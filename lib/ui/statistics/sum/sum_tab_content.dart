@@ -73,19 +73,26 @@ Widget _sumTabGraph() {
                   child: Row(
                     children: [
                       Flexible(
-                        child: FractionallySizedBox(
-                          alignment: Alignment.centerLeft,
-                          widthFactor: sum.count / maxCount,
-                          child: Container(
-                            height: 20,
-                            decoration: const BoxDecoration(
-                              color: gray100,
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(4),
-                                bottomRight: Radius.circular(4),
+                        child: TweenAnimationBuilder(
+                          tween: Tween(begin: 0.0, end: sum.count / maxCount),
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeInOut,
+                          builder: (context, value, child) {
+                            return FractionallySizedBox(
+                              alignment: Alignment.centerLeft,
+                              widthFactor: value,
+                              child: Container(
+                                height: 20,
+                                decoration: const BoxDecoration(
+                                  color: graphBlue,
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(4),
+                                    bottomRight: Radius.circular(4),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(width: 16),

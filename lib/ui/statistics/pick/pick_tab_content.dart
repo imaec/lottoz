@@ -54,21 +54,27 @@ Widget _pickCounts() {
                   child: Row(
                     children: [
                       Expanded(
-                        child: FractionallySizedBox(
-                          alignment: Alignment.centerLeft,
-                          widthFactor: pick.count / maxCount,
-                          child: Container(
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: getLottoColor(
-                                number: int.parse(pick.range.split('-').first),
+                        child: TweenAnimationBuilder(
+                          tween: Tween(begin: 0.0, end: pick.count / maxCount),
+                          duration: const Duration(milliseconds: 600),
+                          builder: (context, value, child) {
+                            return FractionallySizedBox(
+                              alignment: Alignment.centerLeft,
+                              widthFactor: value,
+                              child: Container(
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: getLottoColor(
+                                    number: int.parse(pick.range.split('-').first),
+                                  ),
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(4),
+                                    bottomRight: Radius.circular(4),
+                                  ),
+                                ),
                               ),
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(4),
-                                bottomRight: Radius.circular(4),
-                              ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(width: 16),

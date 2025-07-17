@@ -60,6 +60,7 @@ Widget _oddEvenNumbers({required List<OddEvenStatisticsVo> oddEventNumbers}) {
               children: [
                 Expanded(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
                         children: item.oddNumbers.mapIndexed((index, number) {
