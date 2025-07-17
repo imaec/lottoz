@@ -51,7 +51,7 @@ Widget _continuousNumbers() {
 
                       return Row(
                         children: [
-                          SizedBox(width: index < item.numbers.length ? 8 : 0),
+                          const SizedBox(width: 8),
                           _number(
                             number: number,
                             numberColor: isContinuous ? null : gray700,

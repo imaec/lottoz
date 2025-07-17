@@ -11,6 +11,7 @@ import 'package:lottoz/ui/statistics/pick/pick_statistics_vo.dart';
 import 'package:lottoz/ui/statistics/sum/sum_statistics_vo.dart';
 
 import 'continuous/continuous_statistics_vo.dart';
+import 'odd_even/odd_even_statistics_vo.dart';
 
 part 'continuous/continuous_tab_content.dart';
 part 'odd_even/odd_even_tab_content.dart';
