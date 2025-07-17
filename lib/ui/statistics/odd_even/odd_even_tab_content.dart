@@ -65,20 +65,20 @@ Widget _oddEvenNumbers({required List<OddEvenStatisticsVo> oddEventNumbers}) {
                         children: item.oddNumbers.mapIndexed((index, number) {
                           return Row(
                             children: [
-                              const SizedBox(width: 8),
-                              _number(number: number),
+                              const SizedBox(width: 6),
+                              _number(number: number, numberType: NumberType.small),
                             ],
                           );
                         }).toList(),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       const Text(' : ', style: bodyL),
                       Row(
                         children: item.evenNumbers.mapIndexed((index, number) {
                           return Row(
                             children: [
-                              const SizedBox(width: 8),
-                              _number(number: number),
+                              const SizedBox(width: 6),
+                              _number(number: number, numberType: NumberType.small),
                             ],
                           );
                         }).toList(),

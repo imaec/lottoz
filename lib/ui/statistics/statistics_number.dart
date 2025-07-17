@@ -1,13 +1,18 @@
 part of 'statistics_screen.dart';
 
+enum NumberType {
+  small, medium;
+}
+
 Widget _number({
   required int? number,
+  NumberType numberType = NumberType.medium,
   Color? numberColor,
   Color? backgroundColor,
 }) {
   return SizedBox(
-    width: 30,
-    height: 30,
+    width: _getSize(numberType: numberType),
+    height: _getSize(numberType: numberType),
     child: Container(
       decoration: BoxDecoration(
         color: number != null
@@ -34,4 +39,13 @@ Widget _number({
       ),
     ),
   );
+}
+
+double _getSize({required NumberType numberType}) {
+  switch (numberType) {
+    case NumberType.small:
+      return 28;
+    case NumberType.medium:
+      return 30;
+  }
 }
