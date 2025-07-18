@@ -27,7 +27,7 @@ class RecommendScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Center(
-                  child: Text('번호 저장', style: subtitle3.copyWith(color: white)),
+                  child: Text('번호 저장', style: h5.copyWith(color: white)),
                 ),
               ),
             ),
@@ -40,7 +40,7 @@ class RecommendScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Center(
-                  child: Text('번호 생성', style: subtitle3.copyWith(color: white)),
+                  child: Text('번호 생성', style: h5.copyWith(color: white)),
                 ),
               ),
             ),

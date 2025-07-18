@@ -71,13 +71,13 @@ class MainScreen extends StatelessWidget {
                         SvgIcon(
                           asset: tab.icon,
                           size: 24,
-                          color: isSelected ? gray800 : gray400,
+                          color: isSelected ? gray800 : gray300,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
                         Text(
                           tab.name,
-                          style: dockbar.copyWith(
-                            color: isSelected ? gray800 : gray400,
+                          style: labelBold.copyWith(
+                            color: isSelected ? gray800 : gray300,
                           ),
                         )
                       ],
