@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottoz/provider/lotto_state_provider.dart';
 import 'package:lottoz/ui/main/bottom_item_vo.dart';
 
 class MainScreen extends ConsumerWidget {
@@ -15,10 +14,6 @@ class MainScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final lottoState = ref.watch(lottoNotifierProvider);
-
-    print(lottoState.lottoDto);
-
     final tabs = [
       BottomItemVo(icon: homeIcon, name: '홈', path: '/home'),
       BottomItemVo(icon: statisticsIcon, name: '통계', path: '/statistics'),
@@ -74,18 +69,12 @@ class MainScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgIcon(
-                          asset: tab.icon,
-                          size: 24,
-                          color: isSelected ? gray800 : gray300,
-                        ),
+                        SvgIcon(asset: tab.icon, size: 24, color: isSelected ? gray800 : gray300),
                         const SizedBox(height: 4),
                         Text(
                           tab.name,
-                          style: labelBold.copyWith(
-                            color: isSelected ? gray800 : gray300,
-                          ),
-                        )
+                          style: labelBold.copyWith(color: isSelected ? gray800 : gray300),
+                        ),
                       ],
                     ),
                   ),

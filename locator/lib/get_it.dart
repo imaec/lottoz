@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:local/data_source/lotto_local_data_source_impl.dart';
 import 'package:remote/datasource/lotto_remote_data_source_impl.dart';
 import 'package:remote/service/lotto_service.dart';
 
@@ -25,11 +26,14 @@ _networkModule() {
 }
 
 _lottoModule() {
-  locator.registerLazySingleton<LottoService>(() => LottoService(locator<Dio>()));
+  locator.registerLazySingleton<LottoService>(() => LottoService(locator()));
   locator.registerLazySingleton<LottoRemoteDataSource>(
     () => LottoRemoteDataSourceImpl(service: locator()),
   );
+  locator.registerLazySingleton<LottoLocalDataSource>(
+    () => LottoLocalDataSourceImpl(),
+  );
   locator.registerLazySingleton<LottoRepository>(
-    () => LottoRepositoryImpl(remoteDataSource: locator()),
+    () => LottoRepositoryImpl(remoteDataSource: locator(), localDataSource: locator()),
   );
 }

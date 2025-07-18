@@ -17,5 +17,7 @@ dependencies:
   locator:
     path: ../locator
 
+  shared_preferences: ^2.5.3
+
 dev_dependencies:
   flutter_lints: ^4.0.0
