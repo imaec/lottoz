@@ -1,14 +1,17 @@
 import 'package:designsystem/designsystem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:locator/get_it.dart';
 import 'package:lottoz/router/go_router.dart';
 
 void main() {
+  initLocator();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
-  runApp(const LottoZApp());
+  runApp(const ProviderScope(child: LottoZApp()));
 }
 
 class LottoZApp extends StatelessWidget {

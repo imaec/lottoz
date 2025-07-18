@@ -1,5 +1,5 @@
-name: designsystem
-description: designsystem
+name: local
+description: local
 publish_to: none
 
 version: 1.0.0+1
@@ -11,10 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
 
-  core:
-    path: ../core
+  data:
+    path: ../data
 
-  flutter_svg: ^2.1.0
+  locator:
+    path: ../locator
 
 dev_dependencies:
   flutter_lints: ^4.0.0

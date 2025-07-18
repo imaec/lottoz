@@ -1,5 +1,5 @@
-name: core
-description: core
+name: domain
+description: domain
 publish_to: none
 
 version: 1.0.0+1
@@ -8,11 +8,8 @@ environment:
   sdk: ^3.8.1
 
 dependencies:
-  flutter:
-    sdk: flutter
-
-  designsystem:
-    path: ../designsystem
+  locator:
+    path: ../locator
 
 dev_dependencies:
   flutter_lints: ^4.0.0

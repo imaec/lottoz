@@ -1,5 +1,5 @@
-name: locator
-description: locator
+name: remote
+description: remote
 publish_to: none
 
 version: 1.0.0+1
@@ -11,23 +11,20 @@ dependencies:
   flutter:
     sdk: flutter
 
-  lottoz:
-    path: ../
-
   domain:
     path: ../domain
 
   data:
     path: ../data
 
-  remote:
-    path: ../remote
+  locator:
+    path: ../locator
 
-  local:
-    path: ../local
-
-  get_it: ^8.0.3
   dio: ^5.8.0+1
+  retrofit: ^4.6.0
+  logger: ^2.6.0
 
 dev_dependencies:
   flutter_lints: ^4.0.0
+  retrofit_generator: ^9.6.0
+  json_serializable: ^6.9.5
