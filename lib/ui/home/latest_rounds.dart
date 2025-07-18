@@ -1,6 +1,6 @@
 part of 'home_screen.dart';
 
-Widget _latestRounds() {
+Widget _latestRounds({required List<LottoDto> lottoNumbers}) {
   return Padding(
     padding: const EdgeInsets.only(top: 24, bottom: 36),
     child: Column(
@@ -21,9 +21,9 @@ Widget _latestRounds() {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: 10,
+            itemCount: lottoNumbers.length,
             itemBuilder: (context, index) {
-              return _latestRound();
+              return _latestRound(lottoDto: lottoNumbers[index]);
             },
             separatorBuilder: (context, index) {
               return const SizedBox(width: 16);
@@ -35,8 +35,15 @@ Widget _latestRounds() {
   );
 }
 
-Widget _latestRound() {
-  const numbers = [3, 16, 18, 24, 40, 44];
+Widget _latestRound({required LottoDto lottoDto}) {
+  final numbers = [
+    lottoDto.drwtNo1,
+    lottoDto.drwtNo2,
+    lottoDto.drwtNo3,
+    lottoDto.drwtNo4,
+    lottoDto.drwtNo5,
+    lottoDto.drwtNo6,
+  ];
 
   return Container(
     width: 240,
@@ -50,9 +57,9 @@ Widget _latestRound() {
       children: [
         Row(
           children: [
-            const Text('1179회', style: labelBold),
+            Text('${lottoDto.drwNo}회', style: labelBold),
             const SizedBox(width: 4),
-            Text('2025-07-05', style: labelTag.copyWith(color: gray400)),
+            Text(lottoDto.drwNoDate, style: labelTag.copyWith(color: gray400)),
           ],
         ),
         const SizedBox(height: 10),
@@ -80,7 +87,7 @@ Widget _latestRound() {
                   ),
                 );
               } else {
-                return _number(number: 3);
+                return _number(number: lottoDto.bnusNo);
               }
             }
           }).toList(),
@@ -90,10 +97,13 @@ Widget _latestRound() {
           children: [
             Text('1등', style: labelBold.copyWith(color: gray600)),
             const SizedBox(width: 4),
-            const Text('12명', style: labelBold),
+            Text('${lottoDto.firstPrzwnerCo}명', style: labelBold),
           ],
         ),
-        Text('1인당 약 22억원', style: labelBold.copyWith(color: gray600))
+        Text(
+          '1인당 약 ${lottoDto.firstWinamnt.to100Million()}억원',
+          style: labelBold.copyWith(color: gray600),
+        ),
       ],
     ),
   );

@@ -2,16 +2,14 @@ import 'package:domain/domain.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LottoState {
-  final LottoDto lottoDto;
   final List<LottoDto> lottoNumbers;
 
-  LottoState({required this.lottoDto, required this.lottoNumbers});
+  LottoState({required this.lottoNumbers});
 
-  const LottoState.init({this.lottoDto = const LottoDto.init(), this.lottoNumbers = const []});
+  const LottoState.init({this.lottoNumbers = const []});
 
-  LottoState copyWith({LottoDto? lottoDto, List<LottoDto>? lottoNumbers}) {
+  LottoState copyWith({List<LottoDto>? lottoNumbers}) {
     return LottoState(
-      lottoDto: lottoDto ?? this.lottoDto,
       lottoNumbers: lottoNumbers ?? this.lottoNumbers,
     );
   }
@@ -25,17 +23,17 @@ class LottoNotifier extends StateNotifier<LottoState> {
   fetchLottoNumber() async {
     final localCurDrwNo = await repository.getLocalCurDrwNo();
     final curDrwNo = await repository.getCurDrwNo();
-    await repository.setLocalCurDrwNo(curDrwNo);
-    // todo : setWeek()
+    await repository.setLocalCurDrwNo(curDrwNo: curDrwNo);
 
-    // if (curDrwNo == localCurDrwNo) {
-    //   // todo : fetchLottoNumbersFromFirebase()
-    // } else {
-    //   _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, localCurDrwNo: localCurDrwNo);
-    // }
-    _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, localCurDrwNo: localCurDrwNo);
+    if (curDrwNo == localCurDrwNo) {
+      _fetchLottoNumbersFromDatabase();
+    } else {
+      _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, localCurDrwNo: localCurDrwNo);
+    }
+  }
 
-    state = state.copyWith(lottoDto: await repository.getLottoNumber(drwNo: 1080));
+  _fetchLottoNumbersFromDatabase() async {
+    state = state.copyWith(lottoNumbers: await repository.getLottoNumbers());
   }
 
   _fetchLottoNumbersFromApi({required int curDrwNo, required int localCurDrwNo}) async {
@@ -46,13 +44,9 @@ class LottoNotifier extends StateNotifier<LottoState> {
       lottoNumbers.add(lottoDto);
 
       if (lottoNumbers.length == drwNoDiff + 1) {
-        // todo : 모든 리스트 Local에 저장
-        // saveLottoNumbers(lottoNumbers: tempNumbers);
+        await repository.saveLottoNumbers(lottoNumbers: lottoNumbers);
 
-        state = state.copyWith(
-          lottoDto: lottoNumbers.first,
-          lottoNumbers: lottoNumbers,
-        );
+        state = state.copyWith(lottoNumbers: lottoNumbers);
       }
     }
   }

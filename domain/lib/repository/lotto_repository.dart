@@ -9,5 +9,9 @@ abstract class LottoRepository {
   /// local
   Future<int> getLocalCurDrwNo();
 
-  setLocalCurDrwNo(curDrwNo);
+  setLocalCurDrwNo({required int curDrwNo});
+
+  Future<List<LottoDto>> getLottoNumbers();
+
+  Future<int> saveLottoNumbers({required List<LottoDto> lottoNumbers});
 }

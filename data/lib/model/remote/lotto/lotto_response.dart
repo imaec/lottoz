@@ -40,6 +40,8 @@ class LottoResponse extends DataToDomainMapper<LottoDto> {
 
   factory LottoResponse.fromJson(Map<String, dynamic> json) => _$LottoResponseFromJson(json);
 
+  Map<String, dynamic> toJson() => _$LottoResponseToJson(this);
+
   @override
   LottoDto mapper() => LottoDto(
     bnusNo: bnusNo,

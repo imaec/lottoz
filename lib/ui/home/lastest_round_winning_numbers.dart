@@ -1,19 +1,21 @@
 part of 'home_screen.dart';
 
-Widget _latestRoundWinningNumbers() {
-  const numbers = [6, 12, 18, 37, 40, 41];
+Widget _latestRoundWinningNumbers({required LottoDto lottoDto}) {
+  final numbers = [
+    lottoDto.drwtNo1,
+    lottoDto.drwtNo2,
+    lottoDto.drwtNo3,
+    lottoDto.drwtNo4,
+    lottoDto.drwtNo5,
+    lottoDto.drwtNo6,
+  ];
 
   return Padding(
-    padding: const EdgeInsets.only(
-      left: 16,
-      right: 16,
-      top: 16,
-      bottom: 36,
-    ),
+    padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 36),
     child: Column(
       children: [
-        Text('2025-07-12', style: bodyS.copyWith(color: gray600)),
-        const Text('1180회 당첨 번호', style: h2),
+        Text(lottoDto.drwNoDate, style: bodyS.copyWith(color: gray600)),
+        Text('${lottoDto.drwNo}회 당첨 번호', style: h2),
         const SizedBox(height: 24),
         Row(
           children: numbers.mapIndexed((index, number) {
@@ -30,15 +32,11 @@ Widget _latestRoundWinningNumbers() {
                 return const Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: Text(
-                      'BONUS',
-                      style: labelBold,
-                      textAlign: TextAlign.end,
-                    ),
+                    child: Text('BONUS', style: labelBold, textAlign: TextAlign.end),
                   ),
                 );
               } else {
-                return _latestRoundNumber(number: 3);
+                return _latestRoundNumber(number: lottoDto.bnusNo);
               }
             }
           }).toList(),
@@ -50,11 +48,11 @@ Widget _latestRoundWinningNumbers() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Row(
+              Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('1등 당첨자 수 ', style: bodyS),
-                  Text('11명', style: h6),
+                  const Text('1등 당첨자 수 ', style: bodyS),
+                  Text('${lottoDto.firstPrzwnerCo}명', style: h6),
                 ],
               ),
               const SizedBox(height: 8),
@@ -81,11 +79,12 @@ Widget _latestRoundWinningNumbers() {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       width: 220,
                       child: Text(
-                        '2,535,577,421 (약 25억) 원',
+                        '${lottoDto.firstWinamnt.comma()} '
+                        '(약 ${lottoDto.firstWinamnt.to100Million()}억) 원',
                         style: subtitle2.copyWith(color: gray600),
                         textAlign: TextAlign.end,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
