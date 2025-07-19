@@ -9,7 +9,8 @@ import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottoz/model/lotto_vo.dart';
-import 'package:lottoz/ui/statistics/pick/pick_statistics_vo.dart';
+import 'package:lottoz/model/statistics/pick_statistics_vo.dart';
+import 'package:lottoz/model/statistics/un_pick_statistics_vo.dart';
 import 'package:lottoz/ui/statistics/provider/statistics_notifier.dart';
 import 'package:lottoz/ui/statistics/provider/statistics_state_provider.dart';
 import 'package:lottoz/model/statistics/sum_statistics_vo.dart';
@@ -102,7 +103,7 @@ class StatisticsScreenState extends ConsumerState<StatisticsScreen>
                 case 0:
                   return _sumTabContent(statisticsState: statisticsState);
                 case 1:
-                  return _pickTabContent();
+                  return _pickTabContent(statisticsState: statisticsState);
                 case 2:
                   return _continuousTabContent();
                 case 3:

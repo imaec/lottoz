@@ -1,35 +1,47 @@
 import 'package:domain/model/lotto/lotto_dto.dart';
 import 'package:domain/repository/lotto_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lottoz/model/statistics/sum_range_vo.dart';
+import 'package:lottoz/model/statistics/statistics_range_vo.dart';
 import 'package:lottoz/model/statistics/sum_statistics_vo.dart';
+import 'package:lottoz/model/statistics/pick_statistics_vo.dart';
+import 'package:lottoz/model/statistics/un_pick_statistics_vo.dart';
 
 class StatisticsState {
   final List<LottoDto> lottoNumbers;
   final int sumAverage;
   final List<SumStatisticsVo> sumStatistics;
+  final List<PickStatisticsVo> pickStatistics;
+  final List<UnPickStatisticsVo> unPickStatistics;
 
   StatisticsState({
     required this.lottoNumbers,
     required this.sumAverage,
     required this.sumStatistics,
+    required this.pickStatistics,
+    required this.unPickStatistics,
   });
 
   const StatisticsState.init({
     this.lottoNumbers = const [],
     this.sumAverage = 0,
     this.sumStatistics = const [],
+    this.pickStatistics = const [],
+    this.unPickStatistics = const [],
   });
 
   StatisticsState copyWith({
     List<LottoDto>? lottoNumbers,
     int? sumAverage,
     List<SumStatisticsVo>? sumStatistics,
+    List<PickStatisticsVo>? pickStatistics,
+    List<UnPickStatisticsVo>? unPickStatistics,
   }) {
     return StatisticsState(
       lottoNumbers: lottoNumbers ?? this.lottoNumbers,
       sumAverage: sumAverage ?? this.sumAverage,
       sumStatistics: sumStatistics ?? this.sumStatistics,
+      pickStatistics: pickStatistics ?? this.pickStatistics,
+      unPickStatistics: unPickStatistics ?? this.unPickStatistics,
     );
   }
 }
@@ -44,11 +56,15 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
     final sumAverage =
         lottoNumbers.map((lotto) => lotto.getSum()).reduce((a, b) => a + b) / lottoNumbers.length;
     final sumStatistics = _getSumStatistics(lottoNumbers: lottoNumbers);
+    final pickStatistics = _getPickStatistics(lottoNumbers: lottoNumbers);
+    final unPickStatistics = _getUnPickNumbers(lottoNumbers: lottoNumbers);
 
     state = state.copyWith(
       lottoNumbers: lottoNumbers,
       sumAverage: sumAverage.toInt(),
       sumStatistics: sumStatistics,
+      pickStatistics: pickStatistics,
+      unPickStatistics: unPickStatistics,
     );
   }
 
@@ -56,34 +72,33 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
     final Map<String, int> countByRange = {};
     final Map<String, List<int>> sumByRange = {};
     final int totalCount = lottoNumbers.length;
-    final List<SumRangeVo> sumRanges = [
-      SumRangeVo(start: 21, end: 40),
-      SumRangeVo(start: 41, end: 60),
-      SumRangeVo(start: 61, end: 80),
-      SumRangeVo(start: 81, end: 100),
-      SumRangeVo(start: 101, end: 120),
-      SumRangeVo(start: 121, end: 140),
-      SumRangeVo(start: 141, end: 160),
-      SumRangeVo(start: 161, end: 180),
-      SumRangeVo(start: 181, end: 200),
-      SumRangeVo(start: 201, end: 220),
-      SumRangeVo(start: 221, end: 240),
-      SumRangeVo(start: 241, end: 260),
+    final List<StatisticsRangeVo> sumRanges = [
+      StatisticsRangeVo(start: 21, end: 40),
+      StatisticsRangeVo(start: 41, end: 60),
+      StatisticsRangeVo(start: 61, end: 80),
+      StatisticsRangeVo(start: 81, end: 100),
+      StatisticsRangeVo(start: 101, end: 120),
+      StatisticsRangeVo(start: 121, end: 140),
+      StatisticsRangeVo(start: 141, end: 160),
+      StatisticsRangeVo(start: 161, end: 180),
+      StatisticsRangeVo(start: 181, end: 200),
+      StatisticsRangeVo(start: 201, end: 220),
+      StatisticsRangeVo(start: 221, end: 240),
+      StatisticsRangeVo(start: 241, end: 260),
     ];
     List<SumStatisticsVo> sumStatistics = [];
 
     for (final range in sumRanges) {
-      countByRange['${range.start}-${range.end}'] = 0;
-      sumByRange['${range.start}-${range.end}'] = [];
+      countByRange[range.range] = 0;
+      sumByRange[range.range] = [];
     }
 
     for (final lotto in lottoNumbers) {
       final sum = lotto.getSum();
       for (final range in sumRanges) {
         if (range.isContains(sum)) {
-          countByRange['${range.start}-${range.end}'] =
-              (countByRange['${range.start}-${range.end}'] ?? 0) + 1;
-          sumByRange['${range.start}-${range.end}']?.add(sum);
+          countByRange[range.range] = (countByRange[range.range] ?? 0) + 1;
+          sumByRange[range.range]?.add(sum);
           break;
         }
       }
@@ -98,5 +113,55 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
     }
 
     return sumStatistics;
+  }
+
+  List<PickStatisticsVo> _getPickStatistics({required List<LottoDto> lottoNumbers}) {
+    final ranges = [
+      StatisticsRangeVo(start: 1, end: 10),
+      StatisticsRangeVo(start: 11, end: 20),
+      StatisticsRangeVo(start: 21, end: 30),
+      StatisticsRangeVo(start: 31, end: 40),
+      StatisticsRangeVo(start: 41, end: 45),
+    ];
+    List<PickStatisticsVo> pickStatistics = [];
+
+    final allNumbers = lottoNumbers.expand(
+      (e) => [e.drwtNo1, e.drwtNo2, e.drwtNo3, e.drwtNo4, e.drwtNo5, e.drwtNo6],
+    );
+
+    for (final range in ranges) {
+      final count = allNumbers.where((n) => range.isContains(n)).length;
+      pickStatistics.add(PickStatisticsVo(range: range.range, count: count));
+    }
+
+    return pickStatistics;
+  }
+
+  List<UnPickStatisticsVo> _getUnPickNumbers({required List<LottoDto> lottoNumbers}) {
+    final ranges = [
+      StatisticsRangeVo(start: 1, end: 10),
+      StatisticsRangeVo(start: 11, end: 20),
+      StatisticsRangeVo(start: 21, end: 30),
+      StatisticsRangeVo(start: 31, end: 40),
+      StatisticsRangeVo(start: 41, end: 45),
+    ];
+    final Set<int> allNumbers = Set.from(List.generate(45, (i) => i + 1));
+    final appeared = lottoNumbers
+        .expand((e) => [e.drwtNo1, e.drwtNo2, e.drwtNo3, e.drwtNo4, e.drwtNo5, e.drwtNo6])
+        .toSet();
+    List<UnPickStatisticsVo> unPickStatistics = [];
+
+    final Set<int> unPickNumbers = allNumbers.difference(appeared);
+
+    for (final range in ranges) {
+      unPickStatistics.add(
+        UnPickStatisticsVo(
+          range: range.range,
+          numbers: unPickNumbers.where((n) => range.isContains(n)).toList()..sort(),
+        ),
+      );
+    }
+
+    return unPickStatistics;
   }
 }

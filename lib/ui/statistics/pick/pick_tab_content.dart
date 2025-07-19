@@ -1,6 +1,6 @@
 part of '../statistics_screen.dart';
 
-Widget _pickTabContent() {
+Widget _pickTabContent({required StatisticsState statisticsState}) {
   return Column(
     children: [
       _statisticsHeader(),
@@ -9,9 +9,9 @@ Widget _pickTabContent() {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _pickCounts(),
+              _pickCounts(pickStatistics: statisticsState.pickStatistics),
               const HorizontalDivider(),
-              _unPickNumbers(),
+              _unPickNumbers(unPickStatistics: statisticsState.unPickStatistics),
             ],
           ),
         ),
@@ -20,14 +20,7 @@ Widget _pickTabContent() {
   );
 }
 
-Widget _pickCounts() {
-  final pickStatistics = [
-    PickStatisticsVo(range: '1-10', count: 28),
-    PickStatisticsVo(range: '11-20', count: 28),
-    PickStatisticsVo(range: '21-30', count: 27),
-    PickStatisticsVo(range: '31-40', count: 23),
-    PickStatisticsVo(range: '41-45', count: 14),
-  ];
+Widget _pickCounts({required List<PickStatisticsVo> pickStatistics}) {
   final maxCount = pickStatistics.map((pick) => pick.count).reduce((a, b) => a > b ? a : b);
 
   return Container(
@@ -92,53 +85,7 @@ Widget _pickCounts() {
   );
 }
 
-Widget _unPickNumbers() {
-  final unPickNumbers = [
-    1,
-    2,
-    4,
-    8,
-    10,
-    13,
-    17,
-    20,
-    22,
-    23,
-    25,
-    26,
-    28,
-    29,
-    31,
-    32,
-    33,
-    34,
-    36,
-    38,
-    39,
-    42,
-    45
-  ];
-  final ranges = {
-    '1-10': <int>[],
-    '11-20': <int>[],
-    '21-30': <int>[],
-    '31-40': <int>[],
-    '41-45': <int>[],
-  };
-  for (final num in unPickNumbers) {
-    if (num <= 10) {
-      ranges['1-10']!.add(num);
-    } else if (num <= 20) {
-      ranges['11-20']!.add(num);
-    } else if (num <= 30) {
-      ranges['21-30']!.add(num);
-    } else if (num <= 40) {
-      ranges['31-40']!.add(num);
-    } else {
-      ranges['41-45']!.add(num);
-    }
-  }
-
+Widget _unPickNumbers({required List<UnPickStatisticsVo> unPickStatistics}) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 24),
     child: Column(
@@ -151,20 +98,20 @@ Widget _unPickNumbers() {
         ),
         const SizedBox(height: 12),
         Column(
-          children: ranges.entries.map((range) {
+          children: unPickStatistics.map((statistics) {
             return Row(
               children: [
                 SizedBox(
                   width: 65,
-                  child: Text(range.key, style: bodyS, textAlign: TextAlign.center),
+                  child: Text(statistics.range, style: bodyS, textAlign: TextAlign.center),
                 ),
                 Container(height: 40, width: 1, color: gray100),
                 Expanded(
                   child: Row(
-                    children: range.value.mapIndexed((index, number) {
+                    children: statistics.numbers.mapIndexed((index, number) {
                       return Row(
                         children: [
-                          SizedBox(width: index < range.value.length ? 8 : 0),
+                          SizedBox(width: index < statistics.numbers.length ? 8 : 0),
                           lottoNumber(number: number),
                         ],
                       );
