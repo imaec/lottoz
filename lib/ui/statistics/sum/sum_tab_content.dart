@@ -1,18 +1,22 @@
 part of '../statistics_screen.dart';
 
-Widget _sumTabContent() {
+Widget _sumTabContent({required StatisticsState statisticsState}) {
+  if (statisticsState.lottoNumbers.isEmpty) {
+    return const CircularProgressIndicator();
+  }
+
   return Column(
     children: [
       _statisticsHeader(
-        rightWidget: const Row(
+        rightWidget: Row(
           children: [
-            Text('1180회 평균 합계 : ', style: bodyS),
-            Text('135', style: subtitle2),
+            Text('${statisticsState.lottoNumbers.length}회 평균 합계 : ', style: bodyS),
+            Text('${statisticsState.sumAverage}', style: subtitle2),
           ],
         )
       ),
       _sumTabGraphHeader(),
-      Expanded(child: _sumTabGraph()),
+      Expanded(child: _sumTabGraph(sumStatistics: statisticsState.sumStatistics)),
     ],
   );
 }
@@ -40,21 +44,7 @@ Widget _sumTabGraphHeader() {
   );
 }
 
-Widget _sumTabGraph() {
-  final sumStatistics = [
-    SumStatisticsVo(range: '21-40', count: 0, rate: 0),
-    SumStatisticsVo(range: '41-60', count: 5, rate: 0.4),
-    SumStatisticsVo(range: '61-80', count: 31, rate: 2.6),
-    SumStatisticsVo(range: '81-100', count: 95, rate: 8.1),
-    SumStatisticsVo(range: '101-120', count: 193, rate: 16.4),
-    SumStatisticsVo(range: '121-140', count: 295, rate: 25),
-    SumStatisticsVo(range: '141-160', count: 249, rate: 21.1),
-    SumStatisticsVo(range: '161-180', count: 206, rate: 17.5),
-    SumStatisticsVo(range: '181-200', count: 81, rate: 6.9),
-    SumStatisticsVo(range: '201-220', count: 21, rate: 1.8),
-    SumStatisticsVo(range: '221-240', count: 4, rate: 0.3),
-    SumStatisticsVo(range: '241-260', count: 0, rate: 0),
-  ];
+Widget _sumTabGraph({required List<SumStatisticsVo> sumStatistics}) {
   final maxCount = sumStatistics.map((sum) => sum.count).reduce((a, b) => a > b ? a : b);
 
   return SingleChildScrollView(
@@ -104,7 +94,7 @@ Widget _sumTabGraph() {
                 Container(height: 40, width: 1, color: gray100),
                 SizedBox(
                   width: 60,
-                  child: Text('${sum.rate}%', style: bodyS, textAlign: TextAlign.center),
+                  child: Text(sum.rate, style: bodyS, textAlign: TextAlign.center),
                 ),
               ],
             ),

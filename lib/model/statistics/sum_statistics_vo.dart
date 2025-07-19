@@ -1,7 +1,7 @@
 class SumStatisticsVo {
   final String range;
   final int count;
-  final double rate;
+  final String rate;
 
   SumStatisticsVo({
     required this.range,

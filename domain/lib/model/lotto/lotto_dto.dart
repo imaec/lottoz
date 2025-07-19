@@ -66,4 +66,6 @@ class LottoDto {
       'totSellamnt': totSellamnt,
     };
   }
+
+  int getSum() => drwtNo1 + drwtNo2 + drwtNo3 + drwtNo4 + drwtNo5 + drwtNo6;
 }

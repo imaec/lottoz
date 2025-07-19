@@ -7,40 +7,44 @@ import 'package:designsystem/component/number/number.dart';
 import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottoz/model/lotto_vo.dart';
 import 'package:lottoz/ui/statistics/pick/pick_statistics_vo.dart';
-import 'package:lottoz/ui/statistics/sum/sum_statistics_vo.dart';
+import 'package:lottoz/ui/statistics/provider/statistics_notifier.dart';
+import 'package:lottoz/ui/statistics/provider/statistics_state_provider.dart';
+import 'package:lottoz/model/statistics/sum_statistics_vo.dart';
 
 import 'continuous/continuous_statistics_vo.dart';
 import 'odd_even/odd_even_statistics_vo.dart';
 
 part 'continuous/continuous_tab_content.dart';
+
 part 'odd_even/odd_even_tab_content.dart';
+
 part 'pick/pick_tab_content.dart';
+
 part 'statistics_header.dart';
+
 part 'sum/sum_tab_content.dart';
+
 part 'win/win_tab_content.dart';
 
-class StatisticsScreen extends StatefulWidget {
+class StatisticsScreen extends ConsumerStatefulWidget {
   const StatisticsScreen({super.key});
 
   @override
-  State<StatisticsScreen> createState() => _StatisticsScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => StatisticsScreenState();
 }
 
-class _StatisticsScreenState extends State<StatisticsScreen> with SingleTickerProviderStateMixin {
-  late final TabController _tabController = TabController(
-    length: 5,
-    vsync: this,
-    initialIndex: 0,
-  );
+class StatisticsScreenState extends ConsumerState<StatisticsScreen>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController = TabController(length: 5, vsync: this, initialIndex: 0);
   late final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _statisticsBody(),
-    );
+    final statisticsState = ref.watch(statisticsNotifierProvider);
+    return Scaffold(body: _statisticsBody(statisticsState: statisticsState));
   }
 
   @override
@@ -50,7 +54,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> with SingleTickerPr
     super.dispose();
   }
 
-  Widget _statisticsBody() {
+  Widget _statisticsBody({required StatisticsState statisticsState}) {
     return Column(
       children: [
         Container(
@@ -96,7 +100,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> with SingleTickerPr
             itemBuilder: (context, index) {
               switch (index) {
                 case 0:
-                  return _sumTabContent();
+                  return _sumTabContent(statisticsState: statisticsState);
                 case 1:
                   return _pickTabContent();
                 case 2:
