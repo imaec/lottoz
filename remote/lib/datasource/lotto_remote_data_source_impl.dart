@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:charset_converter/charset_converter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data/data.dart';
 import 'package:domain/model/lotto/lotto_dto.dart';
 import 'package:domain/model/lotto/store_dto.dart';
@@ -36,6 +37,42 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   }
 
   @override
+  Future<int> getFirebaseCurDrwNo() async {
+    final snapshot = await FirebaseFirestore.instance.collection('drwNo').get();
+    final drwNo = snapshot.docs.firstOrNull?.data();
+    if (drwNo != null) {
+      return drwNo['curDrwNo'];
+    } else {
+      return 1;
+    }
+  }
+
+  @override
+  Future<List<LottoDto>> getFirebaseLottoNumbers() async {
+    final snapshot = await FirebaseFirestore.instance.collection('lottos').get();
+    final lottoNumbers = snapshot.docs.map((doc) {
+      return LottoDto(
+        bnusNo: doc['bnusNo'],
+        drwNo: doc['drwNo'],
+        drwNoDate: doc['drwNoDate'],
+        drwtNo1: doc['drwtNo1'],
+        drwtNo2: doc['drwtNo2'],
+        drwtNo3: doc['drwtNo3'],
+        drwtNo4: doc['drwtNo4'],
+        drwtNo5: doc['drwtNo5'],
+        drwtNo6: doc['drwtNo6'],
+        firstAccumamnt: doc['firstAccumamnt']?.toDouble(),
+        firstPrzwnerCo: doc['firstPrzwnerCo'],
+        firstWinamnt: doc['firstWinamnt']?.toDouble(),
+        returnValue: doc['returnValue'],
+        totSellamnt: doc['totSellamnt']?.toDouble(),
+      );
+    }).toList();
+    lottoNumbers.sort((prevNumber, nextNumber) => nextNumber.drwNo.compareTo(prevNumber.drwNo));
+    return lottoNumbers;
+  }
+
+  @override
   Future<List<StoreDto>> getStores({required int drwNo}) async {
     final response = await http.post(
       Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645'),
@@ -66,5 +103,26 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
     } else {
       return [];
     }
+  }
+
+  @override
+  Future<void> setCurDrwNo({required int curDrwNo}) async {
+    final batch = FirebaseFirestore.instance.batch();
+    final colRef = FirebaseFirestore.instance.collection('drwNo');
+    batch.set(colRef.doc('curDrwNo'), {'curDrwNo': curDrwNo});
+
+    return await batch.commit();
+  }
+
+  @override
+  Future<void> saveLottoNumbers({required List<LottoDto> lottoNumbers}) async {
+    final batch = FirebaseFirestore.instance.batch();
+    final colRef = FirebaseFirestore.instance.collection('lottos');
+
+    for (var lotto in lottoNumbers) {
+      batch.set(colRef.doc(lotto.drwNo.toString()), lotto.toMap());
+    }
+
+    return await batch.commit();
   }
 }

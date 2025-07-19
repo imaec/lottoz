@@ -47,4 +47,23 @@ class LottoDto {
     this.returnValue = '',
     this.totSellamnt = 0,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'bnusNo': bnusNo,
+      'drwNo': drwNo,
+      'drwNoDate': drwNoDate,
+      'drwtNo1': drwtNo1,
+      'drwtNo2': drwtNo2,
+      'drwtNo3': drwtNo3,
+      'drwtNo4': drwtNo4,
+      'drwtNo5': drwtNo5,
+      'drwtNo6': drwtNo6,
+      'firstAccumamnt': firstAccumamnt,
+      'firstPrzwnerCo': firstPrzwnerCo,
+      'firstWinamnt': firstWinamnt,
+      'returnValue': returnValue,
+      'totSellamnt': totSellamnt,
+    };
+  }
 }

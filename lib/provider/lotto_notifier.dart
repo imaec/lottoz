@@ -24,33 +24,50 @@ class LottoNotifier extends StateNotifier<LottoState> {
 
   fetchLottoNumber() async {
     final localCurDrwNo = await repository.getLocalCurDrwNo();
+    final firebaseCurDrwNo = await repository.getFirebaseCurDrwNo();
     final curDrwNo = await repository.getCurDrwNo();
-    await repository.setLocalCurDrwNo(curDrwNo: curDrwNo);
 
-    if (curDrwNo == localCurDrwNo) {
+    if (localCurDrwNo == curDrwNo && firebaseCurDrwNo == curDrwNo) {
       await _fetchLottoNumbersFromDatabase();
+    } else if (firebaseCurDrwNo != curDrwNo) {
+      await _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, firebaseCurDrwNo: firebaseCurDrwNo);
     } else {
-      await _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, localCurDrwNo: localCurDrwNo);
+      await _fetchLottoNumbersFromFirebase(curDrwNo: curDrwNo);
     }
+
     state = state.copyWith(stores: await repository.getStores(drwNo: curDrwNo));
   }
 
   _fetchLottoNumbersFromDatabase() async {
-    state = state.copyWith(lottoNumbers: await repository.getLottoNumbers());
+    state = state.copyWith(lottoNumbers: await repository.getLocalLottoNumbers());
   }
 
-  _fetchLottoNumbersFromApi({required int curDrwNo, required int localCurDrwNo}) async {
+  _fetchLottoNumbersFromApi({required int curDrwNo, required int firebaseCurDrwNo}) async {
     final List<LottoDto> lottoNumbers = [];
-    final drwNoDiff = curDrwNo - localCurDrwNo;
-    for (var drwNo = localCurDrwNo; drwNo <= curDrwNo; drwNo++) {
-      final lottoDto = await repository.getLottoNumber(drwNo: drwNo);
-      lottoNumbers.add(lottoDto);
-
-      if (lottoNumbers.length == drwNoDiff + 1) {
-        await repository.saveLottoNumbers(lottoNumbers: lottoNumbers);
-
-        state = state.copyWith(lottoNumbers: lottoNumbers);
-      }
+    final drwNos = List.generate(curDrwNo - firebaseCurDrwNo, (i) => curDrwNo - i);
+    const chunkSize = 10;
+    for (var i = 0; i < drwNos.length; i += chunkSize) {
+      final chunk = drwNos.skip(i).take(chunkSize).toList();
+      final chunkFutures = chunk.map((drwNo) => repository.getLottoNumber(drwNo: drwNo)).toList();
+      final chunkResults = await Future.wait(chunkFutures);
+      lottoNumbers.addAll(chunkResults);
     }
+    lottoNumbers.sort((prevNumber, nextNumber) => nextNumber.drwNo.compareTo(prevNumber.drwNo));
+    await Future.wait<dynamic>([
+      repository.saveLottoNumbersFirebase(lottoNumbers: lottoNumbers),
+      repository.saveLottoNumbersLocal(lottoNumbers: lottoNumbers),
+      repository.setFirebaseCurDrwNo(curDrwNo: curDrwNo),
+      repository.setLocalCurDrwNo(curDrwNo: curDrwNo),
+    ]);
+    state = state.copyWith(lottoNumbers: await repository.getLocalLottoNumbers());
+  }
+
+  _fetchLottoNumbersFromFirebase({required int curDrwNo}) async {
+    final lottoNumbers = await repository.getFirebaseLottoNumbers();
+    await Future.wait<dynamic>([
+      repository.saveLottoNumbersLocal(lottoNumbers: lottoNumbers),
+      repository.setLocalCurDrwNo(curDrwNo: curDrwNo),
+    ]);
+    state = state.copyWith(lottoNumbers: lottoNumbers);
   }
 }

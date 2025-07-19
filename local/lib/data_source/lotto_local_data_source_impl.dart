@@ -11,9 +11,10 @@ class LottoLocalDataSourceImpl extends LottoLocalDataSource {
   }
 
   @override
-  setCurDrwNo({required int curDrwNo}) async {
+  Future<int> setCurDrwNo({required int curDrwNo}) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('curDrwNo', curDrwNo);
+    return curDrwNo;
   }
 
   @override

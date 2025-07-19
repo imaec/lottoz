@@ -6,5 +6,13 @@ abstract class LottoRemoteDataSource {
 
   Future<int> getCurDrwNo();
 
+  Future<int> getFirebaseCurDrwNo();
+
+  Future<List<LottoDto>> getFirebaseLottoNumbers();
+
   Future<List<StoreDto>> getStores({required int drwNo});
+
+  Future<void> setCurDrwNo({required int curDrwNo});
+
+  Future<void> saveLottoNumbers({required List<LottoDto> lottoNumbers});
 }

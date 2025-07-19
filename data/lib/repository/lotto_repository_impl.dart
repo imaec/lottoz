@@ -27,8 +27,28 @@ class LottoRepositoryImpl extends LottoRepository {
   }
 
   @override
+  Future<int> getFirebaseCurDrwNo() {
+    return _remoteDataSource.getFirebaseCurDrwNo();
+  }
+
+  @override
+  Future<List<LottoDto>> getFirebaseLottoNumbers() {
+    return _remoteDataSource.getFirebaseLottoNumbers();
+  }
+
+  @override
   Future<List<StoreDto>> getStores({required int drwNo}) {
     return _remoteDataSource.getStores(drwNo: drwNo);
+  }
+
+  @override
+  Future<void> setFirebaseCurDrwNo({required int curDrwNo}) {
+    return _remoteDataSource.setCurDrwNo(curDrwNo: curDrwNo);
+  }
+
+  @override
+  Future<void> saveLottoNumbersFirebase({required List<LottoDto> lottoNumbers}) {
+    return _remoteDataSource.saveLottoNumbers(lottoNumbers: lottoNumbers);
   }
 
   /// local
@@ -38,19 +58,19 @@ class LottoRepositoryImpl extends LottoRepository {
   }
 
   @override
-  setLocalCurDrwNo({required int curDrwNo}) {
-    _localDataSource.setCurDrwNo(curDrwNo: curDrwNo);
+  Future<int> setLocalCurDrwNo({required int curDrwNo}) {
+    return _localDataSource.setCurDrwNo(curDrwNo: curDrwNo);
   }
 
   @override
-  Future<List<LottoDto>> getLottoNumbers() async {
+  Future<List<LottoDto>> getLocalLottoNumbers() async {
     final lottoNumbers = await _localDataSource.getLottoNumbers();
     lottoNumbers.sort((prevNumber, nextNumber) => nextNumber.drwNo.compareTo(prevNumber.drwNo));
     return lottoNumbers.map((number) => number.mapper()).toList();
   }
 
   @override
-  Future<int> saveLottoNumbers({required List<LottoDto> lottoNumbers}) async {
+  Future<int> saveLottoNumbersLocal({required List<LottoDto> lottoNumbers}) async {
     return await _localDataSource.saveLottoNumbers(
       lottoNumbers: lottoNumbers.map((lotto) {
         return LottoEntity(
