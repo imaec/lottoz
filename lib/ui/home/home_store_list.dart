@@ -1,8 +1,6 @@
 part of 'home_screen.dart';
 
-Widget _homeStoreList() {
-  const stores = ['1', '2', '3', '4', '5', '6'];
-
+Widget _homeStoreList({required List<StoreDto> stores}) {
   return Padding(
     padding: const EdgeInsets.only(top: 24, bottom: 36),
     child: Column(
@@ -23,17 +21,17 @@ Widget _homeStoreList() {
             return Column(
               children: [
                 SizedBox(height: index != 0 ? 10 : 0),
-                _store(),
+                _store(store: store),
               ],
             );
           }).toList(),
-        )
+        ),
       ],
     ),
   );
 }
 
-Widget _store() {
+Widget _store({required StoreDto store}) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 16),
     padding: const EdgeInsets.all(12),
@@ -48,12 +46,12 @@ Widget _store() {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('인터넷 복권판매사이트', style: subtitle3),
+            Text(store.storeName, style: subtitle3),
             const SizedBox(height: 2),
-            Text('동행복권(dhlottery.co.kr)', style: labelRegular.copyWith(color: gray400)),
+            Text(store.address, style: labelRegular.copyWith(color: gray400)),
           ],
         ),
-        Text('자동', style: labelRegular.copyWith(color: gray600)),
+        Text(store.type, style: labelRegular.copyWith(color: gray600)),
       ],
     ),
   );

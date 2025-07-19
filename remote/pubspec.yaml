@@ -25,6 +25,7 @@ dependencies:
   logger: ^2.6.0
   http: ^1.4.0
   html: ^0.15.6
+  charset_converter: ^2.3.0
 
 dev_dependencies:
   flutter_lints: ^4.0.0

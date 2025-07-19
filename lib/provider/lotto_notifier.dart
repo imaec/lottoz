@@ -3,14 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LottoState {
   final List<LottoDto> lottoNumbers;
+  final List<StoreDto> stores;
 
-  LottoState({required this.lottoNumbers});
+  LottoState({required this.lottoNumbers, required this.stores});
 
-  const LottoState.init({this.lottoNumbers = const []});
+  const LottoState.init({this.lottoNumbers = const [], this.stores = const []});
 
-  LottoState copyWith({List<LottoDto>? lottoNumbers}) {
+  LottoState copyWith({List<LottoDto>? lottoNumbers, List<StoreDto>? stores}) {
     return LottoState(
       lottoNumbers: lottoNumbers ?? this.lottoNumbers,
+      stores: stores ?? this.stores,
     );
   }
 }
@@ -26,10 +28,11 @@ class LottoNotifier extends StateNotifier<LottoState> {
     await repository.setLocalCurDrwNo(curDrwNo: curDrwNo);
 
     if (curDrwNo == localCurDrwNo) {
-      _fetchLottoNumbersFromDatabase();
+      await _fetchLottoNumbersFromDatabase();
     } else {
-      _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, localCurDrwNo: localCurDrwNo);
+      await _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, localCurDrwNo: localCurDrwNo);
     }
+    state = state.copyWith(stores: await repository.getStores(drwNo: curDrwNo));
   }
 
   _fetchLottoNumbersFromDatabase() async {
