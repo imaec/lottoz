@@ -1,27 +1,15 @@
 part of '../statistics_screen.dart';
 
-Widget _oddEvenTabContent() {
-  final lottoNumbers = [
-    LottoVo(round: '1180회', numbers: [6, 12, 18, 37, 40, 41]),
-    LottoVo(round: '1178회', numbers: [5, 6, 11, 27, 43, 44]),
-    LottoVo(round: '1171회', numbers: [3, 6, 7, 11, 12, 17]),
-    LottoVo(round: '1162회', numbers: [20, 21, 22, 25, 28, 29]),
-  ];
-  final oddEventNumbers = lottoNumbers.map((number) {
-    return OddEvenStatisticsVo(
-      round: number.round,
-      oddNumbers: number.numbers.where((number) => number % 2 == 1).toList(),
-      evenNumbers: number.numbers.where((number) => number % 2 == 0).toList(),
-    );
-  }).toList();
-
-  int totalOdd = 0;
-  int totalEven = 0;
-
-  for (final stat in oddEventNumbers) {
-    totalOdd += stat.oddNumbers.length;
-    totalEven += stat.evenNumbers.length;
-  }
+Widget _oddEvenTabContent({required StatisticsState statisticsState}) {
+  final oddEvenStatistics = statisticsState.oddEvenStatistics;
+  final totalOdd =
+      (statisticsState.oddEvenStatistics.map((e) => e.oddNumbers.length).reduce((a, b) => a + b) /
+              oddEvenStatistics.length)
+          .toStringAsFixed(1);
+  final totalEven =
+      (statisticsState.oddEvenStatistics.map((e) => e.evenNumbers.length).reduce((a, b) => a + b) /
+              oddEvenStatistics.length)
+          .toStringAsFixed(1);
 
   return Column(
     children: [
@@ -29,15 +17,12 @@ Widget _oddEvenTabContent() {
         rightWidget: Row(
           children: [
             const Text('홀짝 평균 ', style: bodyS),
-            Text(
-              '${totalOdd / lottoNumbers.length} : ${totalEven / lottoNumbers.length}',
-              style: subtitle2,
-            ),
+            Text('$totalOdd : $totalEven', style: subtitle2),
           ],
         ),
       ),
       const HorizontalDivider(),
-      Expanded(child: _oddEvenNumbers(oddEventNumbers: oddEventNumbers)),
+      Expanded(child: _oddEvenNumbers(oddEventNumbers: statisticsState.oddEvenStatistics)),
     ],
   );
 }

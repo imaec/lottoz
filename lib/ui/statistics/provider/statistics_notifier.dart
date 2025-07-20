@@ -5,6 +5,8 @@ import 'package:lottoz/model/statistics/statistics_range_vo.dart';
 import 'package:lottoz/model/statistics/sum_statistics_vo.dart';
 import 'package:lottoz/model/statistics/pick_statistics_vo.dart';
 import 'package:lottoz/model/statistics/un_pick_statistics_vo.dart';
+import 'package:lottoz/model/statistics/continuous_statistics_vo.dart';
+import 'package:lottoz/model/statistics/odd_even_statistics_vo.dart';
 
 class StatisticsState {
   final List<LottoDto> lottoNumbers;
@@ -12,6 +14,8 @@ class StatisticsState {
   final List<SumStatisticsVo> sumStatistics;
   final List<PickStatisticsVo> pickStatistics;
   final List<UnPickStatisticsVo> unPickStatistics;
+  final List<ContinuousStatisticsVo> continuousStatistics;
+  final List<OddEvenStatisticsVo> oddEvenStatistics;
 
   StatisticsState({
     required this.lottoNumbers,
@@ -19,6 +23,8 @@ class StatisticsState {
     required this.sumStatistics,
     required this.pickStatistics,
     required this.unPickStatistics,
+    required this.continuousStatistics,
+    required this.oddEvenStatistics,
   });
 
   const StatisticsState.init({
@@ -27,6 +33,8 @@ class StatisticsState {
     this.sumStatistics = const [],
     this.pickStatistics = const [],
     this.unPickStatistics = const [],
+    this.continuousStatistics = const [],
+    this.oddEvenStatistics = const [],
   });
 
   StatisticsState copyWith({
@@ -35,6 +43,8 @@ class StatisticsState {
     List<SumStatisticsVo>? sumStatistics,
     List<PickStatisticsVo>? pickStatistics,
     List<UnPickStatisticsVo>? unPickStatistics,
+    List<ContinuousStatisticsVo>? continuousStatistics,
+    List<OddEvenStatisticsVo>? oddEvenStatistics,
   }) {
     return StatisticsState(
       lottoNumbers: lottoNumbers ?? this.lottoNumbers,
@@ -42,6 +52,8 @@ class StatisticsState {
       sumStatistics: sumStatistics ?? this.sumStatistics,
       pickStatistics: pickStatistics ?? this.pickStatistics,
       unPickStatistics: unPickStatistics ?? this.unPickStatistics,
+      continuousStatistics: continuousStatistics ?? this.continuousStatistics,
+      oddEvenStatistics: oddEvenStatistics ?? this.oddEvenStatistics,
     );
   }
 }
@@ -54,10 +66,12 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
   fetchLottoNumber() async {
     final lottoNumbers = await repository.getLocalLottoNumbers();
     final sumAverage =
-        lottoNumbers.map((lotto) => lotto.getSum()).reduce((a, b) => a + b) / lottoNumbers.length;
+        lottoNumbers.map((lotto) => lotto.sum).reduce((a, b) => a + b) / lottoNumbers.length;
     final sumStatistics = _getSumStatistics(lottoNumbers: lottoNumbers);
     final pickStatistics = _getPickStatistics(lottoNumbers: lottoNumbers);
     final unPickStatistics = _getUnPickNumbers(lottoNumbers: lottoNumbers);
+    final continuousStatistics = _getContinuousStatistics(lottoNumbers: lottoNumbers);
+    final oddEvenStatistics = _getOddEvenStatistics(lottoNumbers: lottoNumbers);
 
     state = state.copyWith(
       lottoNumbers: lottoNumbers,
@@ -65,6 +79,8 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
       sumStatistics: sumStatistics,
       pickStatistics: pickStatistics,
       unPickStatistics: unPickStatistics,
+      continuousStatistics: continuousStatistics,
+      oddEvenStatistics: oddEvenStatistics,
     );
   }
 
@@ -94,11 +110,10 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
     }
 
     for (final lotto in lottoNumbers) {
-      final sum = lotto.getSum();
       for (final range in sumRanges) {
-        if (range.isContains(sum)) {
+        if (range.isContains(lotto.sum)) {
           countByRange[range.range] = (countByRange[range.range] ?? 0) + 1;
-          sumByRange[range.range]?.add(sum);
+          sumByRange[range.range]?.add(lotto.sum);
           break;
         }
       }
@@ -163,5 +178,65 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
     }
 
     return unPickStatistics;
+  }
+
+  List<ContinuousStatisticsVo> _getContinuousStatistics({required List<LottoDto> lottoNumbers}) {
+    final continuousStatistics = lottoNumbers.map((lotto) {
+      final continuousNumbers = _getContinuousNumbers(numbers: lotto.numbers);
+      final description = _getContinuousDescription(continuousNumbers: continuousNumbers);
+      return ContinuousStatisticsVo(
+        round: '${lotto.drwNo}회',
+        numbers: lotto.numbers,
+        continuousNumbers: continuousNumbers,
+        description: description,
+      );
+    }).toList();
+
+    return continuousStatistics;
+  }
+
+  List<List<int>> _getContinuousNumbers({required List<int> numbers}) {
+    if (numbers.isEmpty) return [];
+
+    // 먼저 오름차순 정렬
+    final sorted = [...numbers]..sort();
+    final List<List<int>> result = [];
+    List<int> current = [sorted.first];
+
+    for (int i = 1; i < sorted.length; i++) {
+      if (sorted[i] == sorted[i - 1] + 1) {
+        current.add(sorted[i]);
+      } else {
+        if (current.length > 1) result.add([...current]);
+        current = [sorted[i]];
+      }
+    }
+    if (current.length > 1) result.add(current);
+
+    return result;
+  }
+
+  String _getContinuousDescription({required List<List<int>> continuousNumbers}) {
+    if (continuousNumbers.isEmpty) return '연속번호 없음';
+
+    final Map<int, int> groupCount = {};
+    for (final group in continuousNumbers) {
+      groupCount[group.length] = (groupCount[group.length] ?? 0) + 1;
+    }
+    return groupCount.entries.map((e) => '${e.key}연속 ${e.value}개').join('\n');
+  }
+
+  List<OddEvenStatisticsVo> _getOddEvenStatistics({required List<LottoDto> lottoNumbers}) {
+    final oddEvenStatistics = lottoNumbers.map((lotto) {
+      final oddNumbers = lotto.numbers.where((number) => number.isOdd).toList();
+      final evenNumbers = lotto.numbers.where((number) => number.isEven).toList();
+      return OddEvenStatisticsVo(
+        round: '${lotto.drwNo}회',
+        oddNumbers: oddNumbers,
+        evenNumbers: evenNumbers,
+      );
+    }).toList();
+
+    return oddEvenStatistics;
   }
 }

@@ -8,26 +8,20 @@ import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lottoz/model/lotto_vo.dart';
 import 'package:lottoz/model/statistics/pick_statistics_vo.dart';
+import 'package:lottoz/model/statistics/sum_statistics_vo.dart';
 import 'package:lottoz/model/statistics/un_pick_statistics_vo.dart';
 import 'package:lottoz/ui/statistics/provider/statistics_notifier.dart';
 import 'package:lottoz/ui/statistics/provider/statistics_state_provider.dart';
-import 'package:lottoz/model/statistics/sum_statistics_vo.dart';
 
-import 'continuous/continuous_statistics_vo.dart';
-import 'odd_even/odd_even_statistics_vo.dart';
+import '../../model/statistics/continuous_statistics_vo.dart';
+import '../../model/statistics/odd_even_statistics_vo.dart';
 
 part 'continuous/continuous_tab_content.dart';
-
 part 'odd_even/odd_even_tab_content.dart';
-
 part 'pick/pick_tab_content.dart';
-
 part 'statistics_header.dart';
-
 part 'sum/sum_tab_content.dart';
-
 part 'win/win_tab_content.dart';
 
 class StatisticsScreen extends ConsumerStatefulWidget {
@@ -105,9 +99,9 @@ class StatisticsScreenState extends ConsumerState<StatisticsScreen>
                 case 1:
                   return _pickTabContent(statisticsState: statisticsState);
                 case 2:
-                  return _continuousTabContent();
+                  return _continuousTabContent(statisticsState: statisticsState);
                 case 3:
-                  return _oddEvenTabContent();
+                  return _oddEvenTabContent(statisticsState: statisticsState);
                 case 4:
                   return _winTabContent();
                 default:

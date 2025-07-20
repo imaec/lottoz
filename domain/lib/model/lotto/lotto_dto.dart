@@ -67,5 +67,7 @@ class LottoDto {
     };
   }
 
-  int getSum() => drwtNo1 + drwtNo2 + drwtNo3 + drwtNo4 + drwtNo5 + drwtNo6;
+  int get sum => drwtNo1 + drwtNo2 + drwtNo3 + drwtNo4 + drwtNo5 + drwtNo6;
+
+  List<int> get numbers => [drwtNo1, drwtNo2, drwtNo3, drwtNo4, drwtNo5, drwtNo6];
 }
