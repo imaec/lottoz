@@ -20,10 +20,15 @@ import '../../model/statistics/continuous_statistics_vo.dart';
 import '../../model/statistics/odd_even_statistics_vo.dart';
 
 part 'continuous/continuous_tab_content.dart';
+
 part 'odd_even/odd_even_tab_content.dart';
+
 part 'pick/pick_tab_content.dart';
+
 part 'statistics_header.dart';
+
 part 'sum/sum_tab_content.dart';
+
 part 'win/win_tab_content.dart';
 
 class StatisticsScreen extends ConsumerStatefulWidget {
@@ -86,32 +91,34 @@ class StatisticsScreenState extends ConsumerState<StatisticsScreen>
             },
           ),
         ),
-        Expanded(
-          child: PageView.builder(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _tabController.animateTo(index);
-              });
-            },
-            itemBuilder: (context, index) {
-              switch (index) {
-                case 0:
-                  return _sumTabContent(statisticsState: statisticsState);
-                case 1:
-                  return _pickTabContent(statisticsState: statisticsState);
-                case 2:
-                  return _continuousTabContent(statisticsState: statisticsState);
-                case 3:
-                  return _oddEvenTabContent(statisticsState: statisticsState);
-                case 4:
-                  return _winTabContent(statisticsState: statisticsState);
-                default:
-                  return null;
-              }
-            },
-          ),
-        ),
+        statisticsState.lottoNumbers.isEmpty
+            ? const Expanded(child: Center(child: CircularProgressIndicator()))
+            : Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _tabController.animateTo(index);
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    switch (index) {
+                      case 0:
+                        return _sumTabContent(statisticsState: statisticsState);
+                      case 1:
+                        return _pickTabContent(statisticsState: statisticsState);
+                      case 2:
+                        return _continuousTabContent(statisticsState: statisticsState);
+                      case 3:
+                        return _oddEvenTabContent(statisticsState: statisticsState);
+                      case 4:
+                        return _winTabContent(statisticsState: statisticsState);
+                      default:
+                        return null;
+                    }
+                  },
+                ),
+              ),
       ],
     );
   }

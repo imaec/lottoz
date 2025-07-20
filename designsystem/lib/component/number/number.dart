@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 enum NumberType {
   small,
-  medium;
+  medium,
+  big;
 }
 
 Widget lottoNumber({
@@ -27,7 +28,7 @@ Widget lottoNumber({
       child: Center(
         child: Text(
           '$number',
-          style: subtitle4.copyWith(
+          style: _getTextStyle(numberType: numberType).copyWith(
             color: numberColor ?? gray25,
             shadows: [
               Shadow(
@@ -51,5 +52,18 @@ double _getSize({required NumberType numberType}) {
       return 28;
     case NumberType.medium:
       return 30;
+    case NumberType.big:
+      return 36;
+  }
+}
+
+TextStyle _getTextStyle({required NumberType numberType}) {
+  switch (numberType) {
+    case NumberType.small:
+      return subtitle4;
+    case NumberType.medium:
+      return subtitle3;
+      case NumberType.big:
+      return subtitle2;
   }
 }

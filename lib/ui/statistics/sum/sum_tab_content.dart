@@ -1,10 +1,6 @@
 part of '../statistics_screen.dart';
 
 Widget _sumTabContent({required StatisticsState statisticsState}) {
-  if (statisticsState.lottoNumbers.isEmpty) {
-    return const CircularProgressIndicator();
-  }
-
   return Column(
     children: [
       _statisticsHeader(
