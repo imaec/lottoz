@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:core/core.dart';
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/app_bar/haru_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
@@ -48,11 +49,23 @@ class RecommendScreen extends ConsumerWidget {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Container(
-                height: 56,
-                decoration: BoxDecoration(color: gray700, borderRadius: BorderRadius.circular(8)),
-                child: Center(
-                  child: Text('번호 생성', style: h5.copyWith(color: white)),
+              child: GestureDetector(
+                onTap: () {
+                  if (state.includedNumbers.length < 6) {
+                    notifier.createNumbers();
+                  } else {
+                    notifier.removeAllIncludedNumber();
+                  }
+                },
+                child: Container(
+                  height: 56,
+                  decoration: BoxDecoration(color: gray700, borderRadius: BorderRadius.circular(8)),
+                  child: Center(
+                    child: Text(
+                      state.includedNumbers.length < 6 ? '번호 생성' : '번호 삭제',
+                      style: h5.copyWith(color: white),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -169,9 +182,12 @@ class RecommendScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final number = unIncludedNumbers[index];
 
-                return GestureDetector(onTap: () {
-                  notifier.removeUnIncludedNumber(number: number);
-                }, child: lottoNumber(number: number, numberType: NumberType.big));
+                return GestureDetector(
+                  onTap: () {
+                    notifier.removeUnIncludedNumber(number: number);
+                  },
+                  child: lottoNumber(number: number, numberType: NumberType.big),
+                );
               },
               separatorBuilder: (context, index) => const SizedBox(width: 6),
             ),
@@ -189,12 +205,16 @@ class RecommendScreen extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final number = includedNumbers[index];
 
-                    return _recommendNumber(notifier: notifier, number: number, itemWidth: itemWidth);
+                    return _recommendNumber(
+                      notifier: notifier,
+                      number: number,
+                      itemWidth: itemWidth,
+                    );
                   },
                   separatorBuilder: (context, index) => const SizedBox(width: 8),
                 ),
               );
-            }
+            },
           ),
         ],
       ),
@@ -230,10 +250,18 @@ class RecommendScreen extends ConsumerWidget {
               },
               child: Container(
                 decoration: BoxDecoration(
+                  color: number == null ? white : getLottoColor(number: number),
                   shape: BoxShape.circle,
-                  border: Border.all(color: gray700),
+                  border: Border.all(
+                    color: number == null ? gray700 : getLottoColor(number: number),
+                  ),
                 ),
-                child: Center(child: Text('${number ?? ''}', style: subtitle1)),
+                child: Center(
+                  child: Text(
+                    '${number ?? ''}',
+                    style: subtitle1.copyWith(color: number == null ? gray800 : white),
+                  ),
+                ),
               ),
             ),
           ),
