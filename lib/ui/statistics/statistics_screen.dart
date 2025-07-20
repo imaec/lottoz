@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:core/extension/double_extension.dart';
 import 'package:core/utils/lotto_utils.dart';
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottoz/model/statistics/pick_statistics_vo.dart';
 import 'package:lottoz/model/statistics/sum_statistics_vo.dart';
 import 'package:lottoz/model/statistics/un_pick_statistics_vo.dart';
+import 'package:lottoz/model/statistics/win_statistics_vo.dart';
 import 'package:lottoz/ui/statistics/provider/statistics_notifier.dart';
 import 'package:lottoz/ui/statistics/provider/statistics_state_provider.dart';
 
@@ -103,7 +105,7 @@ class StatisticsScreenState extends ConsumerState<StatisticsScreen>
                 case 3:
                   return _oddEvenTabContent(statisticsState: statisticsState);
                 case 4:
-                  return _winTabContent();
+                  return _winTabContent(statisticsState: statisticsState);
                 default:
                   return null;
               }

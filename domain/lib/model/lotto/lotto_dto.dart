@@ -31,22 +31,22 @@ class LottoDto {
     required this.totSellamnt,
   });
 
-  const LottoDto.init({
-    this.bnusNo = 0,
-    this.drwNo = 0,
-    this.drwNoDate = '',
-    this.drwtNo1 = 0,
-    this.drwtNo2 = 0,
-    this.drwtNo3 = 0,
-    this.drwtNo4 = 0,
-    this.drwtNo5 = 0,
-    this.drwtNo6 = 0,
-    this.firstAccumamnt = 0,
-    this.firstPrzwnerCo = 0,
-    this.firstWinamnt = 0,
-    this.returnValue = '',
-    this.totSellamnt = 0,
-  });
+  factory LottoDto.init() => LottoDto(
+    bnusNo: 0,
+    drwNo: 0,
+    drwNoDate: '',
+    drwtNo1: 0,
+    drwtNo2: 0,
+    drwtNo3: 0,
+    drwtNo4: 0,
+    drwtNo5: 0,
+    drwtNo6: 0,
+    firstAccumamnt: 0,
+    firstPrzwnerCo: 0,
+    firstWinamnt: 0,
+    returnValue: '',
+    totSellamnt: 0,
+  );
 
   Map<String, dynamic> toMap() {
     return {

@@ -1,6 +1,6 @@
 part of '../statistics_screen.dart';
 
-Widget _winTabContent() {
+Widget _winTabContent({required StatisticsState statisticsState}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -10,9 +10,9 @@ Widget _winTabContent() {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _winAverages(),
+            _winAverages(winStatistics: statisticsState.winStatistics),
             const HorizontalDivider(),
-            _winStatistics(),
+            _winStatistics(winStatistics: statisticsState.winStatistics),
           ],
         ),
       ),
@@ -20,23 +20,36 @@ Widget _winTabContent() {
   );
 }
 
-Widget _winAverages() {
+Widget _winAverages({required WinStatisticsVo winStatistics}) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('1등 당첨 평균 (20회)', style: subtitle2),
+        Text('1등 당첨 평균 (${winStatistics.roundCount}회)', style: subtitle2),
         const SizedBox(height: 16),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _winContent(subject: '총 당첨금', content: '28,106,807,311 (약 281억)'),
+            _winContent(
+              subject: '총 당첨금',
+              content:
+                  '${winStatistics.totalPriceAverage.comma()} '
+                  '(약 ${winStatistics.totalPriceAverage.to100Million()}억)',
+            ),
             const SizedBox(height: 16),
-            _winContent(subject: '1게임 당첨금', content: '2,089,808,176 (약 21억)'),
+            _winContent(
+              subject: '1게임 당첨금',
+              content:
+                  '${winStatistics.priceAverage.comma()} '
+                  '(약 ${winStatistics.priceAverage.to100Million()}억)',
+            ),
             const SizedBox(height: 16),
-            _winContent(subject: '당첨자 수', content: '15.4명'),
+            _winContent(
+              subject: '당첨자 수',
+              content: '${winStatistics.winCountAverage.toStringAsFixed(1)}명',
+            ),
           ],
         ),
       ],
@@ -44,25 +57,47 @@ Widget _winAverages() {
   );
 }
 
-Widget _winStatistics() {
+Widget _winStatistics({required WinStatisticsVo winStatistics}) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('1등 당첨 통계 (20회)', style: subtitle2),
+        Text('1등 당첨 통계 (${winStatistics.roundCount}회)', style: subtitle2),
         const SizedBox(height: 16),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _winContent(subject: '1게임 최고 당첨금', content: '4,576,672,000 (약 46억)'),
+            _winContent(
+              subject: '1게임 최고 당첨금',
+              content:
+                  '[${winStatistics.maxTotalPriceRound}회] '
+                  '${winStatistics.maxTotalPrice.comma()} '
+                  '(약 ${winStatistics.maxTotalPrice.to100Million()}억)',
+            ),
             const SizedBox(height: 16),
-            _winContent(subject: '1게임 최소 당첨금', content: '823,931,021 (약 8억)'),
+            _winContent(
+              subject: '1게임 최소 당첨금',
+              content:
+                  '[${winStatistics.minTotalPriceRound}회] '
+                  '${winStatistics.minTotalPrice.comma()} '
+                  '(약 ${winStatistics.minTotalPrice.to100Million()}억)',
+            ),
             const SizedBox(height: 16),
-            _winContent(subject: '최대 당첨자 수', content: '36명'),
+            _winContent(
+              subject: '최대 당첨자 수',
+              content:
+                  '[${winStatistics.maxWinCountRound}회] '
+                  '${winStatistics.maxWinCount}명',
+            ),
             const SizedBox(height: 16),
-            _winContent(subject: '최소 당첨자 수', content: '6명'),
+            _winContent(
+              subject: '최소 당첨자 수',
+              content:
+                  '[${winStatistics.minWinCountRound}회] '
+                  '${winStatistics.minWinCount}명',
+            ),
           ],
         ),
       ],
@@ -70,10 +105,7 @@ Widget _winStatistics() {
   );
 }
 
-Widget _winContent({
-  required String subject,
-  required String content,
-}) {
+Widget _winContent({required String subject, required String content}) {
   return Column(
     mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: CrossAxisAlignment.start,

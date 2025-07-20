@@ -7,7 +7,7 @@ class LottoState {
 
   LottoState({required this.lottoNumbers, required this.stores});
 
-  const LottoState.init({this.lottoNumbers = const [], this.stores = const []});
+  factory LottoState.init() => LottoState(lottoNumbers: [], stores: []);
 
   LottoState copyWith({List<LottoDto>? lottoNumbers, List<StoreDto>? stores}) {
     return LottoState(
@@ -20,7 +20,7 @@ class LottoState {
 class LottoNotifier extends StateNotifier<LottoState> {
   final LottoRepository repository;
 
-  LottoNotifier({required this.repository}) : super(const LottoState.init());
+  LottoNotifier({required this.repository}) : super(LottoState.init());
 
   fetchLottoNumber() async {
     final localCurDrwNo = await repository.getLocalCurDrwNo();

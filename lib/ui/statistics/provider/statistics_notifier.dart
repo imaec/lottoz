@@ -7,6 +7,7 @@ import 'package:lottoz/model/statistics/pick_statistics_vo.dart';
 import 'package:lottoz/model/statistics/un_pick_statistics_vo.dart';
 import 'package:lottoz/model/statistics/continuous_statistics_vo.dart';
 import 'package:lottoz/model/statistics/odd_even_statistics_vo.dart';
+import 'package:lottoz/model/statistics/win_statistics_vo.dart';
 
 class StatisticsState {
   final List<LottoDto> lottoNumbers;
@@ -16,6 +17,7 @@ class StatisticsState {
   final List<UnPickStatisticsVo> unPickStatistics;
   final List<ContinuousStatisticsVo> continuousStatistics;
   final List<OddEvenStatisticsVo> oddEvenStatistics;
+  final WinStatisticsVo winStatistics;
 
   StatisticsState({
     required this.lottoNumbers,
@@ -25,17 +27,19 @@ class StatisticsState {
     required this.unPickStatistics,
     required this.continuousStatistics,
     required this.oddEvenStatistics,
+    required this.winStatistics,
   });
 
-  const StatisticsState.init({
-    this.lottoNumbers = const [],
-    this.sumAverage = 0,
-    this.sumStatistics = const [],
-    this.pickStatistics = const [],
-    this.unPickStatistics = const [],
-    this.continuousStatistics = const [],
-    this.oddEvenStatistics = const [],
-  });
+  factory StatisticsState.init() => StatisticsState(
+    lottoNumbers: [],
+    sumAverage: 0,
+    sumStatistics: [],
+    pickStatistics: [],
+    unPickStatistics: [],
+    continuousStatistics: [],
+    oddEvenStatistics: [],
+    winStatistics: WinStatisticsVo.init(),
+  );
 
   StatisticsState copyWith({
     List<LottoDto>? lottoNumbers,
@@ -45,6 +49,7 @@ class StatisticsState {
     List<UnPickStatisticsVo>? unPickStatistics,
     List<ContinuousStatisticsVo>? continuousStatistics,
     List<OddEvenStatisticsVo>? oddEvenStatistics,
+    WinStatisticsVo? winStatistics,
   }) {
     return StatisticsState(
       lottoNumbers: lottoNumbers ?? this.lottoNumbers,
@@ -54,6 +59,7 @@ class StatisticsState {
       unPickStatistics: unPickStatistics ?? this.unPickStatistics,
       continuousStatistics: continuousStatistics ?? this.continuousStatistics,
       oddEvenStatistics: oddEvenStatistics ?? this.oddEvenStatistics,
+      winStatistics: winStatistics ?? this.winStatistics,
     );
   }
 }
@@ -61,7 +67,7 @@ class StatisticsState {
 class StatisticsNotifier extends StateNotifier<StatisticsState> {
   final LottoRepository repository;
 
-  StatisticsNotifier({required this.repository}) : super(const StatisticsState.init());
+  StatisticsNotifier({required this.repository}) : super(StatisticsState.init());
 
   fetchLottoNumber() async {
     final lottoNumbers = await repository.getLocalLottoNumbers();
@@ -72,6 +78,7 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
     final unPickStatistics = _getUnPickNumbers(lottoNumbers: lottoNumbers);
     final continuousStatistics = _getContinuousStatistics(lottoNumbers: lottoNumbers);
     final oddEvenStatistics = _getOddEvenStatistics(lottoNumbers: lottoNumbers);
+    final winStatistics = _getWinStatistics(lottoNumbers: lottoNumbers.take(100).toList());
 
     state = state.copyWith(
       lottoNumbers: lottoNumbers,
@@ -81,6 +88,7 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
       unPickStatistics: unPickStatistics,
       continuousStatistics: continuousStatistics,
       oddEvenStatistics: oddEvenStatistics,
+      winStatistics: winStatistics,
     );
   }
 
@@ -238,5 +246,56 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
     }).toList();
 
     return oddEvenStatistics;
+  }
+
+  WinStatisticsVo _getWinStatistics({required List<LottoDto> lottoNumbers}) {
+    final roundCount = lottoNumbers.length;
+    // 총 당첨금 평균
+    final totalPriceAverage =
+        lottoNumbers.fold<double>(0, (prev, e) => prev + e.firstAccumamnt) / roundCount;
+    // 1게임 당첨금 평균
+    final priceAverage =
+        lottoNumbers.fold<double>(0, (prev, e) => prev + e.firstWinamnt) / roundCount;
+    // 당참자 수 평균
+    final winCountAverage = lottoNumbers.fold<int>(0, (p, e) => p + e.firstPrzwnerCo) / roundCount;
+    // 1게임 최고 당첨금
+    final maxTotalPriceDto = lottoNumbers.reduce(
+          (a, b) => a.firstWinamnt > b.firstWinamnt ? a : b,
+    );
+    final maxTotalPriceRound = maxTotalPriceDto.drwNo;
+    final maxTotalPrice = maxTotalPriceDto.firstWinamnt;
+    // 1게임 최소 당첨금
+    final minTotalPriceDto = lottoNumbers.reduce(
+          (a, b) => a.firstWinamnt < b.firstWinamnt ? a : b,
+    );
+    final minTotalPriceRound = minTotalPriceDto.drwNo;
+    final minTotalPrice = minTotalPriceDto.firstWinamnt;
+    // 최대 당첨자 수
+    final maxWinCountDto = lottoNumbers.reduce(
+          (a, b) => a.firstPrzwnerCo > b.firstPrzwnerCo ? a : b,
+    );
+    final maxWinCountRound = maxWinCountDto.drwNo;
+    final maxWinCount = maxWinCountDto.firstPrzwnerCo;
+    // 최소 당첨자 수
+    final minWinCountDto = lottoNumbers.reduce(
+          (a, b) => a.firstPrzwnerCo < b.firstPrzwnerCo ? a : b,
+    );
+    final minWinCountRound = minWinCountDto.drwNo;
+    final minWinCount = minWinCountDto.firstPrzwnerCo;
+
+    return WinStatisticsVo(
+      roundCount: lottoNumbers.length,
+      totalPriceAverage: totalPriceAverage,
+      priceAverage: priceAverage,
+      winCountAverage: winCountAverage,
+      maxTotalPriceRound: maxTotalPriceRound,
+      maxTotalPrice: maxTotalPrice,
+      minTotalPriceRound: minTotalPriceRound,
+      minTotalPrice: minTotalPrice,
+      maxWinCountRound: maxWinCountRound,
+      maxWinCount: maxWinCount,
+      minWinCountRound: minWinCountRound,
+      minWinCount: minWinCount,
+    );
   }
 }
