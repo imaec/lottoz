@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:core/core.dart';
 import 'package:designsystem/assets/icons.dart';
-import 'package:designsystem/component/app_bar/haru_app_bar.dart';
+import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
 import 'package:designsystem/component/number/number.dart';
@@ -32,7 +32,7 @@ class RecommendScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      appBar: const HaruAppBar(title: '추천 번호'),
+      appBar: const LottoAppBar(title: '추천 번호'),
       body: _recommendBody(notifier: notifier, state: state),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 32),

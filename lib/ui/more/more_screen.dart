@@ -1,9 +1,10 @@
 import 'package:designsystem/assets/icons.dart';
-import 'package:designsystem/component/app_bar/haru_app_bar.dart';
+import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:lottoz/router/go_router.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -11,7 +12,7 @@ class MoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const HaruAppBar(title: '더보기'),
+      appBar: const LottoAppBar(title: '더보기'),
       body: _moreBody(),
     );
   }
@@ -29,27 +30,33 @@ class MoreScreen extends StatelessWidget {
   }
 
   Widget _myNumbers() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Text('내 번호', style: h4),
-          ),
-          SizedBox(height: 8),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('내 번호 확인하기', style: bodyM),
-                SvgIcon(asset: arrowRightIcon, size: 24),
-              ],
+    return GestureDetector(
+      onTap: () {
+        appRouter.push('/my_number');
+      },
+      behavior: HitTestBehavior.translucent,
+      child: const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text('내 번호', style: h4),
             ),
-          ),
-        ],
+            SizedBox(height: 8),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('내 번호 확인하기', style: bodyM),
+                  SvgIcon(asset: arrowRightIcon, size: 24),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
