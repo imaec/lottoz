@@ -39,11 +39,16 @@ class RecommendScreen extends ConsumerWidget {
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                height: 56,
-                decoration: BoxDecoration(color: gray700, borderRadius: BorderRadius.circular(8)),
-                child: Center(
-                  child: Text('번호 저장', style: h5.copyWith(color: white)),
+              child: GestureDetector(
+                onTap: () {
+                  notifier.saveMyLottoNumbers();
+                },
+                child: Container(
+                  height: 56,
+                  decoration: BoxDecoration(color: gray700, borderRadius: BorderRadius.circular(8)),
+                  child: Center(
+                    child: Text('번호 저장', style: h5.copyWith(color: white)),
+                  ),
                 ),
               ),
             ),

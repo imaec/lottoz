@@ -8,4 +8,8 @@ abstract class LottoLocalDataSource {
   Future<List<LottoEntity>> getLottoNumbers();
 
   Future<int> saveLottoNumbers({required List<LottoEntity> lottoNumbers});
+
+  Future<List<MyLottoEntity>> getMyLottoNumbers();
+
+  Future<int> saveMyLottoNumber({required MyLottoEntity myLottoNumber});
 }

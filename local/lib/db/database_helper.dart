@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 
 const String _lottoZDb = 'lotto_z_db';
 const String lottoTable = 'lottoTable';
+const String myLottoTable = 'myLottoTable';
 
 class DatabaseHelper {
   DatabaseHelper._databaseHelper();
@@ -41,6 +42,17 @@ class DatabaseHelper {
         firstPrzwnerCo INTEGER NOT NULL,
         firstWinamnt REAL NOT NULL,
         totSellamnt REAL NOT NULL
+    )
+    ''');
+    await db.execute('''
+    CREATE TABLE $myLottoTable (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        no1 INTEGER NOT NULL,
+        no2 INTEGER NOT NULL,
+        no3 INTEGER NOT NULL,
+        no4 INTEGER NOT NULL,
+        no5 INTEGER NOT NULL,
+        no6 INTEGER NOT NULL
     )
     ''');
   }

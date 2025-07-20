@@ -1,4 +1,5 @@
 import 'package:domain/model/lotto/lotto_dto.dart';
+import 'package:domain/model/lotto/my_lotto_dto.dart';
 
 import '../model/lotto/store_dto.dart';
 
@@ -26,4 +27,8 @@ abstract class LottoRepository {
   Future<List<LottoDto>> getLocalLottoNumbers();
 
   Future<int> saveLottoNumbersLocal({required List<LottoDto> lottoNumbers});
+
+  Future<List<MyLottoDto>> getMyLottoNumbers();
+
+  Future<int> saveMyLottoNumber({required MyLottoDto myLottoNumber});
 }

@@ -1,7 +1,9 @@
 import 'package:data/datasource/local/lotto_local_data_source.dart';
 import 'package:data/datasource/remote/lotto_remote_data_source.dart';
 import 'package:data/model/local/lotto/lotto_entity.dart';
+import 'package:data/model/local/lotto/my_lotto_entity.dart';
 import 'package:domain/model/lotto/lotto_dto.dart';
+import 'package:domain/model/lotto/my_lotto_dto.dart';
 import 'package:domain/model/lotto/store_dto.dart';
 import 'package:domain/repository/lotto_repository.dart';
 
@@ -89,6 +91,26 @@ class LottoRepositoryImpl extends LottoRepository {
           totSellamnt: lotto.totSellamnt,
         );
       }).toList(),
+    );
+  }
+
+  @override
+  Future<List<MyLottoDto>> getMyLottoNumbers() async {
+    final myLottoNumbers = await _localDataSource.getMyLottoNumbers();
+    return myLottoNumbers.map((number) => number.mapper()).toList();
+  }
+
+  @override
+  Future<int> saveMyLottoNumber({required MyLottoDto myLottoNumber}) async {
+    return await _localDataSource.saveMyLottoNumber(
+      myLottoNumber: MyLottoEntity(
+        no1: myLottoNumber.no1,
+        no2: myLottoNumber.no2,
+        no3: myLottoNumber.no3,
+        no4: myLottoNumber.no4,
+        no5: myLottoNumber.no5,
+        no6: myLottoNumber.no6,
+      ),
     );
   }
 }

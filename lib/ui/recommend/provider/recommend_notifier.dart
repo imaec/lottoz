@@ -139,7 +139,7 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
     final sumMin = _getSumSvg() - 50;
     final sumMax = _getSumSvg() + 50;
     bool generated = false;
-    
+
     while (!generated) {
       int sum = 0;
       bool checkNotIncludeNumber = true;
@@ -167,16 +167,16 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
     results.sort((prev, next) => prev.compareTo(next));
     state = state.copyWith(includedNumbers: results.toSet());
   }
-  
+
   int _getSumSvg() {
     final sum = state.lottoNumbers.fold(0, (sum, lotto) => sum + lotto.sum);
     return (sum / state.lottoNumbers.length).toInt();
   }
-  
+
   List<int> _getRandomNumbers() {
     final List<int> results = [];
     bool generated = false;
-    
+
     while (!generated) {
       bool isExist = false;
       final number = state.isPickContains
@@ -199,12 +199,11 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
 
     return results;
   }
-  
+
   int _getRandomNumber({Map<int, int>? weights}) {
     if (weights == null) {
       return Random().nextInt(45) + 1;
     } else {
-
       final listNumber = List.generate(45, (i) => 0);
       final listWeight = List.generate(45, (i) => 0);
 
@@ -238,17 +237,17 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
       return selection;
     }
   }
-  
+
   Map<int, int> _getWeight() {
     final Map<int, int> weights = {};
     final countSum = List.generate(45, (i) => 0);
-    
+
     for (var lotto in state.lottoNumbers) {
       for (var number in lotto.numbers) {
         countSum[number - 1]++;
       }
     }
-    
+
     int bestValue = 0;
     countSum.forEachIndexed((index, count) {
       final weightTemp = count == 0 ? 1 : (1 / count);
@@ -263,11 +262,33 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
         weights[key] = bestValue + 10;
       }
     }
-    
+
     return weights;
   }
 
   int _getGenerateCount() => 6 - state.includedNumbers.length;
+
+  saveMyLottoNumbers() async {
+    if (state.includedNumbers.length != 6) {
+      state = state.copyWith(event: ShowToast(message: '번호를 생성해 주세요.'));
+      return;
+    }
+    final numbers = state.includedNumbers.toList();
+    await repository.saveMyLottoNumber(
+      myLottoNumber: MyLottoDto(
+        no1: numbers[0],
+        no2: numbers[1],
+        no3: numbers[2],
+        no4: numbers[3],
+        no5: numbers[4],
+        no6: numbers[5],
+      ),
+    );
+    state = state.copyWith(
+      event: ShowToast(message: '번호를 저장 했습니다!'),
+      includedNumbers: {},
+    );
+  }
 
   clearEvent() {
     state = state.copyWith(event: null);

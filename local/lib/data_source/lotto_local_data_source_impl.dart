@@ -40,4 +40,24 @@ class LottoLocalDataSourceImpl extends LottoLocalDataSource {
       return resultSum;
     });
   }
+
+  @override
+  Future<List<MyLottoEntity>> getMyLottoNumbers() async {
+    final db = await DatabaseHelper.instance.database;
+    final queries = await db.query(myLottoTable);
+    final myLottoNumbers = queries.map((e) => MyLottoEntity.fromJson(e)).toList();
+    return myLottoNumbers;
+  }
+
+  @override
+  Future<int> saveMyLottoNumber({required MyLottoEntity myLottoNumber}) async {
+    final db = await DatabaseHelper.instance.database;
+    return await db.transaction((transaction) async {
+      return await transaction.insert(
+        myLottoTable,
+        myLottoNumber.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    });
+  }
 }
