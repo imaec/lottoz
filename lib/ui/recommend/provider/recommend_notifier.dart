@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RecommendState {
+  final RecommendEvent? event;
   final bool isSumContains;
   final bool isPickContains;
   final bool isOddEvenContains;
@@ -9,6 +10,7 @@ class RecommendState {
   final Set<int> includedNumbers;
 
   RecommendState({
+    required this.event,
     required this.isSumContains,
     required this.isPickContains,
     required this.isOddEvenContains,
@@ -18,6 +20,7 @@ class RecommendState {
   });
 
   factory RecommendState.init() => RecommendState(
+    event: null,
     isSumContains: true,
     isPickContains: true,
     isOddEvenContains: true,
@@ -27,6 +30,7 @@ class RecommendState {
   );
 
   RecommendState copyWith({
+    RecommendEvent? event,
     bool? isSumContains,
     bool? isPickContains,
     bool? isOddEvenContains,
@@ -35,6 +39,7 @@ class RecommendState {
     Set<int>? includedNumbers,
   }) {
     return RecommendState(
+      event: event ?? this.event,
       isSumContains: isSumContains ?? this.isSumContains,
       isPickContains: isPickContains ?? this.isPickContains,
       isOddEvenContains: isOddEvenContains ?? this.isOddEvenContains,
@@ -43,6 +48,14 @@ class RecommendState {
       includedNumbers: includedNumbers ?? this.includedNumbers,
     );
   }
+}
+
+sealed class RecommendEvent {}
+
+class ShowToast extends RecommendEvent {
+  final String message;
+
+  ShowToast({required this.message});
 }
 
 class RecommendNotifier extends StateNotifier<RecommendState> {
@@ -80,7 +93,7 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
 
   addUnIncludedNumber({required int number}) {
     if (state.includedNumbers.contains(number)) {
-      // todo : 추가된 번호는 포함하지 않을 수 없습니다.
+      state = state.copyWith(event: ShowToast(message: '추가된 번호는 포함하지 않을 수 없습니다.'));
     } else {
       state = state.copyWith(unIncludedNumbers: {...state.unIncludedNumbers, number});
     }
@@ -92,7 +105,7 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
 
   addIncludedNumber({required int number}) {
     if (state.unIncludedNumbers.contains(number)) {
-      // todo : 추가된 번호는 포함할 수 없습니다.
+      state = state.copyWith(event: ShowToast(message: '추가된 번호는 포함할 수 없습니다.'));
     } else {
       state = state.copyWith(includedNumbers: {...state.includedNumbers, number});
     }
@@ -100,5 +113,9 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
 
   removeIncludedNumber({required int number}) {
     state = state.copyWith(includedNumbers: {...state.includedNumbers}..remove(number));
+  }
+
+  clearEvent() {
+    state = state.copyWith(event: null);
   }
 }

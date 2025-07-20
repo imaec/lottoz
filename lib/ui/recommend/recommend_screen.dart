@@ -5,6 +5,7 @@ import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
 import 'package:designsystem/component/number/number.dart';
 import 'package:designsystem/component/picker/lotto_number_picker.dart';
+import 'package:designsystem/component/snackbar/snackbar.dart';
 import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,15 @@ class RecommendScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(recommendNotifierProvider.notifier);
     final state = ref.watch(recommendNotifierProvider);
+
+    ref.listen(recommendNotifierProvider, (prev, next) {
+      if (prev?.event != next.event) {
+        if (next.event is ShowToast) {
+          showSnackBar(context: context, message: (next.event as ShowToast).message);
+          notifier.clearEvent();
+        }
+      }
+    });
 
     return Scaffold(
       appBar: const HaruAppBar(title: '추천 번호'),

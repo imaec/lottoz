@@ -5,6 +5,7 @@ export 'component/divider/horizontal_divider.dart';
 export 'component/media/svg_icon.dart';
 export 'component/number/number.dart';
 export 'component/picker/lotto_number_picker.dart';
+export 'component/snackbar/snackbar.dart';
 export 'theme/colors.dart';
 export 'theme/fonts.dart';
 export 'theme/theme.dart';
