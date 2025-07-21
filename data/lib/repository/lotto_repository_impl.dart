@@ -113,4 +113,9 @@ class LottoRepositoryImpl extends LottoRepository {
       ),
     );
   }
+
+  @override
+  Future<int> removeMyNumber({required int id}) async {
+    return await _localDataSource.removeMyNumber(id: id);
+  }
 }

@@ -24,8 +24,8 @@ class RecommendScreen extends ConsumerWidget {
 
     ref.listen(recommendNotifierProvider, (prev, next) {
       if (prev?.event != next.event) {
-        if (next.event is ShowToast) {
-          showSnackBar(context: context, message: (next.event as ShowToast).message);
+        if (next.event is ShowSnackBar) {
+          showSnackBar(context: context, message: (next.event as ShowSnackBar).message);
           notifier.clearEvent();
         }
       }

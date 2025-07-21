@@ -31,4 +31,6 @@ abstract class LottoRepository {
   Future<List<MyLottoDto>> getMyLottoNumbers();
 
   Future<int> saveMyLottoNumber({required MyLottoDto myLottoNumber});
+
+  Future<int> removeMyNumber({required int id});
 }

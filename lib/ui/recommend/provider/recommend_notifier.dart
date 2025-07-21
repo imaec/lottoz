@@ -61,10 +61,10 @@ class RecommendState {
 
 sealed class RecommendEvent {}
 
-class ShowToast extends RecommendEvent {
+class ShowSnackBar extends RecommendEvent {
   final String message;
 
-  ShowToast({required this.message});
+  ShowSnackBar({required this.message});
 }
 
 class RecommendNotifier extends StateNotifier<RecommendState> {
@@ -108,7 +108,7 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
 
   addUnIncludedNumber({required int number}) {
     if (state.includedNumbers.contains(number)) {
-      state = state.copyWith(event: ShowToast(message: '추가된 번호는 포함하지 않을 수 없습니다.'));
+      state = state.copyWith(event: ShowSnackBar(message: '추가된 번호는 포함하지 않을 수 없습니다.'));
     } else {
       state = state.copyWith(unIncludedNumbers: {...state.unIncludedNumbers, number});
     }
@@ -120,7 +120,7 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
 
   addIncludedNumber({required int number}) {
     if (state.unIncludedNumbers.contains(number)) {
-      state = state.copyWith(event: ShowToast(message: '추가된 번호는 포함할 수 없습니다.'));
+      state = state.copyWith(event: ShowSnackBar(message: '추가된 번호는 포함할 수 없습니다.'));
     } else {
       state = state.copyWith(includedNumbers: {...state.includedNumbers, number});
     }
@@ -270,7 +270,7 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
 
   saveMyLottoNumbers() async {
     if (state.includedNumbers.length != 6) {
-      state = state.copyWith(event: ShowToast(message: '번호를 생성해 주세요.'));
+      state = state.copyWith(event: ShowSnackBar(message: '번호를 생성해 주세요.'));
       return;
     }
     final numbers = state.includedNumbers.toList();
@@ -285,7 +285,7 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
       ),
     );
     state = state.copyWith(
-      event: ShowToast(message: '번호를 저장 했습니다!'),
+      event: ShowSnackBar(message: '번호를 저장 했습니다!'),
       includedNumbers: {},
     );
   }

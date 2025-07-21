@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:domain/model/lotto/lotto_dto.dart';
 import 'package:domain/model/lotto/my_lotto_dto.dart';
 
 class MyLottoVo {
+  final int id;
   final int no1;
   final int no2;
   final int no3;
@@ -15,6 +14,7 @@ class MyLottoVo {
   final int? rank;
 
   MyLottoVo({
+    required this.id,
     required this.no1,
     required this.no2,
     required this.no3,
@@ -44,6 +44,7 @@ extension MyLottoDtoExtension on MyLottoDto {
     }).length;
 
     return MyLottoVo(
+      id: id ?? -1,
       no1: no1,
       no2: no2,
       no3: no3,

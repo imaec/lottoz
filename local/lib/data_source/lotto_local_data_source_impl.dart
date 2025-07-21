@@ -60,4 +60,10 @@ class LottoLocalDataSourceImpl extends LottoLocalDataSource {
       );
     });
   }
+
+  @override
+  Future<int> removeMyNumber({required int id}) async {
+    final db = await DatabaseHelper.instance.database;
+    return db.delete(myLottoTable, where: 'id = ?', whereArgs: [id]);
+  }
 }
