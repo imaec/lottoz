@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:lottoz/ui/home/home_screen.dart';
+import 'package:lottoz/ui/latest_round_list/latest_round_list_screen.dart';
 import 'package:lottoz/ui/main/main_screen.dart';
 import 'package:lottoz/ui/more/more_screen.dart';
 import 'package:lottoz/ui/my_number/my_number_screen.dart';
@@ -11,7 +12,11 @@ final appRouter = GoRouter(
   routes: [
     _mainRoute,
     GoRoute(
-      path: '/my_number',
+      path: '/latestRoundList',
+      builder: (context, state) => const LatestRoundListScreen(),
+    ),
+    GoRoute(
+      path: '/myNumber',
       builder: (context, state) => const MyNumberScreen(),
     ),
   ],

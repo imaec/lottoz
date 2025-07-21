@@ -40,7 +40,7 @@ class MoreScreen extends ConsumerWidget {
     // todo : QR 코드로 당첨 확인하기
     return GestureDetector(
       onTap: () {
-        appRouter.push('/my_number');
+        appRouter.push('/myNumber');
       },
       behavior: HitTestBehavior.translucent,
       child: const Padding(

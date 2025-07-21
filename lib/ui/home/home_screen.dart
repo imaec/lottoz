@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottoz/provider/lotto_notifier.dart';
 import 'package:lottoz/provider/lotto_state_provider.dart';
+import 'package:lottoz/router/go_router.dart';
 
 part 'home_store_list.dart';
 

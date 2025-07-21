@@ -11,7 +11,12 @@ Widget _latestRounds({required List<LottoDto> lottoNumbers}) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text('최근 회차 결과', style: subtitle2),
-              Text('더보기', style: bodyS.copyWith(color: gray600)),
+              GestureDetector(
+                onTap: () {
+                  appRouter.push('/latestRoundList');
+                },
+                child: Text('더보기', style: bodyS.copyWith(color: gray600)),
+              ),
             ],
           ),
         ),
