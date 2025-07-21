@@ -29,6 +29,7 @@ class LottoNotifier extends StateNotifier<LottoState> {
 
     if (localCurDrwNo == curDrwNo && firebaseCurDrwNo == curDrwNo) {
       await _fetchLottoNumbersFromDatabase();
+      // todo : local에서 판매점 목록 가져오기
     } else if (firebaseCurDrwNo != curDrwNo) {
       await _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, firebaseCurDrwNo: firebaseCurDrwNo);
     } else {
