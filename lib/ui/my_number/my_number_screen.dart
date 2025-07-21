@@ -4,45 +4,83 @@ import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottoz/model/lotto/MyLottoVo.dart';
+import 'package:lottoz/ui/my_number/provider/my_number_state_provider.dart';
 
-class MyNumberScreen extends StatelessWidget {
+class MyNumberScreen extends ConsumerStatefulWidget {
   const MyNumberScreen({super.key});
 
   @override
+  ConsumerState<ConsumerStatefulWidget> createState() => MyNumberScreenState();
+}
+
+class MyNumberScreenState extends ConsumerState<MyNumberScreen> {
+  @override
+  void initState() {
+    ref.read(myNumberNotifierProvider.notifier).fetchLottoNumbers();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(myNumberNotifierProvider);
+
     return Scaffold(
       appBar: LottoAppBar(
         title: '내 번호',
         topPadding: MediaQuery.of(context).padding.top,
         hasBack: true,
       ),
-      body: _myNumberBody(context: context),
+      body: _myNumberBody(context: context, myLottoNumbers: state.myLottoNumbers),
     );
   }
 
-  Widget _myNumberBody({required BuildContext context}) {
+  Widget _myNumberBody({required BuildContext context, required List<MyLottoVo> myLottoNumbers}) {
     final mediaQuery = MediaQuery.of(context);
-    final numbers = [1, 12, 24, 42, 44, 45];
 
     return ListView.separated(
       padding: EdgeInsets.only(top: 8, bottom: mediaQuery.padding.bottom),
-      itemCount: 10,
+      itemCount: myLottoNumbers.length,
       itemBuilder: (context, index) {
+        final myLotto = myLottoNumbers[index];
         final itemWidth = (mediaQuery.size.width - 80) / 6;
 
-        return SizedBox(
-          height: itemWidth + 32,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            scrollDirection: Axis.horizontal,
-            itemCount: numbers.length,
-            itemBuilder: (context, index) {
-              final number = numbers[index];
+        return Stack(
+          children: [
+            SizedBox(
+              height: itemWidth + 32,
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                scrollDirection: Axis.horizontal,
+                itemCount: 6,
+                itemBuilder: (context, index) {
+                  final number = myLotto.numbers[index];
+                  final isFit = myLotto.checkFit[number] ?? false;
 
-              return _myNumber(number: number, itemWidth: itemWidth);
-            },
-            separatorBuilder: (context, index) => const SizedBox(width: 8),
-          ),
+                  return _myNumber(
+                    number: number,
+                    isFit: isFit,
+                    noBonus: myLotto.noBonus,
+                    itemWidth: itemWidth,
+                  );
+                },
+                separatorBuilder: (context, index) => const SizedBox(width: 8),
+              ),
+            ),
+            myLotto.rank != null
+                ? Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: gray700.withValues(alpha: 0.7),
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                      ),
+                    ),
+                    child: Text('${myLotto.rank}등', style: subtitle2.copyWith(color: white)),
+                  )
+                : const SizedBox(),
+          ],
         );
       },
       separatorBuilder: (context, index) {
@@ -51,7 +89,12 @@ class MyNumberScreen extends StatelessWidget {
     );
   }
 
-  Widget _myNumber({required int number, required double itemWidth}) {
+  Widget _myNumber({
+    required int number,
+    required bool isFit,
+    required int noBonus,
+    required double itemWidth,
+  }) {
     return Stack(
       children: [
         Container(
@@ -70,16 +113,22 @@ class MyNumberScreen extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
-          width: itemWidth,
-          child: Column(
-            children: [
-              const Spacer(),
-              Container(width: itemWidth / 3, height: 3, color: gray800),
-              const SizedBox(height: 10),
-            ],
-          ),
-        ),
+        isFit || number == noBonus
+            ? SizedBox(
+                width: itemWidth,
+                child: Column(
+                  children: [
+                    const Spacer(),
+                    Container(
+                      width: itemWidth / 3,
+                      height: 3,
+                      color: number == noBonus ? bonusRed : gray800,
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              )
+            : const SizedBox(),
       ],
     );
   }

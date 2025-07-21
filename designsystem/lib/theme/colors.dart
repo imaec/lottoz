@@ -27,4 +27,5 @@ const lotto41_45 = Color(0xFFB0D940);
 const lotto41_45Dark = Color(0xFF99C12C);
 
 const error = Color(0xFFD53A47);
+const bonusRed = Color(0xFFFF334C);
 const graphBlue = Color(0xFF0576e6);
