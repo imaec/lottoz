@@ -1,18 +1,23 @@
 part of '../statistics_screen.dart';
 
-Widget _winTabContent({required StatisticsState statisticsState}) {
+Widget _winTabContent({required StatisticsNotifier notifier, required StatisticsState state}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      _statisticsHeader(),
+      _statisticsHeader(
+        notifier: notifier,
+        startRound: state.startRound,
+        endRound: state.endRound,
+        maxRound: state.maxRound,
+      ),
       const HorizontalDivider(),
       Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _winAverages(winStatistics: statisticsState.winStatistics),
+            _winAverages(winStatistics: state.winStatistics),
             const HorizontalDivider(),
-            _winStatistics(winStatistics: statisticsState.winStatistics),
+            _winStatistics(winStatistics: state.winStatistics),
           ],
         ),
       ),
@@ -21,6 +26,7 @@ Widget _winTabContent({required StatisticsState statisticsState}) {
 }
 
 Widget _winAverages({required WinStatisticsVo winStatistics}) {
+  // todo : 회차별 총 당첨금, 1게임 당첨금, 당첨자 수 그래프 추가
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
     child: Column(

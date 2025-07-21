@@ -46,41 +46,46 @@ class MyNumberScreenState extends ConsumerState<MyNumberScreen> {
         final myLotto = myLottoNumbers[index];
         final itemWidth = (mediaQuery.size.width - 80) / 6;
 
-        return Stack(
-          children: [
-            SizedBox(
-              height: itemWidth + 32,
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                scrollDirection: Axis.horizontal,
-                itemCount: 6,
-                itemBuilder: (context, index) {
-                  final number = myLotto.numbers[index];
-                  final isFit = myLotto.checkFit[number] ?? false;
+        return GestureDetector(
+          onTap: () {
+            // todo : 역대 당첨 결과 화면으로 이동
+          },
+          child: Stack(
+            children: [
+              SizedBox(
+                height: itemWidth + 32,
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 6,
+                  itemBuilder: (context, index) {
+                    final number = myLotto.numbers[index];
+                    final isFit = myLotto.checkFit[number] ?? false;
 
-                  return _myNumber(
-                    number: number,
-                    isFit: isFit,
-                    noBonus: myLotto.noBonus,
-                    itemWidth: itemWidth,
-                  );
-                },
-                separatorBuilder: (context, index) => const SizedBox(width: 8),
+                    return _myNumber(
+                      number: number,
+                      isFit: isFit,
+                      noBonus: myLotto.noBonus,
+                      itemWidth: itemWidth,
+                    );
+                  },
+                  separatorBuilder: (context, index) => const SizedBox(width: 8),
+                ),
               ),
-            ),
-            myLotto.rank != null
-                ? Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: gray700.withValues(alpha: 0.7),
-                      borderRadius: const BorderRadius.only(
-                        bottomRight: Radius.circular(16),
+              myLotto.rank != null
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: gray700.withValues(alpha: 0.7),
+                        borderRadius: const BorderRadius.only(
+                          bottomRight: Radius.circular(16),
+                        ),
                       ),
-                    ),
-                    child: Text('${myLotto.rank}등', style: subtitle2.copyWith(color: white)),
-                  )
-                : const SizedBox(),
-          ],
+                      child: Text('${myLotto.rank}등', style: subtitle2.copyWith(color: white)),
+                    )
+                  : const SizedBox(),
+            ],
+          ),
         );
       },
       separatorBuilder: (context, index) {

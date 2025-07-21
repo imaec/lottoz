@@ -1,17 +1,22 @@
 part of '../statistics_screen.dart';
 
-Widget _pickTabContent({required StatisticsState statisticsState}) {
+Widget _pickTabContent({required StatisticsNotifier notifier, required StatisticsState state}) {
   return Column(
     children: [
-      _statisticsHeader(),
+      _statisticsHeader(
+        notifier: notifier,
+        startRound: state.startRound,
+        endRound: state.endRound,
+        maxRound: state.maxRound,
+      ),
       const HorizontalDivider(),
       Expanded(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _pickCounts(pickStatistics: statisticsState.pickStatistics),
+              _pickCounts(pickStatistics: state.pickStatistics),
               const HorizontalDivider(),
-              _unPickNumbers(unPickStatistics: statisticsState.unPickStatistics),
+              _unPickNumbers(unPickStatistics: state.unPickStatistics),
             ],
           ),
         ),
@@ -23,6 +28,7 @@ Widget _pickTabContent({required StatisticsState statisticsState}) {
 Widget _pickCounts({required List<PickStatisticsVo> pickStatistics}) {
   final maxCount = pickStatistics.map((pick) => pick.count).reduce((a, b) => a > b ? a : b);
 
+  // todo : 번호별 출현 횟수 추가
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 24),
     child: Column(

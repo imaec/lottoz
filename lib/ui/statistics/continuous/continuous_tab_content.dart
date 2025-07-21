@@ -1,13 +1,19 @@
 part of '../statistics_screen.dart';
 
-Widget _continuousTabContent({required StatisticsState statisticsState}) {
+Widget _continuousTabContent({
+  required StatisticsNotifier notifier,
+  required StatisticsState state,
+}) {
   return Column(
     children: [
-      _statisticsHeader(),
-      const HorizontalDivider(),
-      Expanded(
-        child: _continuousNumbers(continuousStatistics: statisticsState.continuousStatistics),
+      _statisticsHeader(
+        notifier: notifier,
+        startRound: state.startRound,
+        endRound: state.endRound,
+        maxRound: state.maxRound,
       ),
+      const HorizontalDivider(),
+      Expanded(child: _continuousNumbers(continuousStatistics: state.continuousStatistics)),
     ],
   );
 }
@@ -51,7 +57,9 @@ Widget _continuousNumbers({required List<ContinuousStatisticsVo> continuousStati
                 ),
                 const SizedBox(width: 6),
                 Container(height: 50, width: 1, color: gray100),
-                Expanded(child: Text(item.description, style: subtitle3, textAlign: TextAlign.end)),
+                Expanded(
+                  child: Text(item.description, style: subtitle3, textAlign: TextAlign.end),
+                ),
                 const SizedBox(width: 8),
               ],
             ),

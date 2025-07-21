@@ -1,19 +1,23 @@
 part of '../statistics_screen.dart';
 
-Widget _oddEvenTabContent({required StatisticsState statisticsState}) {
-  final oddEvenStatistics = statisticsState.oddEvenStatistics;
+Widget _oddEvenTabContent({required StatisticsNotifier notifier, required StatisticsState state}) {
+  final oddEvenStatistics = state.oddEvenStatistics;
   final totalOdd =
-      (statisticsState.oddEvenStatistics.map((e) => e.oddNumbers.length).reduce((a, b) => a + b) /
+      (state.oddEvenStatistics.map((e) => e.oddNumbers.length).reduce((a, b) => a + b) /
               oddEvenStatistics.length)
           .toStringAsFixed(1);
   final totalEven =
-      (statisticsState.oddEvenStatistics.map((e) => e.evenNumbers.length).reduce((a, b) => a + b) /
+      (state.oddEvenStatistics.map((e) => e.evenNumbers.length).reduce((a, b) => a + b) /
               oddEvenStatistics.length)
           .toStringAsFixed(1);
 
   return Column(
     children: [
       _statisticsHeader(
+        notifier: notifier,
+        startRound: state.startRound,
+        endRound: state.endRound,
+        maxRound: state.maxRound,
         rightWidget: Row(
           children: [
             const Text('홀짝 평균 ', style: bodyS),
@@ -22,7 +26,7 @@ Widget _oddEvenTabContent({required StatisticsState statisticsState}) {
         ),
       ),
       const HorizontalDivider(),
-      Expanded(child: _oddEvenNumbers(oddEventNumbers: statisticsState.oddEvenStatistics)),
+      Expanded(child: _oddEvenNumbers(oddEventNumbers: state.oddEvenStatistics)),
     ],
   );
 }

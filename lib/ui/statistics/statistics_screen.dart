@@ -5,6 +5,7 @@ import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
 import 'package:designsystem/component/number/number.dart';
+import 'package:designsystem/component/picker/lotto_number_picker.dart';
 import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +45,17 @@ class StatisticsScreenState extends ConsumerState<StatisticsScreen>
   late final PageController _pageController = PageController();
 
   @override
+  void initState() {
+    ref.read(statisticsNotifierProvider.notifier).fetchLottoNumber();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final statisticsState = ref.watch(statisticsNotifierProvider);
-    return Scaffold(body: _statisticsBody(statisticsState: statisticsState));
+    final notifier = ref.read(statisticsNotifierProvider.notifier);
+    final state = ref.watch(statisticsNotifierProvider);
+
+    return Scaffold(body: _statisticsBody(notifier: notifier, state: state));
   }
 
   @override
@@ -56,7 +65,7 @@ class StatisticsScreenState extends ConsumerState<StatisticsScreen>
     super.dispose();
   }
 
-  Widget _statisticsBody({required StatisticsState statisticsState}) {
+  Widget _statisticsBody({required StatisticsNotifier notifier, required StatisticsState state}) {
     return Column(
       children: [
         Container(
@@ -91,7 +100,7 @@ class StatisticsScreenState extends ConsumerState<StatisticsScreen>
             },
           ),
         ),
-        statisticsState.lottoNumbers.isEmpty
+        state.lottoNumbers.isEmpty
             ? const Expanded(child: Center(child: CircularProgressIndicator()))
             : Expanded(
                 child: PageView.builder(
@@ -104,15 +113,15 @@ class StatisticsScreenState extends ConsumerState<StatisticsScreen>
                   itemBuilder: (context, index) {
                     switch (index) {
                       case 0:
-                        return _sumTabContent(statisticsState: statisticsState);
+                        return _sumTabContent(notifier: notifier, state: state);
                       case 1:
-                        return _pickTabContent(statisticsState: statisticsState);
+                        return _pickTabContent(notifier: notifier, state: state);
                       case 2:
-                        return _continuousTabContent(statisticsState: statisticsState);
+                        return _continuousTabContent(notifier: notifier, state: state);
                       case 3:
-                        return _oddEvenTabContent(statisticsState: statisticsState);
+                        return _oddEvenTabContent(notifier: notifier, state: state);
                       case 4:
-                        return _winTabContent(statisticsState: statisticsState);
+                        return _winTabContent(notifier: notifier, state: state);
                       default:
                         return null;
                     }

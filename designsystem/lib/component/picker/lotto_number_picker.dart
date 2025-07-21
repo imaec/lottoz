@@ -10,6 +10,9 @@ showNumberPicker({
   required int start,
   required int end,
   required Function(int) onSelected,
+  int step = 1,
+  int initNumber = 1,
+  bool isAllShow = false,
 }) {
   int number = start;
 
@@ -35,22 +38,41 @@ showNumberPicker({
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Row(
                 children: [
-                  const SizedBox(width: 60),
-                  const Expanded(
-                    child: Text('번호 선택', style: h4, textAlign: TextAlign.center),
+                  const SizedBox(width: 120),
+                  Expanded(
+                    child: Text(title, style: h4, textAlign: TextAlign.center),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      context.pop();
-                      onSelected(number);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      width: 60,
-                      child: Center(
-                        child: Text('선택', style: h5.copyWith(color: graphBlue)),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (isAllShow) {
+                            context.pop();
+                            onSelected(end);
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          width: 60,
+                          child: Center(
+                            child: Text(isAllShow ? '전체' : '', style: h5.copyWith(color: graphBlue)),
+                          ),
+                        ),
                       ),
-                    ),
+                      GestureDetector(
+                        onTap: () {
+                          context.pop();
+                          onSelected(number);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          width: 60,
+                          child: Center(
+                            child: Text('선택', style: h5.copyWith(color: graphBlue)),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -58,6 +80,8 @@ showNumberPicker({
             LottoNumberPicker(
               start: start,
               end: end,
+              step: step,
+              initNumber: initNumber,
               onChanged: (value) {
                 number = value;
               },
@@ -72,12 +96,16 @@ showNumberPicker({
 class LottoNumberPicker extends StatefulWidget {
   final int start;
   final int end;
+  final int step;
+  final int initNumber;
   final Function(int) onChanged;
 
   const LottoNumberPicker({
     super.key,
     required this.start,
     required this.end,
+    required this.step,
+    required this.initNumber,
     required this.onChanged,
   });
 
@@ -89,14 +117,21 @@ class _LottoNumberPickerState extends State<LottoNumberPicker> {
   int _number = 1;
 
   @override
+  void initState() {
+    _number = ((widget.initNumber / 10).toInt()) * 10;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         NumberPicker(
           minValue: widget.start,
           maxValue: widget.end,
-          value: _number,
+          value: _number >= widget.start ? _number : widget.start,
           itemCount: 5,
+          step: widget.step,
           itemWidth: double.infinity,
           textStyle: subtitle1,
           selectedTextStyle: h2,

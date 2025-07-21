@@ -1,15 +1,20 @@
 import 'package:domain/model/lotto/lotto_dto.dart';
 import 'package:domain/repository/lotto_repository.dart';
+import 'package:domain/repository/setting_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lottoz/model/statistics/statistics_range_vo.dart';
-import 'package:lottoz/model/statistics/sum_statistics_vo.dart';
-import 'package:lottoz/model/statistics/pick_statistics_vo.dart';
-import 'package:lottoz/model/statistics/un_pick_statistics_vo.dart';
 import 'package:lottoz/model/statistics/continuous_statistics_vo.dart';
 import 'package:lottoz/model/statistics/odd_even_statistics_vo.dart';
+import 'package:lottoz/model/statistics/pick_statistics_vo.dart';
+import 'package:lottoz/model/statistics/statistics_range_vo.dart';
+import 'package:lottoz/model/statistics/sum_statistics_vo.dart';
+import 'package:lottoz/model/statistics/un_pick_statistics_vo.dart';
 import 'package:lottoz/model/statistics/win_statistics_vo.dart';
 
 class StatisticsState {
+  final int startRound;
+  final int endRound;
+  final int maxRound;
+  final List<LottoDto> localLottoNumbers;
   final List<LottoDto> lottoNumbers;
   final int sumAverage;
   final List<SumStatisticsVo> sumStatistics;
@@ -20,6 +25,10 @@ class StatisticsState {
   final WinStatisticsVo winStatistics;
 
   StatisticsState({
+    required this.startRound,
+    required this.endRound,
+    required this.maxRound,
+    required this.localLottoNumbers,
     required this.lottoNumbers,
     required this.sumAverage,
     required this.sumStatistics,
@@ -31,6 +40,10 @@ class StatisticsState {
   });
 
   factory StatisticsState.init() => StatisticsState(
+    startRound: 1,
+    endRound: 1,
+    maxRound: 1,
+    localLottoNumbers: [],
     lottoNumbers: [],
     sumAverage: 0,
     sumStatistics: [],
@@ -42,6 +55,10 @@ class StatisticsState {
   );
 
   StatisticsState copyWith({
+    int? startRound,
+    int? endRound,
+    int? maxRound,
+    List<LottoDto>? localLottoNumbers,
     List<LottoDto>? lottoNumbers,
     int? sumAverage,
     List<SumStatisticsVo>? sumStatistics,
@@ -52,6 +69,10 @@ class StatisticsState {
     WinStatisticsVo? winStatistics,
   }) {
     return StatisticsState(
+      startRound: startRound ?? this.startRound,
+      endRound: endRound ?? this.endRound,
+      maxRound: maxRound ?? this.maxRound,
+      localLottoNumbers: localLottoNumbers ?? this.localLottoNumbers,
       lottoNumbers: lottoNumbers ?? this.lottoNumbers,
       sumAverage: sumAverage ?? this.sumAverage,
       sumStatistics: sumStatistics ?? this.sumStatistics,
@@ -65,31 +86,28 @@ class StatisticsState {
 }
 
 class StatisticsNotifier extends StateNotifier<StatisticsState> {
-  final LottoRepository repository;
+  final LottoRepository lottoRepository;
+  final SettingRepository settingRepository;
 
-  StatisticsNotifier({required this.repository}) : super(StatisticsState.init());
+  StatisticsNotifier({required this.lottoRepository, required this.settingRepository})
+    : super(StatisticsState.init());
 
   fetchLottoNumber() async {
-    final lottoNumbers = await repository.getLocalLottoNumbers();
-    final sumAverage =
-        lottoNumbers.map((lotto) => lotto.sum).reduce((a, b) => a + b) / lottoNumbers.length;
-    final sumStatistics = _getSumStatistics(lottoNumbers: lottoNumbers);
-    final pickStatistics = _getPickStatistics(lottoNumbers: lottoNumbers);
-    final unPickStatistics = _getUnPickNumbers(lottoNumbers: lottoNumbers);
-    final continuousStatistics = _getContinuousStatistics(lottoNumbers: lottoNumbers);
-    final oddEvenStatistics = _getOddEvenStatistics(lottoNumbers: lottoNumbers);
-    final winStatistics = _getWinStatistics(lottoNumbers: lottoNumbers.take(100).toList());
+    final statisticsSize = await _getStatisticsSize();
+    final localLottoNumbers = await lottoRepository.getLocalLottoNumbers();
+    final endRound = localLottoNumbers.first.drwNo;
+    final startRound = endRound - (statisticsSize - 1);
 
-    state = state.copyWith(
-      lottoNumbers: lottoNumbers,
-      sumAverage: sumAverage.toInt(),
-      sumStatistics: sumStatistics,
-      pickStatistics: pickStatistics,
-      unPickStatistics: unPickStatistics,
-      continuousStatistics: continuousStatistics,
-      oddEvenStatistics: oddEvenStatistics,
-      winStatistics: winStatistics,
+
+    _statistics(
+      localLottoNumbers: localLottoNumbers,
+      startRound: startRound,
+      endRound: endRound,
     );
+  }
+
+  Future<int> _getStatisticsSize() async {
+    return await settingRepository.getStatisticsSize();
   }
 
   List<SumStatisticsVo> _getSumStatistics({required List<LottoDto> lottoNumbers}) {
@@ -240,26 +258,22 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
     // 당참자 수 평균
     final winCountAverage = lottoNumbers.fold<int>(0, (p, e) => p + e.firstPrzwnerCo) / roundCount;
     // 1게임 최고 당첨금
-    final maxTotalPriceDto = lottoNumbers.reduce(
-          (a, b) => a.firstWinamnt > b.firstWinamnt ? a : b,
-    );
+    final maxTotalPriceDto = lottoNumbers.reduce((a, b) => a.firstWinamnt > b.firstWinamnt ? a : b);
     final maxTotalPriceRound = maxTotalPriceDto.drwNo;
     final maxTotalPrice = maxTotalPriceDto.firstWinamnt;
     // 1게임 최소 당첨금
-    final minTotalPriceDto = lottoNumbers.reduce(
-          (a, b) => a.firstWinamnt < b.firstWinamnt ? a : b,
-    );
+    final minTotalPriceDto = lottoNumbers.reduce((a, b) => a.firstWinamnt < b.firstWinamnt ? a : b);
     final minTotalPriceRound = minTotalPriceDto.drwNo;
     final minTotalPrice = minTotalPriceDto.firstWinamnt;
     // 최대 당첨자 수
     final maxWinCountDto = lottoNumbers.reduce(
-          (a, b) => a.firstPrzwnerCo > b.firstPrzwnerCo ? a : b,
+      (a, b) => a.firstPrzwnerCo > b.firstPrzwnerCo ? a : b,
     );
     final maxWinCountRound = maxWinCountDto.drwNo;
     final maxWinCount = maxWinCountDto.firstPrzwnerCo;
     // 최소 당첨자 수
     final minWinCountDto = lottoNumbers.reduce(
-          (a, b) => a.firstPrzwnerCo < b.firstPrzwnerCo ? a : b,
+      (a, b) => a.firstPrzwnerCo < b.firstPrzwnerCo ? a : b,
     );
     final minWinCountRound = minWinCountDto.drwNo;
     final minWinCount = minWinCountDto.firstPrzwnerCo;
@@ -277,6 +291,56 @@ class StatisticsNotifier extends StateNotifier<StatisticsState> {
       maxWinCount: maxWinCount,
       minWinCountRound: minWinCountRound,
       minWinCount: minWinCount,
+    );
+  }
+
+  setStartRound({required int startRound}) {
+    _statistics(
+      localLottoNumbers: state.localLottoNumbers,
+      startRound: startRound,
+      endRound: state.endRound,
+    );
+  }
+
+  setEndRound({required int endRound}) {
+    _statistics(
+      localLottoNumbers: state.localLottoNumbers,
+      startRound: state.startRound,
+      endRound: endRound,
+    );
+  }
+
+  _statistics({
+    required List<LottoDto> localLottoNumbers,
+    required int startRound,
+    required int endRound,
+  }) {
+    final lottoNumbers = localLottoNumbers
+        .sublist(localLottoNumbers.length - endRound, localLottoNumbers.length - (startRound - 1))
+        .toList();
+
+    final sumAverage =
+        lottoNumbers.map((lotto) => lotto.sum).reduce((a, b) => a + b) / lottoNumbers.length;
+    final sumStatistics = _getSumStatistics(lottoNumbers: lottoNumbers);
+    final pickStatistics = _getPickStatistics(lottoNumbers: lottoNumbers);
+    final unPickStatistics = _getUnPickNumbers(lottoNumbers: lottoNumbers);
+    final continuousStatistics = _getContinuousStatistics(lottoNumbers: lottoNumbers);
+    final oddEvenStatistics = _getOddEvenStatistics(lottoNumbers: lottoNumbers);
+    final winStatistics = _getWinStatistics(lottoNumbers: lottoNumbers.take(100).toList());
+
+    state = state.copyWith(
+      startRound: startRound,
+      endRound: endRound,
+      maxRound: localLottoNumbers.first.drwNo,
+      localLottoNumbers: localLottoNumbers,
+      lottoNumbers: lottoNumbers,
+      sumAverage: sumAverage.toInt(),
+      sumStatistics: sumStatistics,
+      pickStatistics: pickStatistics,
+      unPickStatistics: unPickStatistics,
+      continuousStatistics: continuousStatistics,
+      oddEvenStatistics: oddEvenStatistics,
+      winStatistics: winStatistics,
     );
   }
 }

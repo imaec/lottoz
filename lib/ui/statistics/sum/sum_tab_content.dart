@@ -1,18 +1,22 @@
 part of '../statistics_screen.dart';
 
-Widget _sumTabContent({required StatisticsState statisticsState}) {
+Widget _sumTabContent({required StatisticsNotifier notifier, required StatisticsState state}) {
   return Column(
     children: [
       _statisticsHeader(
+        notifier: notifier,
+        startRound: state.startRound,
+        endRound: state.endRound,
+        maxRound: state.maxRound,
         rightWidget: Row(
           children: [
-            Text('${statisticsState.lottoNumbers.length}회 평균 합계 : ', style: bodyS),
-            Text('${statisticsState.sumAverage}', style: subtitle2),
+            Text('${state.lottoNumbers.length}회 평균 합계 : ', style: bodyS),
+            Text('${state.sumAverage}', style: subtitle2),
           ],
-        )
+        ),
       ),
       _sumTabGraphHeader(),
-      Expanded(child: _sumTabGraph(sumStatistics: statisticsState.sumStatistics)),
+      Expanded(child: _sumTabGraph(sumStatistics: state.sumStatistics)),
     ],
   );
 }
@@ -24,16 +28,28 @@ Widget _sumTabGraphHeader() {
       children: [
         SizedBox(
           width: 80,
-          child: Text('합계', style: bodyS.copyWith(color: white), textAlign: TextAlign.center),
+          child: Text(
+            '합계',
+            style: bodyS.copyWith(color: white),
+            textAlign: TextAlign.center,
+          ),
         ),
         Container(height: 40, width: 1, color: gray100),
         Expanded(
-          child: Text('횟수', style: bodyS.copyWith(color: white), textAlign: TextAlign.center),
+          child: Text(
+            '횟수',
+            style: bodyS.copyWith(color: white),
+            textAlign: TextAlign.center,
+          ),
         ),
         Container(height: 40, width: 1, color: gray100),
         SizedBox(
           width: 60,
-          child: Text('비율', style: bodyS.copyWith(color: white), textAlign: TextAlign.center),
+          child: Text(
+            '비율',
+            style: bodyS.copyWith(color: white),
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     ),
