@@ -37,7 +37,7 @@ class HomeScreen extends ConsumerWidget {
               const HorizontalDivider(),
               _latestRounds(lottoNumbers: lottoState.lottoNumbers.sublist(1, 11).toList()),
               const HorizontalDivider(),
-              _homeStoreList(stores: lottoState.stores),
+              _homeStoreList(firstStores: lottoState.firstStores),
             ],
           ),
         ),

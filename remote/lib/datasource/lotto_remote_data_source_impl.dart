@@ -73,36 +73,99 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   }
 
   @override
-  Future<List<StoreDto>> getStores({required int drwNo}) async {
+  Future<Map<int, List<StoreDto>>> getStores({required int drwNo}) async {
+    final storeFutures = await Future.wait([
+      getFirstStores(drwNo: drwNo),
+      getSecondStores(drwNo: drwNo),
+    ]);
+
+    return {1: storeFutures[0], 2: storeFutures[1]};
+  }
+
+  @override
+  Future<List<StoreDto>> getFirstStores({required int drwNo}) async {
+    final List<StoreDto> stores = [];
     final response = await http.post(
       Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645'),
       body: {'gameNo': '5133', 'drwNo': '$drwNo'},
     );
-    if (response.statusCode == 200) {
-      final List<StoreDto> stores = [];
+    if (response.statusCode != 200) return [];
+
+    final decodedBody = await CharsetConverter.decode("euc-kr", response.bodyBytes);
+    final document = html_parser.parse(decodedBody);
+    final elements = document.getElementsByClassName('group_content');
+    if (elements.isEmpty) return [];
+
+    final tbody = elements[0].getElementsByTagName('tbody');
+    if (tbody.isNotEmpty) {
+      final trs = tbody[0].getElementsByTagName('tr');
+      for (var tr in trs) {
+        final cells = tr.querySelectorAll('td');
+        if (cells.length >= 4) {
+          final storeName = cells[1].text.trim();
+          final type = cells[2].text.trim();
+          final address = cells[3].text.trim();
+
+          stores.add(StoreDto(storeName: storeName, address: address, type: type));
+        }
+      }
+    }
+
+    return stores;
+  }
+
+  @override
+  Future<List<StoreDto>> getSecondStores({required int drwNo}) async {
+    int maxPage = await _getSecondStorePage(drwNo: drwNo);
+    List<StoreDto> secondStores = [];
+
+    for (int page = 1; page <= maxPage; page++) {
+      final response = await http.post(
+        Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645'),
+        body: {'gameNo': '5133', 'drwNo': '$drwNo', 'rank': '2', 'nowPage': page.toString()},
+      );
+      if (response.statusCode != 200) break;
+
       final decodedBody = await CharsetConverter.decode("euc-kr", response.bodyBytes);
       final document = html_parser.parse(decodedBody);
       final elements = document.getElementsByClassName('group_content');
-      if (elements.isNotEmpty) {
-        final tbody = elements[0].getElementsByTagName('tbody');
-        if (tbody.isNotEmpty) {
-          final trs = tbody[0].getElementsByTagName('tr');
-          for (var tr in trs) {
-            final cells = tr.querySelectorAll('td');
-            if (cells.length >= 4) {
-              final storeName = cells[1].text.trim();
-              final type = cells[2].text.trim();
-              final address = cells[3].text.trim();
+      if (elements.length < 2) break;
 
-              stores.add(StoreDto(storeName: storeName, address: address, type: type));
-            }
+      final tbody = elements[1].getElementsByTagName('tbody');
+      if (tbody.isNotEmpty) {
+        final trs = tbody[0].getElementsByTagName('tr');
+        for (var tr in trs) {
+          final cells = tr.querySelectorAll('td');
+          if (cells.length >= 4) {
+            final storeName = cells[1].text.trim();
+            final address = cells[2].text.trim();
+
+            secondStores.add(StoreDto(storeName: storeName, address: address, type: ''));
           }
         }
       }
-      return stores;
-    } else {
-      return [];
     }
+
+    return secondStores;
+  }
+
+  Future<int> _getSecondStorePage({required int drwNo}) async {
+    final uri = Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645');
+    final response = await http.post(uri, body: {'rank': '2', 'nowPage': '1'});
+    if (response.statusCode != 200) return 1;
+
+    final decodedBody = await CharsetConverter.decode("euc-kr", response.bodyBytes);
+    final document = html_parser.parse(decodedBody);
+    final pageLinks = document.querySelectorAll('div.paginate_common a');
+    int maxPage = 1;
+    for (var link in pageLinks) {
+      final text = link.text.trim();
+      final pageNum = int.tryParse(text);
+      if (pageNum != null && pageNum > maxPage) {
+        maxPage = pageNum;
+      }
+    }
+    return maxPage;
   }
 
   @override

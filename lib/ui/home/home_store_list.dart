@@ -1,35 +1,16 @@
 part of 'home_screen.dart';
 
-Widget _homeStoreList({required List<StoreDto> stores}) {
+Widget _homeStoreList({required List<StoreDto> firstStores}) {
   return Padding(
     padding: const EdgeInsets.only(top: 24, bottom: 36),
     child: Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('1등 당첨 판매점', style: subtitle2),
-              Text('더보기', style: bodyS.copyWith(color: gray600)),
-            ],
-          ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Text('1등 당첨 판매점', style: subtitle2),
         ),
         const SizedBox(height: 12),
-        _StoreList(stores: stores),
-        const SizedBox(height: 36),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('2등 당첨 판매점', style: subtitle2),
-              Text('더보기', style: bodyS.copyWith(color: gray600)),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        _StoreList(stores: stores),
+        _StoreList(stores: firstStores, perPage: 5),
       ],
     ),
   );
@@ -37,8 +18,9 @@ Widget _homeStoreList({required List<StoreDto> stores}) {
 
 class _StoreList extends StatefulWidget {
   final List<StoreDto> stores;
+  final int perPage;
 
-  const _StoreList({required this.stores});
+  const _StoreList({required this.stores, required this.perPage});
 
   @override
   State<_StoreList> createState() => _StoreListState();
@@ -56,12 +38,19 @@ class _StoreListState extends State<_StoreList> {
 
   @override
   Widget build(BuildContext context) {
-    final count = (widget.stores.length / 5).ceil();
+    if (widget.stores.isEmpty) {
+      return const Padding(
+      padding: EdgeInsets.all(16),
+      child: CircularProgressIndicator(),
+    );
+    }
+
+    final count = (widget.stores.length / widget.perPage).ceil();
 
     return Column(
       children: [
         SizedBox(
-          height: 365,
+          height: 65 * widget.perPage + (10 * widget.perPage - 1),
           child: PageView.builder(
             controller: _pageController,
             onPageChanged: (index) {
@@ -72,8 +61,8 @@ class _StoreListState extends State<_StoreList> {
             itemCount: count,
             itemBuilder: (context, index) {
               List<List<StoreDto>> chunks = [];
-              for (var i = 0; i < widget.stores.length; i += 5) {
-                chunks.add(widget.stores.skip(i).take(5).toList());
+              for (var i = 0; i < widget.stores.length; i += widget.perPage) {
+                chunks.add(widget.stores.skip(i).take(widget.perPage).toList());
               }
               final stores = chunks[index];
 

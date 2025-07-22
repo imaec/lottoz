@@ -3,16 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LottoState {
   final List<LottoDto> lottoNumbers;
-  final List<StoreDto> stores;
+  final List<StoreDto> firstStores;
 
-  LottoState({required this.lottoNumbers, required this.stores});
+  LottoState({required this.lottoNumbers, required this.firstStores});
 
-  factory LottoState.init() => LottoState(lottoNumbers: [], stores: []);
+  factory LottoState.init() => LottoState(lottoNumbers: [], firstStores: []);
 
-  LottoState copyWith({List<LottoDto>? lottoNumbers, List<StoreDto>? stores}) {
+  LottoState copyWith({
+    List<LottoDto>? lottoNumbers,
+    List<StoreDto>? firstStores,
+  }) {
     return LottoState(
       lottoNumbers: lottoNumbers ?? this.lottoNumbers,
-      stores: stores ?? this.stores,
+      firstStores: firstStores ?? this.firstStores,
     );
   }
 }
@@ -26,17 +29,22 @@ class LottoNotifier extends StateNotifier<LottoState> {
     final localCurDrwNo = await repository.getLocalCurDrwNo();
     final firebaseCurDrwNo = await repository.getFirebaseCurDrwNo();
     final curDrwNo = await repository.getCurDrwNo();
+    final List<Future<dynamic>> futures = [];
 
     if (localCurDrwNo == curDrwNo && firebaseCurDrwNo == curDrwNo) {
-      await _fetchLottoNumbersFromDatabase();
-      // todo : local에서 판매점 목록 가져오기
+      futures.add(_fetchLottoNumbersFromDatabase());
     } else if (firebaseCurDrwNo != curDrwNo) {
-      await _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, firebaseCurDrwNo: firebaseCurDrwNo);
+      futures.add(
+        _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, firebaseCurDrwNo: firebaseCurDrwNo),
+      );
     } else {
-      await _fetchLottoNumbersFromFirebase(curDrwNo: curDrwNo);
+      futures.add(_fetchLottoNumbersFromFirebase(curDrwNo: curDrwNo));
     }
+    futures.add(repository.getFirstStores(drwNo: curDrwNo));
 
-    state = state.copyWith(stores: await repository.getStores(drwNo: curDrwNo));
+    final results = await Future.wait(futures);
+
+    state = state.copyWith(firstStores: results[1]);
   }
 
   _fetchLottoNumbersFromDatabase() async {

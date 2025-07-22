@@ -13,7 +13,11 @@ abstract class LottoRepository {
 
   Future<List<LottoDto>> getFirebaseLottoNumbers();
 
-  Future<List<StoreDto>> getStores({required int drwNo});
+  Future<Map<int, List<StoreDto>>> getStores({required int drwNo});
+
+  Future<List<StoreDto>> getFirstStores({required int drwNo});
+
+  Future<List<StoreDto>> getSecondStores({required int drwNo});
 
   Future<void> setFirebaseCurDrwNo({required int curDrwNo});
 

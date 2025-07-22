@@ -39,8 +39,18 @@ class LottoRepositoryImpl extends LottoRepository {
   }
 
   @override
-  Future<List<StoreDto>> getStores({required int drwNo}) {
+  Future<Map<int, List<StoreDto>>> getStores({required int drwNo}) {
     return _remoteDataSource.getStores(drwNo: drwNo);
+  }
+
+  @override
+  Future<List<StoreDto>> getFirstStores({required int drwNo}) {
+    return _remoteDataSource.getFirstStores(drwNo: drwNo);
+  }
+
+  @override
+  Future<List<StoreDto>> getSecondStores({required int drwNo}) {
+    return _remoteDataSource.getSecondStores(drwNo: drwNo);
   }
 
   @override
