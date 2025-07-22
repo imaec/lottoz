@@ -7,7 +7,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis_auth/googleapis_auth.dart' as auth;
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:lottoz/ui/more/backup_type.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -78,7 +77,7 @@ class MoreNotifier extends StateNotifier<MoreState> {
     final myLottoNumbers = await lottoRepository.getMyLottoNumbers();
     final json = jsonEncode(myLottoNumbers.map((lotto) => lotto.toJson()).toList());
     final directory = await getApplicationDocumentsDirectory();
-    final fileName = 'my_numbers_${DateFormat('yyyy-MM-dd_HH:mm:ss').format(DateTime.now())}.json';
+    const fileName = 'my_numbers.json';
     final file = File('${directory.path}/$fileName');
     await file.writeAsString(json);
     switch (backupType) {
@@ -93,22 +92,11 @@ class MoreNotifier extends StateNotifier<MoreState> {
 
   _uploadFileToGoogleDrive({required File file, required String fileName}) async {
     state = state.copyWith(isLoading: true);
-    final googleSignIn = GoogleSignIn(scopes: [drive.DriveApi.driveFileScope]);
-    final googleUser = await googleSignIn.signIn();
-    final googleAuth = await googleUser?.authentication;
-    final token = googleAuth?.accessToken;
-
-    if (token == null) {
-      await googleSignIn.signOut();
+    final client = await _signInWithGoogle();
+    if (client == null) {
+      _showError();
       return;
     }
-
-    final credentials = auth.AccessCredentials(
-      auth.AccessToken('Bearer', token, DateTime.now().toUtc().add(const Duration(hours: 1))),
-      null,
-      [drive.DriveApi.driveFileScope],
-    );
-    final client = auth.authenticatedClient(http.Client(), credentials);
     final driveApi = drive.DriveApi(client);
     final rootId = await _getOrCreateFolder(driveApi: driveApi, folderName: 'lottoz');
     final subFolderId = await _getOrCreateFolder(
@@ -124,6 +112,68 @@ class MoreNotifier extends StateNotifier<MoreState> {
 
     await driveApi.files.create(driveFile, uploadMedia: media);
     state = state.copyWith(event: ShowSnackBar(message: '백업이 완료되었습니다.'), isLoading: false);
+  }
+
+  Future<auth.AuthClient?> _signInWithGoogle() async {
+    final googleSignIn = GoogleSignIn(scopes: [drive.DriveApi.driveFileScope]);
+    final googleUser = await googleSignIn.signIn();
+    final googleAuth = await googleUser?.authentication;
+    final token = googleAuth?.accessToken;
+
+    if (token == null) {
+      await googleSignIn.signOut();
+      _showError();
+      return null;
+    }
+
+    final credentials = auth.AccessCredentials(
+      auth.AccessToken('Bearer', token, DateTime.now().toUtc().add(const Duration(hours: 1))),
+      null,
+      [drive.DriveApi.driveFileScope],
+    );
+    return auth.authenticatedClient(http.Client(), credentials);
+  }
+
+  restoreFileFromGoogleDrive() async {
+    state = state.copyWith(isLoading: true);
+    final client = await _signInWithGoogle();
+    if (client == null) {
+      _showError();
+      return;
+    }
+    final driveApi = drive.DriveApi(client);
+    final rootId = await _getOrCreateFolder(driveApi: driveApi, folderName: 'lottoz');
+    final subFolderId = await _getOrCreateFolder(
+      driveApi: driveApi,
+      folderName: 'backup',
+      parentId: rootId,
+    );
+    final query = "name = 'my_numbers.json' and '$subFolderId' in parents and trashed = false";
+    final res = await driveApi.files.list(q: query, spaces: 'drive');
+    drive.File? file;
+
+    if (res.files != null && res.files!.isNotEmpty) {
+      file = res.files!.first;
+    }
+
+    if (file == null) {
+      _showError(message: '백업된 파일이 없습니다.');
+      return;
+    }
+
+    final media =
+        await driveApi.files.get(file.id!, downloadOptions: drive.DownloadOptions.fullMedia)
+            as drive.Media;
+
+    final content = await media.stream.transform(utf8.decoder).join();
+    final list = jsonDecode(content) as List;
+
+    final myLottoNumbers = list.map((e) => MyLottoDto.fromJson(e)).toList();
+    final localMyLottoNumbers = await lottoRepository.getMyLottoNumbers();
+    await lottoRepository.saveMyLottoNumbers(
+      myLottoNumbers: localMyLottoNumbers.removeDuplicates(myLottoNumbers),
+    );
+    state = state.copyWith(event: ShowSnackBar(message: '내 번호를 가져왔습니다.'), isLoading: false);
   }
 
   /// 특정 이름의 폴더가 없으면 생성하고, 있으면 ID 반환
@@ -152,12 +202,13 @@ class MoreNotifier extends StateNotifier<MoreState> {
 
   _uploadFileToiCloud({required File file, required String fileName}) async {}
 
-  restoreFileFromGoogleDrive() async {
+  restoreFileFromiCloud() async {}
 
-  }
-
-  restoreFileFromiCloud() async {
-    
+  _showError({String? message}) {
+    state = state.copyWith(
+      event: ShowSnackBar(message: message ?? '오류가 발생했습니다.'),
+      isLoading: false,
+    );
   }
 
   clearEvent() {

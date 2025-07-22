@@ -12,7 +12,20 @@
           "package_name": "com.imaec.lottoz"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "457286197125-oe793ltggqkvsmfn0c25jus0nmnhfk6f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imaec.lottoz",
+            "certificate_hash": "db3d9c9ce30f59a329545ce6f0bcb40f63183941"
+          }
+        },
+        {
+          "client_id": "457286197125-k2d04ii1njbg3v4q51r4044lmdecdimt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDYM1XrYdhq2gM3FmaGRStI_SjGbot8e2s"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "457286197125-k2d04ii1njbg3v4q51r4044lmdecdimt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "457286197125-rt41p0qvc1rfll0e4qr982j3ufdq5g9a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.imaec.lottoz"
+              }
+            }
+          ]
         }
       }
     }

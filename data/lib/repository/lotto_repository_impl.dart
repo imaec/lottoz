@@ -131,6 +131,22 @@ class LottoRepositoryImpl extends LottoRepository {
   }
 
   @override
+  Future<int> saveMyLottoNumbers({required List<MyLottoDto> myLottoNumbers}) {
+    return _localDataSource.saveMyLottoNumbers(
+      myLottoNumbers: myLottoNumbers.map((lotto) {
+        return MyLottoEntity(
+          no1: lotto.no1,
+          no2: lotto.no2,
+          no3: lotto.no3,
+          no4: lotto.no4,
+          no5: lotto.no5,
+          no6: lotto.no6,
+        );
+      }).toList(),
+    );
+  }
+
+  @override
   Future<int> removeMyNumber({required int id}) async {
     return await _localDataSource.removeMyNumber(id: id);
   }
