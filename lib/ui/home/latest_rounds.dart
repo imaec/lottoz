@@ -50,66 +50,72 @@ Widget _latestRound({required LottoDto lottoDto}) {
     lottoDto.drwtNo6,
   ];
 
-  return Container(
-    width: 240,
-    padding: const EdgeInsets.all(8),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: gray100),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text('${lottoDto.drwNo}회', style: labelBold),
-            const SizedBox(width: 4),
-            Text(lottoDto.drwNoDate, style: labelTag.copyWith(color: gray400)),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: numbers.mapIndexed((index, number) {
-            return _number(number: number);
-          }).toList(),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: numbers.mapIndexed((index, number) {
-            if (index < 4) {
-              return _latestRoundNumber(number: null);
-            } else {
-              if (index == 4) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Text(
-                      'BONUS',
-                      style: labelBold.copyWith(fontSize: 8),
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                );
+  return GestureDetector(
+    onTap: () {
+      appRouter.push('/detail', extra: lottoDto);
+    },
+    behavior: HitTestBehavior.translucent,
+    child: Container(
+      width: 240,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: gray100),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text('${lottoDto.drwNo}회', style: labelBold),
+              const SizedBox(width: 4),
+              Text(lottoDto.drwNoDate, style: labelTag.copyWith(color: gray400)),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: numbers.mapIndexed((index, number) {
+              return _number(number: number);
+            }).toList(),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: numbers.mapIndexed((index, number) {
+              if (index < 4) {
+                return _latestRoundNumber(number: null);
               } else {
-                return _number(number: lottoDto.bnusNo);
+                if (index == 4) {
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text(
+                        'BONUS',
+                        style: labelBold.copyWith(fontSize: 8),
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                  );
+                } else {
+                  return _number(number: lottoDto.bnusNo);
+                }
               }
-            }
-          }).toList(),
-        ),
-        const Spacer(),
-        Row(
-          children: [
-            Text('1등', style: labelBold.copyWith(color: gray600)),
-            const SizedBox(width: 4),
-            Text('${lottoDto.firstPrzwnerCo}명', style: labelBold),
-          ],
-        ),
-        Text(
-          '1인당 약 ${lottoDto.firstWinamnt.to100Million()}억원',
-          style: labelBold.copyWith(color: gray600),
-        ),
-      ],
+            }).toList(),
+          ),
+          const Spacer(),
+          Row(
+            children: [
+              Text('1등', style: labelBold.copyWith(color: gray600)),
+              const SizedBox(width: 4),
+              Text('${lottoDto.firstPrzwnerCo}명', style: labelBold),
+            ],
+          ),
+          Text(
+            '1인당 약 ${lottoDto.firstWinamnt.to100Million()}억원',
+            style: labelBold.copyWith(color: gray600),
+          ),
+        ],
+      ),
     ),
   );
 }

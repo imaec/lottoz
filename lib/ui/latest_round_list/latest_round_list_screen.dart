@@ -10,6 +10,7 @@ import 'package:designsystem/theme/fonts.dart';
 import 'package:domain/model/lotto/lotto_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottoz/router/go_router.dart';
 import 'package:lottoz/ui/latest_round_list/provider/latest_round_list_notifier.dart';
 import 'package:lottoz/ui/latest_round_list/provider/latest_round_list_state_provider.dart';
 
@@ -45,60 +46,66 @@ class LatestRoundListScreen extends ConsumerWidget {
   }
 
   Widget _latestRoundItem({required LottoDto lotto}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      child: Column(
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('${lotto.drwNo}회', style: h4),
-              const SizedBox(width: 8),
-              Text(lotto.drwNoDate, style: bodyM.copyWith(color: gray600)),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children:
-                lotto.numbers.mapIndexed((index, number) {
-                    return _latestRoundNumber(number: number);
-                  }).toList()
-                  ..add(const SvgIcon(asset: plusIcon, size: 20))
-                  ..add(_latestRoundNumber(number: lotto.bnusNo)),
-          ),
-          const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+    return GestureDetector(
+      onTap: () {
+        appRouter.push('/detail', extra: lotto);
+      },
+      behavior: HitTestBehavior.translucent,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Column(
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('총 당첨금  ', style: bodyS),
-                    Text(lotto.firstAccumamnt.toWon(), style: h5),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('1게임 당첨금  ', style: bodyS),
-                    Text(lotto.firstWinamnt.toWon(), style: h5),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('당첨자 수  ', style: bodyS),
-                    Text('${lotto.firstPrzwnerCo}명', style: h5),
-                  ],
-                ),
+                Text('${lotto.drwNo}회', style: h4),
+                const SizedBox(width: 8),
+                Text(lotto.drwNoDate, style: bodyM.copyWith(color: gray600)),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Row(
+              children:
+                  lotto.numbers.mapIndexed((index, number) {
+                      return _latestRoundNumber(number: number);
+                    }).toList()
+                    ..add(const SvgIcon(asset: plusIcon, size: 20))
+                    ..add(_latestRoundNumber(number: lotto.bnusNo)),
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('총 당첨금  ', style: bodyS),
+                      Text(lotto.firstAccumamnt.toWon(), style: h5),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('1게임 당첨금  ', style: bodyS),
+                      Text(lotto.firstWinamnt.toWon(), style: h5),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('당첨자 수  ', style: bodyS),
+                      Text('${lotto.firstPrzwnerCo}명', style: h5),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

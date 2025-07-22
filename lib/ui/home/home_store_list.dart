@@ -4,6 +4,7 @@ Widget _homeStoreList({required List<StoreDto> firstStores}) {
   return Padding(
     padding: const EdgeInsets.only(top: 24, bottom: 36),
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),

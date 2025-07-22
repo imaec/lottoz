@@ -11,9 +11,7 @@ import 'package:lottoz/provider/lotto_state_provider.dart';
 import 'package:lottoz/router/go_router.dart';
 
 part 'home_store_list.dart';
-
 part 'lastest_round_winning_numbers.dart';
-
 part 'latest_rounds.dart';
 
 class HomeScreen extends ConsumerWidget {
