@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'my_lotto_dto.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class MyLottoDto {
   final int? id;
   final int no1;
@@ -16,6 +21,10 @@ class MyLottoDto {
     required this.no5,
     required this.no6,
   });
+
+  factory MyLottoDto.fromJson(Map<String, dynamic> json) => _$MyLottoDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MyLottoDtoToJson(this);
 
   factory MyLottoDto.init() => MyLottoDto(id: 0, no1: 0, no2: 0, no3: 0, no4: 0, no5: 0, no6: 0);
 

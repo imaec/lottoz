@@ -11,5 +11,8 @@ dependencies:
   locator:
     path: ../locator
 
+  json_annotation: ^4.9.0
+
 dev_dependencies:
   flutter_lints: ^4.0.0
+  json_serializable: ^6.9.5
