@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottoz/router/go_router.dart';
 import 'package:lottoz/ui/more/provider/more_notifier.dart';
 import 'package:lottoz/ui/more/provider/more_state_provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
@@ -138,23 +139,33 @@ class MoreScreen extends ConsumerWidget {
   }
 
   Widget _appInfos() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 24),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Text('앱 정보', style: h4),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('앱 버전', style: bodyM),
-                Text('1.0.0', style: subtitle2),
+                const Text('앱 버전', style: bodyM),
+                FutureBuilder(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    final info = snapshot.data;
+
+                    return Text(
+                      info != null ? info.version : '',
+                      style: subtitle2
+                    );
+                  }
+                ),
               ],
             ),
           ),

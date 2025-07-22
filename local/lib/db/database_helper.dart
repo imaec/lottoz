@@ -19,12 +19,7 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, '$_lottoZDb.db');
-    return await openDatabase(
-      path,
-      version: 2,
-      onCreate: _onCreate,
-      onUpgrade: _onUpdate,
-    );
+    return await openDatabase(path, version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -58,10 +53,12 @@ class DatabaseHelper {
     ''');
   }
 
-  Future _onUpdate(Database db, int oldVersion, int newVersion) async {
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    final batch = db.batch();
     if (oldVersion < 2) {
-      await db.execute('''
-        CREATE TABLE myLottoTable (
+      if (!await _isTableExist(db: db, tableName: myLottoTable)) {
+        batch.execute('''
+        CREATE TABLE $myLottoTable (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           no1 INTEGER NOT NULL,
           no2 INTEGER NOT NULL,
@@ -71,6 +68,14 @@ class DatabaseHelper {
           no6 INTEGER NOT NULL
         )
       ''');
+      }
     }
+
+    await batch.commit();
+  }
+
+  Future<bool> _isTableExist({required Database db, required String tableName}) async {
+    final tables = await db.query('sqlite_master', where: 'name = ?', whereArgs: [tableName]);
+    return tables.any((table) => table['tbl_name'] == tableName);
   }
 }
