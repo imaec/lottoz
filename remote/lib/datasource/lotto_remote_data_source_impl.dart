@@ -4,6 +4,7 @@ import 'package:charset_converter/charset_converter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data/data.dart';
 import 'package:domain/model/lotto/lotto_dto.dart';
+import 'package:domain/model/lotto/lotto_win_price_dto.dart';
 import 'package:domain/model/lotto/store_dto.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:http/http.dart' as http;
@@ -166,6 +167,32 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
       }
     }
     return maxPage;
+  }
+
+  @override
+  Future<List<LottoWinPriceDto>> getWinPrices({required int drwNo}) async {
+    List<LottoWinPriceDto> winPrices = [];
+    final response = await http.get(
+      Uri.parse('https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo=$drwNo'),
+    );
+    if (response.statusCode != 200) return [];
+
+    final decodedBody = await CharsetConverter.decode("euc-kr", response.bodyBytes);
+    final document = html_parser.parse(decodedBody);
+    final rows = document.querySelectorAll('.tbl_data_col tbody tr');
+    for (final row in rows) {
+      final cells = row.querySelectorAll('td');
+      if (cells.length >= 4) {
+        winPrices.add(LottoWinPriceDto(
+          rank: cells[0].text.trim(),
+          count: '${cells[2].text.trim()}명',
+          price: cells[3].text.trim(),
+          totalPrice: cells[1].text.trim(),
+        ));
+      }
+    }
+
+    return winPrices;
   }
 
   @override

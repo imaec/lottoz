@@ -3,6 +3,7 @@ import 'package:data/datasource/remote/lotto_remote_data_source.dart';
 import 'package:data/model/local/lotto/lotto_entity.dart';
 import 'package:data/model/local/lotto/my_lotto_entity.dart';
 import 'package:domain/model/lotto/lotto_dto.dart';
+import 'package:domain/model/lotto/lotto_win_price_dto.dart';
 import 'package:domain/model/lotto/my_lotto_dto.dart';
 import 'package:domain/model/lotto/store_dto.dart';
 import 'package:domain/repository/lotto_repository.dart';
@@ -51,6 +52,11 @@ class LottoRepositoryImpl extends LottoRepository {
   @override
   Future<List<StoreDto>> getSecondStores({required int drwNo}) {
     return _remoteDataSource.getSecondStores(drwNo: drwNo);
+  }
+
+  @override
+  Future<List<LottoWinPriceDto>> getWinPrices({required int drwNo}) {
+    return _remoteDataSource.getWinPrices(drwNo: drwNo);
   }
 
   @override

@@ -21,8 +21,9 @@ class DatabaseHelper {
     String path = join(documentsDirectory.path, '$_lottoZDb.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
+      onUpgrade: _onUpdate,
     );
   }
 
@@ -55,5 +56,21 @@ class DatabaseHelper {
         no6 INTEGER NOT NULL
     )
     ''');
+  }
+
+  Future _onUpdate(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+        CREATE TABLE myLottoTable (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          no1 INTEGER NOT NULL,
+          no2 INTEGER NOT NULL,
+          no3 INTEGER NOT NULL,
+          no4 INTEGER NOT NULL,
+          no5 INTEGER NOT NULL,
+          no6 INTEGER NOT NULL
+        )
+      ''');
+    }
   }
 }

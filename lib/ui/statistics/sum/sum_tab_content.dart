@@ -10,7 +10,7 @@ Widget _sumTabContent({required StatisticsNotifier notifier, required Statistics
         maxRound: state.maxRound,
         rightWidget: Row(
           children: [
-            Text('${state.lottoNumbers.length}회 평균 합계 : ', style: bodyS),
+            Text('${state.lottoNumbers.length}회 합계 평균 : ', style: bodyS),
             Text('${state.sumAverage}', style: subtitle2),
           ],
         ),

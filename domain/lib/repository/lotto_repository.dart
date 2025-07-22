@@ -1,4 +1,5 @@
 import 'package:domain/model/lotto/lotto_dto.dart';
+import 'package:domain/model/lotto/lotto_win_price_dto.dart';
 import 'package:domain/model/lotto/my_lotto_dto.dart';
 
 import '../model/lotto/store_dto.dart';
@@ -18,6 +19,8 @@ abstract class LottoRepository {
   Future<List<StoreDto>> getFirstStores({required int drwNo});
 
   Future<List<StoreDto>> getSecondStores({required int drwNo});
+
+  Future<List<LottoWinPriceDto>> getWinPrices({required int drwNo});
 
   Future<void> setFirebaseCurDrwNo({required int curDrwNo});
 

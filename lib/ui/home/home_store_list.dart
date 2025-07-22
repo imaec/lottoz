@@ -101,13 +101,20 @@ class _StoreListState extends State<_StoreList> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(store.storeName, style: subtitle3),
-              const SizedBox(height: 2),
-              Text(store.address, style: labelRegular.copyWith(color: gray400)),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(store.storeName, style: subtitle3),
+                const SizedBox(height: 2),
+                Text(
+                  store.address,
+                  style: labelRegular.copyWith(color: gray400),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
           Text(store.type, style: labelRegular.copyWith(color: gray600)),
         ],
