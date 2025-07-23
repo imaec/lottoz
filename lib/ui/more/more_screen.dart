@@ -8,11 +8,11 @@ import 'package:designsystem/component/picker/lotto_number_picker.dart';
 import 'package:designsystem/component/snackbar/snackbar.dart';
 import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
+import 'package:domain/model/setting/backup_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottoz/router/go_router.dart';
-import 'package:lottoz/ui/more/backup_type.dart';
 import 'package:lottoz/ui/more/provider/more_notifier.dart';
 import 'package:lottoz/ui/more/provider/more_state_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -264,7 +264,7 @@ class MoreScreen extends ConsumerWidget {
                                 if (isBackup) {
                                   notifier.backupMyNumbers(backupType: BackupType.iCloud);
                                 } else {
-                                  notifier.restoreFileFromiCloud();
+                                  notifier.restoreFileFrom(backupType: BackupType.iCloud);
                                 }
                                 context.pop();
                               },
@@ -286,7 +286,7 @@ class MoreScreen extends ConsumerWidget {
                       if (isBackup) {
                         notifier.backupMyNumbers(backupType: BackupType.googleDrive);
                       } else {
-                        notifier.restoreFileFromGoogleDrive();
+                        notifier.restoreFileFrom(backupType: BackupType.googleDrive);
                       }
                       context.pop();
                     },

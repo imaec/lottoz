@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:local/data_source/lotto_local_data_source_impl.dart';
 import 'package:local/data_source/setting_local_data_source_impl.dart';
 import 'package:remote/datasource/lotto_remote_data_source_impl.dart';
+import 'package:remote/datasource/remote_remote_data_source_impl.dart';
 import 'package:remote/service/lotto_service.dart';
 
 final locator = GetIt.instance;
@@ -41,7 +42,8 @@ _lottoModule() {
 
 _settingModule() {
   locator.registerLazySingleton<SettingLocalDataSource>(() => SettingLocalDataSourceImpl());
+  locator.registerLazySingleton<SettingRemoteDataSource>(() => SettingRemoteDataSourceImpl());
   locator.registerLazySingleton<SettingRepository>(
-    () => SettingRepositoryImpl(localDataSource: locator()),
+    () => SettingRepositoryImpl(localDataSource: locator(), remoteDataSource: locator()),
   );
 }
