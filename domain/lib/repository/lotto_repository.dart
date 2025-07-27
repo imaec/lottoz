@@ -10,9 +10,9 @@ abstract class LottoRepository {
 
   Future<int> getCurDrwNo();
 
-  Future<int> getFirebaseCurDrwNo();
+  Future<int> getDatabaseCurDrwNo();
 
-  Future<List<LottoDto>> getFirebaseLottoNumbers();
+  Future<List<LottoDto>> getLottoNumbers();
 
   Future<Map<int, List<StoreDto>>> getStores({required int drwNo});
 
@@ -22,9 +22,7 @@ abstract class LottoRepository {
 
   Future<List<LottoWinPriceDto>> getWinPrices({required int drwNo});
 
-  Future<void> setFirebaseCurDrwNo({required int curDrwNo});
-
-  Future<void> saveLottoNumbersFirebase({required List<LottoDto> lottoNumbers});
+  Future<void> saveLottoNumbersDatabase({required List<LottoDto> lottoNumbers});
 
   /// local
   Future<int> getLocalCurDrwNo();

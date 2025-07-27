@@ -4,9 +4,9 @@ class WinStatisticsVo {
   final double priceAverage;
   final double winCountAverage;
   final int maxTotalPriceRound;
-  final double maxTotalPrice;
+  final int maxTotalPrice;
   final int minTotalPriceRound;
-  final double minTotalPrice;
+  final int minTotalPrice;
   final int maxWinCountRound;
   final int maxWinCount;
   final int minWinCountRound;
@@ -29,13 +29,13 @@ class WinStatisticsVo {
 
   factory WinStatisticsVo.init() => WinStatisticsVo(
     roundCount: 0,
-    totalPriceAverage: 0.0,
-    priceAverage: 0.0,
+    totalPriceAverage: 0,
+    priceAverage: 0,
     winCountAverage: 0,
     maxTotalPriceRound: 0,
-    maxTotalPrice: 0.0,
+    maxTotalPrice: 0,
     minTotalPriceRound: 0,
-    minTotalPrice: 0.0,
+    minTotalPrice: 0,
     maxWinCountRound: 0,
     maxWinCount: 0,
     minWinCountRound: 0,

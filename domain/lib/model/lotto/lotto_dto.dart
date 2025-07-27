@@ -1,18 +1,23 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'lotto_dto.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class LottoDto {
-  final int bnusNo;
-  final int drwNo;
-  final String drwNoDate;
-  final int drwtNo1;
-  final int drwtNo2;
-  final int drwtNo3;
-  final int drwtNo4;
-  final int drwtNo5;
-  final int drwtNo6;
-  final double firstAccumamnt;
-  final int firstPrzwnerCo;
-  final double firstWinamnt;
-  final String returnValue;
-  final double totSellamnt;
+  @JsonKey(name: 'drw_no') final int drwNo;
+  @JsonKey(name: 'drw_no_date') final String drwNoDate;
+  @JsonKey(name: 'drwt_no1') final int drwtNo1;
+  @JsonKey(name: 'drwt_no2') final int drwtNo2;
+  @JsonKey(name: 'drwt_no3') final int drwtNo3;
+  @JsonKey(name: 'drwt_no4') final int drwtNo4;
+  @JsonKey(name: 'drwt_no5') final int drwtNo5;
+  @JsonKey(name: 'drwt_no6') final int drwtNo6;
+  @JsonKey(name: 'bnus_no') final int bnusNo;
+  @JsonKey(name: 'first_accumamnt') final int firstAccumamnt;
+  @JsonKey(name: 'first_przwner_co') final int firstPrzwnerCo;
+  @JsonKey(name: 'first_winamnt') final int firstWinamnt;
+  @JsonKey(name: 'return_value') final String returnValue;
+  @JsonKey(name: 'tot_sellamnt') final int totSellamnt;
 
   LottoDto({
     required this.bnusNo,
@@ -48,24 +53,9 @@ class LottoDto {
     totSellamnt: 0,
   );
 
-  Map<String, dynamic> toMap() {
-    return {
-      'bnusNo': bnusNo,
-      'drwNo': drwNo,
-      'drwNoDate': drwNoDate,
-      'drwtNo1': drwtNo1,
-      'drwtNo2': drwtNo2,
-      'drwtNo3': drwtNo3,
-      'drwtNo4': drwtNo4,
-      'drwtNo5': drwtNo5,
-      'drwtNo6': drwtNo6,
-      'firstAccumamnt': firstAccumamnt,
-      'firstPrzwnerCo': firstPrzwnerCo,
-      'firstWinamnt': firstWinamnt,
-      'returnValue': returnValue,
-      'totSellamnt': totSellamnt,
-    };
-  }
+  factory LottoDto.fromJson(Map<String, dynamic> json) => _$LottoDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LottoDtoToJson(this);
 
   int get sum => drwtNo1 + drwtNo2 + drwtNo3 + drwtNo4 + drwtNo5 + drwtNo6;
 

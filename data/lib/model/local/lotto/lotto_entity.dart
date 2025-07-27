@@ -15,10 +15,10 @@ class LottoEntity extends DataToDomainMapper<LottoDto> {
   final int drwtNo4;
   final int drwtNo5;
   final int drwtNo6;
-  final double firstAccumamnt;
+  final int firstAccumamnt;
   final int firstPrzwnerCo;
-  final double firstWinamnt;
-  final double totSellamnt;
+  final int firstWinamnt;
+  final int totSellamnt;
 
   LottoEntity({
     required this.bnusNo,

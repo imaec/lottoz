@@ -16,10 +16,10 @@ LottoEntity _$LottoEntityFromJson(Map<String, dynamic> json) => LottoEntity(
   drwtNo4: (json['drwtNo4'] as num).toInt(),
   drwtNo5: (json['drwtNo5'] as num).toInt(),
   drwtNo6: (json['drwtNo6'] as num).toInt(),
-  firstAccumamnt: (json['firstAccumamnt'] as num).toDouble(),
+  firstAccumamnt: (json['firstAccumamnt'] as num).toInt(),
   firstPrzwnerCo: (json['firstPrzwnerCo'] as num).toInt(),
-  firstWinamnt: (json['firstWinamnt'] as num).toDouble(),
-  totSellamnt: (json['totSellamnt'] as num).toDouble(),
+  firstWinamnt: (json['firstWinamnt'] as num).toInt(),
+  totSellamnt: (json['totSellamnt'] as num).toInt(),
 );
 
 Map<String, dynamic> _$LottoEntityToJson(LottoEntity instance) =>

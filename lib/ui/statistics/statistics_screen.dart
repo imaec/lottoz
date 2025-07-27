@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:core/extension/double_extension.dart';
+import 'package:core/extension/num_extension.dart';
 import 'package:core/utils/lotto_utils.dart';
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';

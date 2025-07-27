@@ -7,9 +7,9 @@ abstract class LottoRemoteDataSource {
 
   Future<int> getCurDrwNo();
 
-  Future<int> getFirebaseCurDrwNo();
+  Future<int> getDatabaseCurDrwNo();
 
-  Future<List<LottoDto>> getFirebaseLottoNumbers();
+  Future<List<LottoDto>> getLottoNumbers();
 
   Future<Map<int, List<StoreDto>>> getStores({required int drwNo});
 
@@ -18,8 +18,6 @@ abstract class LottoRemoteDataSource {
   Future<List<StoreDto>> getSecondStores({required int drwNo});
 
   Future<List<LottoWinPriceDto>> getWinPrices({required int drwNo});
-
-  Future<void> setCurDrwNo({required int curDrwNo});
 
   Future<void> saveLottoNumbers({required List<LottoDto> lottoNumbers});
 }

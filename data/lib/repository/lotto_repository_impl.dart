@@ -30,13 +30,13 @@ class LottoRepositoryImpl extends LottoRepository {
   }
 
   @override
-  Future<int> getFirebaseCurDrwNo() {
-    return _remoteDataSource.getFirebaseCurDrwNo();
+  Future<int> getDatabaseCurDrwNo() {
+    return _remoteDataSource.getDatabaseCurDrwNo();
   }
 
   @override
-  Future<List<LottoDto>> getFirebaseLottoNumbers() {
-    return _remoteDataSource.getFirebaseLottoNumbers();
+  Future<List<LottoDto>> getLottoNumbers() {
+    return _remoteDataSource.getLottoNumbers();
   }
 
   @override
@@ -60,12 +60,7 @@ class LottoRepositoryImpl extends LottoRepository {
   }
 
   @override
-  Future<void> setFirebaseCurDrwNo({required int curDrwNo}) {
-    return _remoteDataSource.setCurDrwNo(curDrwNo: curDrwNo);
-  }
-
-  @override
-  Future<void> saveLottoNumbersFirebase({required List<LottoDto> lottoNumbers}) {
+  Future<void> saveLottoNumbersDatabase({required List<LottoDto> lottoNumbers}) {
     return _remoteDataSource.saveLottoNumbers(lottoNumbers: lottoNumbers);
   }
 

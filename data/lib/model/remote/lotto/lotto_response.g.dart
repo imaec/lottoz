@@ -17,11 +17,11 @@ LottoResponse _$LottoResponseFromJson(Map<String, dynamic> json) =>
       drwtNo4: (json['drwtNo4'] as num).toInt(),
       drwtNo5: (json['drwtNo5'] as num).toInt(),
       drwtNo6: (json['drwtNo6'] as num).toInt(),
-      firstAccumamnt: (json['firstAccumamnt'] as num).toDouble(),
+      firstAccumamnt: (json['firstAccumamnt'] as num).toInt(),
       firstPrzwnerCo: (json['firstPrzwnerCo'] as num).toInt(),
-      firstWinamnt: (json['firstWinamnt'] as num).toDouble(),
+      firstWinamnt: (json['firstWinamnt'] as num).toInt(),
       returnValue: json['returnValue'] as String,
-      totSellamnt: (json['totSellamnt'] as num).toDouble(),
+      totSellamnt: (json['totSellamnt'] as num).toInt(),
     );
 
 Map<String, dynamic> _$LottoResponseToJson(LottoResponse instance) =>

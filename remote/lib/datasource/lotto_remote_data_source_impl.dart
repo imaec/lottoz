@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:charset_converter/charset_converter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data/data.dart';
 import 'package:domain/model/lotto/lotto_dto.dart';
 import 'package:domain/model/lotto/lotto_win_price_dto.dart';
@@ -9,6 +8,7 @@ import 'package:domain/model/lotto/store_dto.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:http/http.dart' as http;
 import 'package:remote/service/lotto_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   final LottoService _service;
@@ -30,7 +30,9 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
     );
     if (response.statusCode == 200) {
       final document = html_parser.parse(response.body);
-      final curDrwNo = int.parse(document.getElementById('lottoDrwNo')?.text ?? '');
+      final curDrwNo = int.parse(document
+          .getElementById('lottoDrwNo')
+          ?.text ?? '');
       return curDrwNo;
     } else {
       return 0;
@@ -38,39 +40,29 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   }
 
   @override
-  Future<int> getFirebaseCurDrwNo() async {
-    final snapshot = await FirebaseFirestore.instance.collection('drwNo').get();
-    final drwNo = snapshot.docs.firstOrNull?.data();
-    if (drwNo != null) {
-      return drwNo['curDrwNo'];
+  Future<int> getDatabaseCurDrwNo() async {
+    final response = await Supabase.instance.client.from('lotto')
+        .select('drw_no')
+        .order('drw_no', ascending: false)
+        .limit(1);
+
+    if (response.isNotEmpty) {
+      return response.single['drw_no'] as int;
     } else {
-      return 1;
+      return 0;
     }
   }
 
   @override
-  Future<List<LottoDto>> getFirebaseLottoNumbers() async {
-    final snapshot = await FirebaseFirestore.instance.collection('lottos').get();
-    final lottoNumbers = snapshot.docs.map((doc) {
-      return LottoDto(
-        bnusNo: doc['bnusNo'],
-        drwNo: doc['drwNo'],
-        drwNoDate: doc['drwNoDate'],
-        drwtNo1: doc['drwtNo1'],
-        drwtNo2: doc['drwtNo2'],
-        drwtNo3: doc['drwtNo3'],
-        drwtNo4: doc['drwtNo4'],
-        drwtNo5: doc['drwtNo5'],
-        drwtNo6: doc['drwtNo6'],
-        firstAccumamnt: doc['firstAccumamnt']?.toDouble(),
-        firstPrzwnerCo: doc['firstPrzwnerCo'],
-        firstWinamnt: doc['firstWinamnt']?.toDouble(),
-        returnValue: doc['returnValue'],
-        totSellamnt: doc['totSellamnt']?.toDouble(),
-      );
-    }).toList();
-    lottoNumbers.sort((prevNumber, nextNumber) => nextNumber.drwNo.compareTo(prevNumber.drwNo));
-    return lottoNumbers;
+  Future<List<LottoDto>> getLottoNumbers() async {
+    final response = await Supabase.instance.client
+        .from('lotto')
+        .select()
+        .order('drw_no', ascending: false);
+    final data = response as List<dynamic>;
+    final lottoList = data.map((json) => LottoDto.fromJson(json)).toList();
+
+    return lottoList;
   }
 
   @override
@@ -196,23 +188,12 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   }
 
   @override
-  Future<void> setCurDrwNo({required int curDrwNo}) async {
-    final batch = FirebaseFirestore.instance.batch();
-    final colRef = FirebaseFirestore.instance.collection('drwNo');
-    batch.set(colRef.doc('curDrwNo'), {'curDrwNo': curDrwNo});
-
-    return await batch.commit();
-  }
-
-  @override
   Future<void> saveLottoNumbers({required List<LottoDto> lottoNumbers}) async {
-    final batch = FirebaseFirestore.instance.batch();
-    final colRef = FirebaseFirestore.instance.collection('lottos');
+    final response = await Supabase.instance.client
+        .from('lotto')
+        .upsert(lottoNumbers.map((e) => e.toJson()).toList())
+        .select();
 
-    for (var lotto in lottoNumbers) {
-      batch.set(colRef.doc(lotto.drwNo.toString()), lotto.toMap());
-    }
-
-    return await batch.commit();
+    if (response.isEmpty) throw Exception('Lotto 저장 실패');
   }
 }

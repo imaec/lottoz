@@ -15,11 +15,11 @@ class LottoResponse extends DataToDomainMapper<LottoDto> {
   final int drwtNo4;
   final int drwtNo5;
   final int drwtNo6;
-  final double firstAccumamnt;
+  final int firstAccumamnt;
   final int firstPrzwnerCo;
-  final double firstWinamnt;
+  final int firstWinamnt;
   final String returnValue;
-  final double totSellamnt;
+  final int totSellamnt;
 
   LottoResponse({
     required this.bnusNo,

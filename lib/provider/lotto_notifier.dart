@@ -27,18 +27,18 @@ class LottoNotifier extends StateNotifier<LottoState> {
 
   fetchLottoNumber() async {
     final localCurDrwNo = await repository.getLocalCurDrwNo();
-    final firebaseCurDrwNo = await repository.getFirebaseCurDrwNo();
+    final databaseCurDrwNo = await repository.getDatabaseCurDrwNo();
     final curDrwNo = await repository.getCurDrwNo();
     final List<Future<dynamic>> futures = [];
 
-    if (localCurDrwNo == curDrwNo && firebaseCurDrwNo == curDrwNo) {
-      futures.add(_fetchLottoNumbersFromDatabase());
-    } else if (firebaseCurDrwNo != curDrwNo) {
+    if (localCurDrwNo == curDrwNo && databaseCurDrwNo == curDrwNo) {
+      futures.add(_fetchLottoNumbersFromLocal());
+    } else if (databaseCurDrwNo != curDrwNo) {
       futures.add(
-        _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, firebaseCurDrwNo: firebaseCurDrwNo),
+        _fetchLottoNumbersFromApi(curDrwNo: curDrwNo, databaseCurDrwNo: databaseCurDrwNo),
       );
     } else {
-      futures.add(_fetchLottoNumbersFromFirebase(curDrwNo: curDrwNo));
+      futures.add(_fetchLottoNumbersFromDatabase(curDrwNo: curDrwNo));
     }
     futures.add(repository.getFirstStores(drwNo: curDrwNo));
 
@@ -47,13 +47,13 @@ class LottoNotifier extends StateNotifier<LottoState> {
     state = state.copyWith(firstStores: results[1]);
   }
 
-  _fetchLottoNumbersFromDatabase() async {
+  _fetchLottoNumbersFromLocal() async {
     state = state.copyWith(lottoNumbers: await repository.getLocalLottoNumbers());
   }
 
-  _fetchLottoNumbersFromApi({required int curDrwNo, required int firebaseCurDrwNo}) async {
+  _fetchLottoNumbersFromApi({required int curDrwNo, required int databaseCurDrwNo}) async {
     final List<LottoDto> lottoNumbers = [];
-    final drwNos = List.generate(curDrwNo - firebaseCurDrwNo, (i) => curDrwNo - i);
+    final drwNos = List.generate(curDrwNo - databaseCurDrwNo, (i) => curDrwNo - i);
     const chunkSize = 10;
     for (var i = 0; i < drwNos.length; i += chunkSize) {
       final chunk = drwNos.skip(i).take(chunkSize).toList();
@@ -63,16 +63,15 @@ class LottoNotifier extends StateNotifier<LottoState> {
     }
     lottoNumbers.sort((prevNumber, nextNumber) => nextNumber.drwNo.compareTo(prevNumber.drwNo));
     await Future.wait<dynamic>([
-      repository.saveLottoNumbersFirebase(lottoNumbers: lottoNumbers),
+      repository.saveLottoNumbersDatabase(lottoNumbers: lottoNumbers),
       repository.saveLottoNumbersLocal(lottoNumbers: lottoNumbers),
-      repository.setFirebaseCurDrwNo(curDrwNo: curDrwNo),
       repository.setLocalCurDrwNo(curDrwNo: curDrwNo),
     ]);
     state = state.copyWith(lottoNumbers: await repository.getLocalLottoNumbers());
   }
 
-  _fetchLottoNumbersFromFirebase({required int curDrwNo}) async {
-    final lottoNumbers = await repository.getFirebaseLottoNumbers();
+  _fetchLottoNumbersFromDatabase({required int curDrwNo}) async {
+    final lottoNumbers = await repository.getLottoNumbers();
     await Future.wait<dynamic>([
       repository.saveLottoNumbersLocal(lottoNumbers: lottoNumbers),
       repository.setLocalCurDrwNo(curDrwNo: curDrwNo),

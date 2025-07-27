@@ -1,14 +1,17 @@
 import 'package:designsystem/designsystem.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:locator/get_it.dart';
 import 'package:lottoz/router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Supabase.initialize(
+    url: 'https://cmmlmrmpmjhedsnpsjyg.supabase.co',
+    anonKey: 'sb_publishable_guT4BXWCOdjRMybmFzcRZA_7d3ql3-j',
+  );
   initLocator();
 
   SystemChrome.setSystemUIOverlayStyle(
