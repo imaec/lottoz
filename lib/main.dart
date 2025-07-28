@@ -29,7 +29,7 @@ void main() async {
   );
   await initNotifications();
   await requestIOSPermissions();
-  initAd();
+  // initAd();
   initLocator();
 
   SystemChrome.setSystemUIOverlayStyle(
