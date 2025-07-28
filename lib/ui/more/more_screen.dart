@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
@@ -63,7 +61,6 @@ class MoreScreen extends ConsumerWidget {
   }
 
   Widget _myNumbers({required MoreNotifier notifier}) {
-    // todo : QR 코드로 당첨 확인하기
     return Builder(
       builder: (context) {
         return Padding(
@@ -129,6 +126,22 @@ class MoreScreen extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('가져오기', style: bodyM),
+                      SvgIcon(asset: arrowRightIcon, size: 24),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  appRouter.push('/qrScanner');
+                },
+                behavior: HitTestBehavior.translucent,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('QR 코드로 당첨 확인하기', style: bodyM),
                       SvgIcon(asset: arrowRightIcon, size: 24),
                     ],
                   ),
@@ -256,31 +269,32 @@ class MoreScreen extends ConsumerWidget {
               const HorizontalDivider(),
               Column(
                 children: [
-                  Platform.isIOS
-                      ? Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                if (isBackup) {
-                                  notifier.backupMyNumbers(backupType: BackupType.iCloud);
-                                } else {
-                                  notifier.restoreFileFrom(backupType: BackupType.iCloud);
-                                }
-                                context.pop();
-                              },
-                              behavior: HitTestBehavior.translucent,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 24),
-                                child: Text(
-                                  'iCloud${isBackup ? '로 내보내기' : '에서 가져오기'}',
-                                  style: subtitle2.copyWith(color: gray700),
-                                ),
-                              ),
-                            ),
-                            const HorizontalDivider(),
-                          ],
-                        )
-                      : const SizedBox(),
+                  // todo : iCloud 백업/복원 구현
+                  // Platform.isIOS
+                  //     ? Column(
+                  //         children: [
+                  //           GestureDetector(
+                  //             onTap: () {
+                  //               if (isBackup) {
+                  //                 notifier.backupMyNumbers(backupType: BackupType.iCloud);
+                  //               } else {
+                  //                 notifier.restoreFileFrom(backupType: BackupType.iCloud);
+                  //               }
+                  //               context.pop();
+                  //             },
+                  //             behavior: HitTestBehavior.translucent,
+                  //             child: Padding(
+                  //               padding: const EdgeInsets.symmetric(vertical: 24),
+                  //               child: Text(
+                  //                 'iCloud${isBackup ? '로 내보내기' : '에서 가져오기'}',
+                  //                 style: subtitle2.copyWith(color: gray700),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           const HorizontalDivider(),
+                  //         ],
+                  //       )
+                  //     : const SizedBox(),
                   GestureDetector(
                     onTap: () {
                       if (isBackup) {

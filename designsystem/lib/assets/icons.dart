@@ -1,6 +1,7 @@
 const arrowDownIcon = 'assets/icons/ic_arrow_down.svg';
 const arrowRightIcon = 'assets/icons/ic_arrow_right.svg';
 const backIcon = 'assets/icons/ic_back.svg';
+const closeIcon = 'assets/icons/ic_close.svg';
 const deleteIcon = 'assets/icons/ic_delete.svg';
 const homeIcon = 'assets/icons/ic_home.svg';
 const moreIcon = 'assets/icons/ic_more.svg';
