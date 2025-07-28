@@ -1,3 +1,4 @@
+import 'package:designsystem/component/ads/app_open_ad.dart';
 import 'package:designsystem/component/ads/banner_type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -10,7 +11,10 @@ BannerAd? settingBannerAd;
 BannerAd? detailBannerAd;
 BannerAd? detailAdaptiveBannerAd;
 
-initBanner() {
+initAd() {
+  loadAppOpenAd(onAdLoaded: () {
+    showAppOpenAdIfAvailable();
+  });
   homeBannerAd = _getBanner(HomeBanner());
   statisticsBannerAd = _getBanner(StatisticsBanner());
   recommendBannerAd = _getBanner(RecommendBanner());
@@ -26,7 +30,7 @@ BannerAd _getBanner(BannerType bannerType) {
     request: const AdRequest(),
     listener: BannerAdListener(
       onAdLoaded: (ad) {
-        debugPrint(' ## onAdLoaded : ${ad.adUnitId}');
+        debugPrint(' ## onBannerAdLoaded : ${ad.adUnitId}');
       },
       onAdFailedToLoad: (ad, error) {
         debugPrint(' ## 배너 광고 로드 실패: $error');

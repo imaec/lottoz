@@ -1,3 +1,4 @@
+import 'package:designsystem/component/ads/app_open_ad.dart';
 import 'package:designsystem/component/ads/banner_ad.dart';
 import 'package:designsystem/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ void main() async {
   );
   await initNotifications();
   await requestIOSPermissions();
-  initBanner();
+  initAd();
   initLocator();
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -68,8 +69,34 @@ Future<void> requestIOSPermissions() async {
       ?.requestPermissions(alert: true, badge: false, sound: false);
 }
 
-class LottoZApp extends StatelessWidget {
+class LottoZApp extends StatefulWidget {
   const LottoZApp({super.key});
+
+  @override
+  State<LottoZApp> createState() => _LottoZAppState();
+}
+
+class _LottoZAppState extends State<LottoZApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      showAppOpenAdIfAvailable();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

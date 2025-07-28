@@ -12,6 +12,7 @@ loadInterstitialAd(Function? onAdLoaded, {required InterstitialType interstitial
       onAdLoaded: (ad) {
         _interstitialAd = ad;
         onAdLoaded?.call();
+        debugPrint(' ## onInterstitialAdLoaded : ${ad.adUnitId}');
       },
       onAdFailedToLoad: (error) => debugPrint('  ## 전면 광고 로드 실패 : $error'),
     ),
