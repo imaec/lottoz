@@ -1,5 +1,7 @@
 import 'package:designsystem/component/ads/app_open_ad.dart';
 import 'package:designsystem/component/ads/banner_type.dart';
+import 'package:designsystem/component/ads/interstitial_ad.dart';
+import 'package:designsystem/component/ads/interstitial_type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -11,10 +13,18 @@ BannerAd? settingBannerAd;
 BannerAd? detailBannerAd;
 BannerAd? detailAdaptiveBannerAd;
 
+InterstitialAd? detailInterstitialAd;
+InterstitialAd? recommendInterstitialAd;
+InterstitialAd? backupInterstitialAd;
+
 initAd() {
   loadAppOpenAd(onAdLoaded: () {
-    showAppOpenAdIfAvailable();
+    // 앱 오픈 시 광고 노출하고 싶으면 주석 해제
+    // showAppOpenAdIfAvailable();
   });
+  loadInterstitialAd(interstitialType: DetailInterstitial());
+  loadInterstitialAd(interstitialType: RecommendInterstitial());
+  loadInterstitialAd(interstitialType: BackupInterstitial());
   homeBannerAd = _getBanner(HomeBanner());
   statisticsBannerAd = _getBanner(StatisticsBanner());
   recommendBannerAd = _getBanner(RecommendBanner());

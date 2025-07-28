@@ -1,6 +1,8 @@
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/ads/banner_ad_widget.dart';
 import 'package:designsystem/component/ads/banner_type.dart';
+import 'package:designsystem/component/ads/interstitial_ad.dart';
+import 'package:designsystem/component/ads/interstitial_type.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
@@ -61,12 +63,11 @@ class MoreScreen extends ConsumerWidget {
             ],
           ),
         ),
-        state.isLoading
-            ? Container(
-                color: gray800.withValues(alpha: 0.6),
-                child: const Center(child: CircularProgressIndicator()),
-              )
-            : const SizedBox(),
+        if (state.isLoading)
+          Container(
+            color: gray900.withValues(alpha: 0.4),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
       ],
     );
   }
@@ -322,13 +323,20 @@ class MoreScreen extends ConsumerWidget {
                   //       )
                   //     : const SizedBox(),
                   GestureDetector(
-                    onTap: () {
-                      if (isBackup) {
-                        notifier.backupMyNumbers(backupType: BackupType.googleDrive);
-                      } else {
-                        notifier.restoreFileFrom(backupType: BackupType.googleDrive);
-                      }
+                    onTap: () async {
                       context.pop();
+                      bool result;
+                      if (isBackup) {
+                        result = await notifier.backupMyNumbers(backupType: BackupType.googleDrive);
+                      } else {
+                        result = await notifier.restoreMyNumbers(
+                          backupType: BackupType.googleDrive,
+                        );
+                      }
+                      if (result) {
+                        await Future.delayed(const Duration(milliseconds: 500));
+                        BackupInterstitial().showInterstitialAd();
+                      }
                     },
                     behavior: HitTestBehavior.translucent,
                     child: Padding(

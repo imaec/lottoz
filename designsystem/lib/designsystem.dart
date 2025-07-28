@@ -1,6 +1,6 @@
 library;
 
-export 'component/ads/banner_ad.dart';
+export 'component/ads/ad.dart';
 export 'component/ads/banner_ad_widget.dart';
 export 'component/ads/banner_type.dart';
 export 'component/app_bar/lotto_app_bar.dart';

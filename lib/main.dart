@@ -1,5 +1,5 @@
 import 'package:designsystem/component/ads/app_open_ad.dart';
-import 'package:designsystem/component/ads/banner_ad.dart';
+import 'package:designsystem/component/ads/ad.dart';
 import 'package:designsystem/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

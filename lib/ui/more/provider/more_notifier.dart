@@ -64,11 +64,11 @@ class MoreNotifier extends StateNotifier<MoreState> {
     );
   }
 
-  backupMyNumbers({required BackupType backupType}) async {
+  Future<bool> backupMyNumbers({required BackupType backupType}) async {
     final myLottoNumbers = await lottoRepository.getMyLottoNumbers();
     if (myLottoNumbers.isEmpty) {
       _showError(message: '백업할 번호가 없습니다.');
-      return;
+      return false;
     }
 
     state = state.copyWith(isLoading: true);
@@ -81,9 +81,10 @@ class MoreNotifier extends StateNotifier<MoreState> {
       },
     );
     state = state.copyWith(event: ShowSnackBar(message: '백업이 완료되었습니다.'), isLoading: false);
+    return true;
   }
 
-  restoreFileFrom({required BackupType backupType}) async {
+  Future<bool> restoreMyNumbers({required BackupType backupType}) async {
     state = state.copyWith(isLoading: true);
 
     final lottoNumbers = await Future.wait([
@@ -101,6 +102,7 @@ class MoreNotifier extends StateNotifier<MoreState> {
     );
 
     state = state.copyWith(event: ShowSnackBar(message: '내 번호를 가져왔습니다.'), isLoading: false);
+    return true;
   }
 
   _showError({String? message}) {

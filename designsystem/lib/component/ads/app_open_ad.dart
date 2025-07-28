@@ -5,6 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 AppOpenAd? _appOpenAd;
 bool _isShowingAd = false;
+bool _suppressAppOpenAd = false;
 
 loadAppOpenAd({Function? onAdLoaded}) {
   AppOpenAd.load(
@@ -27,9 +28,16 @@ loadAppOpenAd({Function? onAdLoaded}) {
   );
 }
 
+suppressAppOpenAdTemporarily() {
+  _suppressAppOpenAd = true;
+  Future.delayed(const Duration(seconds: 2), () {
+    _suppressAppOpenAd = false;
+  });
+}
+
 showAppOpenAdIfAvailable() {
   debugPrint('  ## showAppOpenAdIfAvailable');
-  if (_appOpenAd == null || _isShowingAd) return;
+  if (_appOpenAd == null || _isShowingAd || _suppressAppOpenAd) return;
   _isShowingAd = true;
 
   _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(

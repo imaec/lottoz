@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RecommendState {
   final RecommendEvent? event;
+  final bool isLoading;
   final List<LottoDto> lottoNumbers;
   final bool isSumContains;
   final bool isPickContains;
@@ -16,6 +17,7 @@ class RecommendState {
 
   RecommendState({
     required this.event,
+    required this.isLoading,
     required this.lottoNumbers,
     required this.isSumContains,
     required this.isPickContains,
@@ -27,6 +29,7 @@ class RecommendState {
 
   factory RecommendState.init() => RecommendState(
     event: null,
+    isLoading: false,
     lottoNumbers: [],
     isSumContains: true,
     isPickContains: true,
@@ -38,6 +41,7 @@ class RecommendState {
 
   RecommendState copyWith({
     RecommendEvent? event,
+    bool? isLoading,
     List<LottoDto>? lottoNumbers,
     bool? isSumContains,
     bool? isPickContains,
@@ -48,6 +52,7 @@ class RecommendState {
   }) {
     return RecommendState(
       event: event ?? this.event,
+      isLoading: isLoading ?? this.isLoading,
       lottoNumbers: lottoNumbers ?? this.lottoNumbers,
       isSumContains: isSumContains ?? this.isSumContains,
       isPickContains: isPickContains ?? this.isPickContains,
@@ -268,11 +273,12 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
 
   int _getGenerateCount() => 6 - state.includedNumbers.length;
 
-  saveMyLottoNumbers() async {
+  Future<bool> saveMyLottoNumbers() async {
     if (state.includedNumbers.length != 6) {
       state = state.copyWith(event: ShowSnackBar(message: '번호를 생성해 주세요.'));
-      return;
+      return false;
     }
+    state = state.copyWith(isLoading: true);
     final numbers = state.includedNumbers.toList();
     await repository.saveMyLottoNumber(
       myLottoNumber: MyLottoDto(
@@ -284,10 +290,13 @@ class RecommendNotifier extends StateNotifier<RecommendState> {
         no6: numbers[5],
       ),
     );
+    await Future.delayed(const Duration(milliseconds: 500));
     state = state.copyWith(
       event: ShowSnackBar(message: '번호를 저장 했습니다!'),
+      isLoading: false,
       includedNumbers: {},
     );
+    return true;
   }
 
   clearEvent() {

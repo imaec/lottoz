@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'banner_ad.dart';
+import 'ad.dart';
 
 sealed class BannerType {
   final bool isAdaptive;

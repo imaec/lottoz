@@ -3,6 +3,8 @@ import 'package:core/core.dart';
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/ads/banner_ad_widget.dart';
 import 'package:designsystem/component/ads/banner_type.dart';
+import 'package:designsystem/component/ads/interstitial_ad.dart';
+import 'package:designsystem/component/ads/interstitial_type.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
@@ -33,64 +35,77 @@ class RecommendScreen extends ConsumerWidget {
       }
     });
 
-    return Scaffold(
-      appBar: const LottoAppBar(title: '추천 번호'),
-      body: _recommendBody(notifier: notifier, state: state),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 24),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      notifier.saveMyLottoNumbers();
-                    },
-                    child: Container(
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: gray700,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text('번호 저장', style: h5.copyWith(color: white)),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      if (state.includedNumbers.length < 6) {
-                        notifier.createNumbers();
-                      } else {
-                        notifier.removeAllIncludedNumber();
-                      }
-                    },
-                    child: Container(
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: gray700,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(
-                          state.includedNumbers.length < 6 ? '번호 생성' : '번호 삭제',
-                          style: h5.copyWith(color: white),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: const LottoAppBar(title: '추천 번호'),
+          body: _recommendBody(notifier: notifier, state: state),
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 24),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          final result = await notifier.saveMyLottoNumbers();
+                          if (result) {
+                            await Future.delayed(const Duration(milliseconds: 500));
+                            RecommendInterstitial().showInterstitialAd();
+                          }
+                        },
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: gray700,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Text('번호 저장', style: h5.copyWith(color: white)),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (state.includedNumbers.length < 6) {
+                            notifier.createNumbers();
+                          } else {
+                            notifier.removeAllIncludedNumber();
+                          }
+                        },
+                        child: Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: gray700,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Text(
+                              state.includedNumbers.length < 6 ? '번호 생성' : '번호 삭제',
+                              style: h5.copyWith(color: white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              BannerAdWidget(bannerType: RecommendBanner()),
+            ],
           ),
-          BannerAdWidget(bannerType: RecommendBanner()),
-        ],
-      ),
+        ),
+        if (state.isLoading)
+          Container(
+            color: gray900.withValues(alpha: 0.4),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+      ],
     );
   }
 

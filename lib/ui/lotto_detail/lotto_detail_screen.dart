@@ -2,9 +2,11 @@ import 'package:collection/collection.dart';
 import 'package:core/extension/num_extension.dart';
 import 'package:core/utils/lotto_utils.dart';
 import 'package:designsystem/assets/icons.dart';
-import 'package:designsystem/component/ads/banner_ad.dart';
+import 'package:designsystem/component/ads/ad.dart';
 import 'package:designsystem/component/ads/banner_ad_widget.dart';
 import 'package:designsystem/component/ads/banner_type.dart';
+import 'package:designsystem/component/ads/interstitial_ad.dart';
+import 'package:designsystem/component/ads/interstitial_type.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
@@ -61,14 +63,19 @@ class LottoDetailScreenState extends ConsumerState<LottoDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: LottoAppBar(
-        title: '${widget.lotto.drwNo}회 당첨 번호',
-        topPadding: MediaQuery.of(context).padding.top,
-        hasBack: true,
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        DetailInterstitial().showInterstitialAd();
+      },
+      child: Scaffold(
+        appBar: LottoAppBar(
+          title: '${widget.lotto.drwNo}회 당첨 번호',
+          topPadding: MediaQuery.of(context).padding.top,
+          hasBack: true,
+        ),
+        body: _lottoDetailBody(),
+        bottomNavigationBar: BannerAdWidget(bannerType: DetailBanner()),
       ),
-      body: _lottoDetailBody(),
-      bottomNavigationBar: BannerAdWidget(bannerType: DetailBanner()),
     );
   }
 
