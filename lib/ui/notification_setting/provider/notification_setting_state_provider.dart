@@ -4,5 +4,5 @@ import 'package:lottoz/ui/notification_setting/provider/notification_setting_not
 
 final notificationSettingNotifierProvider =
     StateNotifierProvider<NotificationSettingNotifier, NotificationSettingState>((ref) {
-      return NotificationSettingNotifier(repository: locator())..fetchNotificationSetting();
+      return NotificationSettingNotifier(repository: locator());
     });

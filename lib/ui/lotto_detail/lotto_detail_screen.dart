@@ -50,11 +50,8 @@ class LottoDetailScreenState extends ConsumerState<LottoDetailScreen> {
       size: _adSize ?? AdSize.mediumRectangle,
       request: const AdRequest(),
       listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          debugPrint(' ## onAdLoaded : ${ad.adUnitId}');
-        },
         onAdFailedToLoad: (ad, error) {
-          debugPrint(' ## 배너 광고 로드 실패: $error');
+          debugPrint('  [ERROR] 배너 광고 로드 실패: $error');
           ad.dispose();
         },
       ),

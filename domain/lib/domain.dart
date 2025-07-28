@@ -1,5 +1,6 @@
 library domain;
 
+export 'model/common/inspection_exception.dart';
 export 'model/lotto/lotto_dto.dart';
 export 'model/lotto/my_lotto_dto.dart';
 export 'model/lotto/store_dto.dart';

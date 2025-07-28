@@ -16,11 +16,51 @@ import 'package:lottoz/ui/notification_setting/provider/notification_setting_sta
 import 'package:numberpicker/numberpicker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class NotificationSettingScreen extends ConsumerWidget {
+class NotificationSettingScreen extends ConsumerStatefulWidget {
   const NotificationSettingScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _NotificationSettingScreenState();
+}
+
+class _NotificationSettingScreenState extends ConsumerState<NotificationSettingScreen> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    Future.microtask(() async {
+      final status = await ref
+          .read(notificationSettingNotifierProvider.notifier)
+          .requestNotificationPermission();
+      if (status.isGranted) {
+        ref.read(notificationSettingNotifierProvider.notifier).fetchNotificationSetting();
+      }
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      final status = await ref
+          .read(notificationSettingNotifierProvider.notifier)
+          .requestNotificationPermission();
+      if (status.isGranted) {
+        ref.read(notificationSettingNotifierProvider.notifier).fetchNotificationSetting();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final notifier = ref.read(notificationSettingNotifierProvider.notifier);
     final state = ref.watch(notificationSettingNotifierProvider);
 
@@ -174,12 +214,9 @@ class NotificationSettingScreen extends ConsumerWidget {
               child: Text('취소', style: subtitle3.copyWith(fontWeight: FontWeight.w700)),
             ),
             TextButton(
-              onPressed: () async {
+              onPressed: () {
                 context.pop();
-                final isGranted = await openAppSettings();
-                if (isGranted) {
-                  notifier.fetchNotificationSetting();
-                }
+                openAppSettings();
               },
               child: Text(
                 '권한 설정',

@@ -22,9 +22,10 @@ loadInterstitialAd({required InterstitialType interstitialType}) {
           case BackupInterstitial():
             backupInterstitialAd = ad;
         }
-        debugPrint(' ## onInterstitialAdLoaded : ${ad.adUnitId}');
       },
-      onAdFailedToLoad: (error) => debugPrint('  ## 전면 광고 로드 실패 : $error'),
+      onAdFailedToLoad: (error) {
+        debugPrint('  [ERROR] 전면 광고 로드 실패 : $error');
+      },
     ),
   );
 }
@@ -36,13 +37,14 @@ extension InterstitialTypeExtension on InterstitialType {
     if (interstitialAd == null || count % 3 != 0) return;
 
     interstitialAd.fullScreenContentCallback = FullScreenContentCallback(
+      onAdWillDismissFullScreenContent: (ad) {
+        suppressAppOpenAdTemporarily();
+      },
       onAdDismissedFullScreenContent: (ad) {
+        suppressAppOpenAdTemporarily();
         ad.dispose();
         _resetInterstitialAd();
         loadInterstitialAd(interstitialType: this);
-      },
-      onAdWillDismissFullScreenContent: (ad) {
-        suppressAppOpenAdTemporarily();
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
         ad.dispose();

@@ -6,6 +6,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 AppOpenAd? _appOpenAd;
 bool _isShowingAd = false;
 bool _suppressAppOpenAd = false;
+DateTime? _lastAdShownTime;
 
 loadAppOpenAd({Function? onAdLoaded}) {
   AppOpenAd.load(
@@ -19,10 +20,9 @@ loadAppOpenAd({Function? onAdLoaded}) {
       onAdLoaded: (ad) {
         _appOpenAd = ad;
         onAdLoaded?.call();
-        debugPrint(' ## onAppOpenAdLoaded : ${ad.adUnitId}');
       },
       onAdFailedToLoad: (error) {
-        debugPrint('  ## 앱 열기 광고 로드 실패: $error');
+        debugPrint('  [ERROR] 앱 열기 광고 로드 실패: $error');
       },
     ),
   );
@@ -36,9 +36,15 @@ suppressAppOpenAdTemporarily() {
 }
 
 showAppOpenAdIfAvailable() {
-  debugPrint('  ## showAppOpenAdIfAvailable');
+  // 30초 이내 재표시 방지
+  if (_lastAdShownTime != null &&
+      DateTime.now().difference(_lastAdShownTime!) < const Duration(seconds: 30)) {
+    return;
+  }
+
   if (_appOpenAd == null || _isShowingAd || _suppressAppOpenAd) return;
   _isShowingAd = true;
+  _lastAdShownTime = DateTime.now();
 
   _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
     onAdDismissedFullScreenContent: (ad) {

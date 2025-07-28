@@ -2,22 +2,39 @@ import 'package:domain/domain.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LottoState {
+  final LottoEvent? event;
   final List<LottoDto> lottoNumbers;
   final List<StoreDto> firstStores;
 
-  LottoState({required this.lottoNumbers, required this.firstStores});
+  LottoState({required this.event, required this.lottoNumbers, required this.firstStores});
 
-  factory LottoState.init() => LottoState(lottoNumbers: [], firstStores: []);
+  factory LottoState.init() => LottoState(event: null, lottoNumbers: [], firstStores: []);
 
   LottoState copyWith({
+    LottoEvent? event,
     List<LottoDto>? lottoNumbers,
     List<StoreDto>? firstStores,
   }) {
     return LottoState(
+      event: event ?? this.event,
       lottoNumbers: lottoNumbers ?? this.lottoNumbers,
       firstStores: firstStores ?? this.firstStores,
     );
   }
+}
+
+sealed class LottoEvent {}
+
+class ShowInspectionDialog extends LottoEvent {
+  final InspectionException exception;
+
+  ShowInspectionDialog({required this.exception});
+}
+
+class ShowExceptionDialog extends LottoEvent {
+  final Exception exception;
+
+  ShowExceptionDialog({required this.exception});
 }
 
 class LottoNotifier extends StateNotifier<LottoState> {
@@ -28,7 +45,17 @@ class LottoNotifier extends StateNotifier<LottoState> {
   fetchLottoNumber() async {
     final localCurDrwNo = await repository.getLocalCurDrwNo();
     final databaseCurDrwNo = await repository.getDatabaseCurDrwNo();
-    final curDrwNo = await repository.getCurDrwNo();
+    int curDrwNo = databaseCurDrwNo;
+    try {
+      curDrwNo = await repository.getCurDrwNo();
+    } on Exception catch (e) {
+      if (e is InspectionException) {
+        state = state.copyWith(event: ShowInspectionDialog(exception: e));
+      } else {
+        state = state.copyWith(event: ShowExceptionDialog(exception: e));
+      }
+    }
+
     final List<Future<dynamic>> futures = [];
 
     if (localCurDrwNo == curDrwNo && databaseCurDrwNo == curDrwNo) {
@@ -77,5 +104,9 @@ class LottoNotifier extends StateNotifier<LottoState> {
       repository.setLocalCurDrwNo(curDrwNo: curDrwNo),
     ]);
     state = state.copyWith(lottoNumbers: lottoNumbers);
+  }
+
+  clearEvent() {
+    state = state.copyWith(event: null);
   }
 }

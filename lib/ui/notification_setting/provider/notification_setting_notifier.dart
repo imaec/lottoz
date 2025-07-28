@@ -62,7 +62,7 @@ class NotificationSettingNotifier extends StateNotifier<NotificationSettingState
 
   NotificationSettingNotifier({required this.repository}) : super(NotificationSettingState.init());
 
-  Future<PermissionStatus> _requestNotificationPermission() async {
+  Future<PermissionStatus> requestNotificationPermission() async {
     final status = await Permission.notification.request();
     if (status.isPermanentlyDenied) {
       state = state.copyWith(event: ShowAppSettingInfoDialog());
@@ -81,22 +81,19 @@ class NotificationSettingNotifier extends StateNotifier<NotificationSettingState
     final isPurchaseOn = futures[1] as bool;
     final purchaseNotificationTime = futures[2] as PurchaseNotificationTimeDto;
 
-    if (isCheckOn || isPurchaseOn) {
-      final status = await _requestNotificationPermission();
-      state = state.copyWith(
-        isCheckOn: status.isGranted && isCheckOn,
-        isPurchaseOn: status.isGranted && isPurchaseOn,
-        purchaseTimeDayOfWeek: purchaseNotificationTime.dayOfWeek,
-        purchaseTimeAmPm: purchaseNotificationTime.amPm,
-        purchaseTimeHour: purchaseNotificationTime.hour,
-        purchaseTimeMinute: purchaseNotificationTime.minute,
-      );
-    }
+    state = state.copyWith(
+      isCheckOn: isCheckOn,
+      isPurchaseOn: isPurchaseOn,
+      purchaseTimeDayOfWeek: purchaseNotificationTime.dayOfWeek,
+      purchaseTimeAmPm: purchaseNotificationTime.amPm,
+      purchaseTimeHour: purchaseNotificationTime.hour,
+      purchaseTimeMinute: purchaseNotificationTime.minute,
+    );
   }
 
   toggleCheckNotification({required bool isOn}) async {
     if (isOn) {
-      final status = await _requestNotificationPermission();
+      final status = await requestNotificationPermission();
       if (status.isGranted) {
         await repository.updateCheckLottoNotification(isOn: isOn);
         state = state.copyWith(isCheckOn: isOn);
@@ -121,7 +118,7 @@ class NotificationSettingNotifier extends StateNotifier<NotificationSettingState
 
   togglePurchaseNotification({required bool isOn}) async {
     if (isOn) {
-      final status = await _requestNotificationPermission();
+      final status = await requestNotificationPermission();
       if (status.isGranted) {
         await repository.updatePurchaseNotification(isOn: isOn);
         state = state.copyWith(isPurchaseOn: isOn);

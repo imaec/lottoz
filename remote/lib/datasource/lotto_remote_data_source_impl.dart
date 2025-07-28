@@ -1,12 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:charset_converter/charset_converter.dart';
 import 'package:data/data.dart';
-import 'package:domain/model/lotto/lotto_dto.dart';
+import 'package:domain/domain.dart';
 import 'package:domain/model/lotto/lotto_win_price_dto.dart';
-import 'package:domain/model/lotto/store_dto.dart';
+import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
-import 'package:http/http.dart' as http;
 import 'package:remote/service/lotto_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -25,23 +24,28 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
 
   @override
   Future<int> getCurDrwNo() async {
-    final response = await http.get(
-      Uri.parse('https://www.dhlottery.co.kr/common.do?method=main&mainMode=default'),
-    );
-    if (response.statusCode == 200) {
-      final document = html_parser.parse(response.body);
-      final curDrwNo = int.parse(document
-          .getElementById('lottoDrwNo')
-          ?.text ?? '');
+    // final response = await http.get(
+    //   Uri.parse('https://www.dhlottery.co.kr/common.do?method=main&mainMode=default'),
+    // );
+    final uri = Uri.parse('https://www.dhlottery.co.kr/common.do?method=main&mainMode=default');
+    final request = await HttpClient().getUrl(uri);
+    final response = await request.close();
+
+    final document = await _parsingHtml(response: response);
+    if (document == null) return 0;
+
+    try {
+      final curDrwNo = int.parse(document.getElementById('lottoDrwNo')?.text ?? '');
       return curDrwNo;
-    } else {
-      return 0;
+    } catch (e) {
+      throw await _inspectionException(uri: uri) ?? e;
     }
   }
 
   @override
   Future<int> getDatabaseCurDrwNo() async {
-    final response = await Supabase.instance.client.from('lotto')
+    final response = await Supabase.instance.client
+        .from('lotto')
         .select('drw_no')
         .order('drw_no', ascending: false)
         .limit(1);
@@ -78,14 +82,18 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   @override
   Future<List<StoreDto>> getFirstStores({required int drwNo}) async {
     final List<StoreDto> stores = [];
-    final response = await http.post(
-      Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645'),
-      body: {'gameNo': '5133', 'drwNo': '$drwNo'},
-    );
-    if (response.statusCode != 200) return [];
+    // final response = await http.post(
+    //   Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645'),
+    //   body: {'gameNo': '5133', 'drwNo': '$drwNo'},
+    // );
+    final uri = Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645');
+    final request = await HttpClient().postUrl(uri)
+      ..write({'gameNo': '5133', 'drwNo': '$drwNo'});
+    final response = await request.close();
 
-    final decodedBody = await CharsetConverter.decode("euc-kr", response.bodyBytes);
-    final document = html_parser.parse(decodedBody);
+    final document = await _parsingHtml(response: response);
+    if (document == null) return [];
+
     final elements = document.getElementsByClassName('group_content');
     if (elements.isEmpty) return [];
 
@@ -113,14 +121,18 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
     List<StoreDto> secondStores = [];
 
     for (int page = 1; page <= maxPage; page++) {
-      final response = await http.post(
-        Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645'),
-        body: {'gameNo': '5133', 'drwNo': '$drwNo', 'rank': '2', 'nowPage': page.toString()},
-      );
-      if (response.statusCode != 200) break;
+      // final response = await http.post(
+      //   Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645'),
+      //   body: {'gameNo': '5133', 'drwNo': '$drwNo', 'rank': '2', 'nowPage': page.toString()},
+      // );
+      final uri = Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645');
+      final request = await HttpClient().postUrl(uri)
+        ..write({'gameNo': '5133', 'drwNo': '$drwNo', 'rank': '2', 'nowPage': page.toString()});
+      final response = await request.close();
 
-      final decodedBody = await CharsetConverter.decode("euc-kr", response.bodyBytes);
-      final document = html_parser.parse(decodedBody);
+      final document = await _parsingHtml(response: response);
+      if (document == null) break;
+
       final elements = document.getElementsByClassName('group_content');
       if (elements.length < 2) break;
 
@@ -143,12 +155,16 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   }
 
   Future<int> _getSecondStorePage({required int drwNo}) async {
+    // final uri = Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645');
+    // final response = await http.post(uri, body: {'rank': '2', 'nowPage': '1'});
     final uri = Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645');
-    final response = await http.post(uri, body: {'rank': '2', 'nowPage': '1'});
-    if (response.statusCode != 200) return 1;
+    final request = await HttpClient().postUrl(uri)
+      ..write({'rank': '2', 'nowPage': '1'});
+    final response = await request.close();
 
-    final decodedBody = await CharsetConverter.decode("euc-kr", response.bodyBytes);
-    final document = html_parser.parse(decodedBody);
+    final document = await _parsingHtml(response: response);
+    if (document == null) return 1;
+
     final pageLinks = document.querySelectorAll('div.paginate_common a');
     int maxPage = 1;
     for (var link in pageLinks) {
@@ -164,23 +180,29 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   @override
   Future<List<LottoWinPriceDto>> getWinPrices({required int drwNo}) async {
     List<LottoWinPriceDto> winPrices = [];
-    final response = await http.get(
-      Uri.parse('https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo=$drwNo'),
-    );
-    if (response.statusCode != 200) return [];
+    // final response = await http.get(
+    //   Uri.parse('https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo=$drwNo'),
+    // );
+    final uri = Uri.parse('https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo=$drwNo');
+    final request = await HttpClient().getUrl(uri);
+    final response = await request.close();
 
-    final decodedBody = await CharsetConverter.decode("euc-kr", response.bodyBytes);
-    final document = html_parser.parse(decodedBody);
+    final document = await _parsingHtml(response: response);
+    if (document == null) return [];
+
     final rows = document.querySelectorAll('.tbl_data_col tbody tr');
+
     for (final row in rows) {
       final cells = row.querySelectorAll('td');
       if (cells.length >= 4) {
-        winPrices.add(LottoWinPriceDto(
-          rank: cells[0].text.trim(),
-          count: '${cells[2].text.trim()}명',
-          price: cells[3].text.trim(),
-          totalPrice: cells[1].text.trim(),
-        ));
+        winPrices.add(
+          LottoWinPriceDto(
+            rank: cells[0].text.trim(),
+            count: '${cells[2].text.trim()}명',
+            price: cells[3].text.trim(),
+            totalPrice: cells[1].text.trim(),
+          ),
+        );
       }
     }
 
@@ -195,5 +217,41 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
         .select();
 
     if (response.isEmpty) throw Exception('Lotto 저장 실패');
+  }
+
+  Future<dom.Document?> _parsingHtml({required HttpClientResponse response}) async {
+    if (response.statusCode != 200) return null;
+
+    final responseBody = await response.transform(utf8.decoder).join();
+    final document = html_parser.parse(responseBody);
+    return document;
+  }
+
+  _inspectionException({required Uri uri}) async {
+    final client = HttpClient();
+    final request = await client.getUrl(uri);
+    final newResponse = await request.close();
+    final responseBody = await newResponse.transform(utf8.decoder).join();
+    client.close();
+
+    final document = html_parser.parse(responseBody);
+    final title = document.getElementsByTagName('title').first.text;
+
+    if (title.contains('시스템 점검')) {
+      final listItems = document.querySelectorAll('.check_list_bx ul li');
+      String? content;
+      String? time;
+
+      for (var li in listItems) {
+        final text = li.text.trim();
+        if (text.contains('점검내용')) {
+          content = text.replaceFirst('점검내용 : ', '').trim();
+        } else if (text.contains('점검시간')) {
+          time = text.replaceFirst('점검시간 : ', '').trim();
+        }
+      }
+
+      throw InspectionException(content: '점검내용 : $content', time: '점검시간 : $time');
+    }
   }
 }

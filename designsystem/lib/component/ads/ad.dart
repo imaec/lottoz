@@ -39,11 +39,8 @@ BannerAd _getBanner(BannerType bannerType) {
     size: bannerType.isAdaptive ? AdSize.mediumRectangle : AdSize.leaderboard,
     request: const AdRequest(),
     listener: BannerAdListener(
-      onAdLoaded: (ad) {
-        debugPrint(' ## onBannerAdLoaded : ${ad.adUnitId}');
-      },
       onAdFailedToLoad: (ad, error) {
-        debugPrint(' ## 배너 광고 로드 실패: $error');
+        debugPrint('  [ERROR] 배너 광고 로드 실패: $error');
         ad.dispose();
       },
     ),
