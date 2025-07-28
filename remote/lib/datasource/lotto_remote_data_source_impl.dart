@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:charset_converter/charset_converter.dart';
 import 'package:data/data.dart';
 import 'package:domain/domain.dart';
 import 'package:domain/model/lotto/lotto_win_price_dto.dart';
@@ -24,9 +26,6 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
 
   @override
   Future<int> getCurDrwNo() async {
-    // final response = await http.get(
-    //   Uri.parse('https://www.dhlottery.co.kr/common.do?method=main&mainMode=default'),
-    // );
     final uri = Uri.parse('https://www.dhlottery.co.kr/common.do?method=main&mainMode=default');
     final request = await HttpClient().getUrl(uri);
     final response = await request.close();
@@ -82,10 +81,6 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   @override
   Future<List<StoreDto>> getFirstStores({required int drwNo}) async {
     final List<StoreDto> stores = [];
-    // final response = await http.post(
-    //   Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645'),
-    //   body: {'gameNo': '5133', 'drwNo': '$drwNo'},
-    // );
     final uri = Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645');
     final request = await HttpClient().postUrl(uri)
       ..write({'gameNo': '5133', 'drwNo': '$drwNo'});
@@ -121,10 +116,6 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
     List<StoreDto> secondStores = [];
 
     for (int page = 1; page <= maxPage; page++) {
-      // final response = await http.post(
-      //   Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645'),
-      //   body: {'gameNo': '5133', 'drwNo': '$drwNo', 'rank': '2', 'nowPage': page.toString()},
-      // );
       final uri = Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645');
       final request = await HttpClient().postUrl(uri)
         ..write({'gameNo': '5133', 'drwNo': '$drwNo', 'rank': '2', 'nowPage': page.toString()});
@@ -155,8 +146,6 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   }
 
   Future<int> _getSecondStorePage({required int drwNo}) async {
-    // final uri = Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645');
-    // final response = await http.post(uri, body: {'rank': '2', 'nowPage': '1'});
     final uri = Uri.parse('https://www.dhlottery.co.kr/store.do?method=topStore&pageGubun=L645');
     final request = await HttpClient().postUrl(uri)
       ..write({'rank': '2', 'nowPage': '1'});
@@ -180,9 +169,6 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   @override
   Future<List<LottoWinPriceDto>> getWinPrices({required int drwNo}) async {
     List<LottoWinPriceDto> winPrices = [];
-    // final response = await http.get(
-    //   Uri.parse('https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo=$drwNo'),
-    // );
     final uri = Uri.parse('https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo=$drwNo');
     final request = await HttpClient().getUrl(uri);
     final response = await request.close();
@@ -222,7 +208,16 @@ class LottoRemoteDataSourceImpl extends LottoRemoteDataSource {
   Future<dom.Document?> _parsingHtml({required HttpClientResponse response}) async {
     if (response.statusCode != 200) return null;
 
-    final responseBody = await response.transform(utf8.decoder).join();
+    final contentType = response.headers.contentType;
+    final charset = contentType?.charset?.toLowerCase() ?? 'utf-8';
+    final bytes = await response.fold<List<int>>([], (prev, element) => prev..addAll(element));
+    late final String responseBody;
+    if (charset == 'euc-kr') {
+      responseBody = await CharsetConverter.decode('euc-kr', Uint8List.fromList(bytes));
+    } else {
+      responseBody = await CharsetConverter.decode('utf-8', Uint8List.fromList(bytes));
+    }
+
     final document = html_parser.parse(responseBody);
     return document;
   }
