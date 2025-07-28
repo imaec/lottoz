@@ -16,6 +16,7 @@ import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:lottoz/main.dart';
 import 'package:lottoz/ui/lotto_detail/provider/lotto_detail_state_provider.dart';
 
 class LottoDetailScreen extends ConsumerStatefulWidget {
@@ -41,6 +42,8 @@ class LottoDetailScreenState extends ConsumerState<LottoDetailScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    if (!isAdEnable) return;
 
     final size = MediaQuery.of(context).size;
     _adSize = AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(size.width.truncate() - 40);
@@ -86,7 +89,9 @@ class LottoDetailScreenState extends ConsumerState<LottoDetailScreen> {
               _lottoNumbers(),
               const HorizontalDivider(),
               _lottoWinPrice(),
-              BannerAdWidget(bannerType: DetailAdaptiveBanner()),
+              isAdEnable
+                  ? BannerAdWidget(bannerType: DetailAdaptiveBanner())
+                  : const HorizontalDivider(),
               _lottoAnalyze(),
               const HorizontalDivider(),
               _lottoStores(),

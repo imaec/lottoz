@@ -12,6 +12,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart';
 
+const bool isAdEnable = false;
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
@@ -29,7 +31,7 @@ void main() async {
   );
   await initNotifications();
   await requestIOSPermissions();
-  // initAd();
+  if (isAdEnable) initAd();
   initLocator();
 
   SystemChrome.setSystemUIOverlayStyle(

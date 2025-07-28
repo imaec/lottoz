@@ -9,7 +9,7 @@ class BannerAdWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (bannerType.bannerAd == null) return const SizedBox(height: 50);
+    if (bannerType.bannerAd == null) return const SizedBox.shrink();
 
     final height = bannerType.bannerAd!.size.height.toDouble();
     return Container(
