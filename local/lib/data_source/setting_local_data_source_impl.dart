@@ -48,10 +48,10 @@ class SettingLocalDataSourceImpl extends SettingLocalDataSource {
     return jsonDecode(
       prefs.getString('purchaseNotificationTimeDayOfWeek') ??
           '''{
-      'dayOfWeek': '금',
-        'amPm': '오후',
-        'hour': 6,
-        'minute': 0,
+      "dayOfWeek": "금",
+      "amPm": "오후",
+      "hour": 6,
+      "minute": 0
     }''',
     );
   }

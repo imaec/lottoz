@@ -1,10 +1,21 @@
-import 'package:designsystem/designsystem.dart';
+import 'package:designsystem/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:locator/get_it.dart';
 import 'package:lottoz/router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:timezone/data/latest.dart';
+import 'package:timezone/timezone.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+@pragma('vm:entry-point')
+void backgroundNotificationTapHandler(NotificationResponse response) {
+  // todo : backgroundNotificationTapHandler
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +23,8 @@ void main() async {
     url: 'https://cmmlmrmpmjhedsnpsjyg.supabase.co',
     anonKey: 'sb_publishable_guT4BXWCOdjRMybmFzcRZA_7d3ql3-j',
   );
+  await initNotifications();
+  await requestIOSPermissions();
   initLocator();
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -21,14 +34,41 @@ void main() async {
   runApp(const ProviderScope(child: LottoZApp()));
 }
 
+Future<void> initNotifications() async {
+  initializeTimeZones();
+  setLocalLocation(getLocation('Asia/Seoul'));
+
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings(
+    '@mipmap/ic_launcher',
+  );
+
+  const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings();
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsDarwin,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: (response) {
+      // todo : onDidReceiveNotificationResponse
+    },
+    onDidReceiveBackgroundNotificationResponse: backgroundNotificationTapHandler,
+  );
+}
+
+Future<void> requestIOSPermissions() async {
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+      ?.requestPermissions(alert: true, badge: false, sound: false);
+}
+
 class LottoZApp extends StatelessWidget {
   const LottoZApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: appRouter,
-      theme: appTheme,
-    );
+    return MaterialApp.router(routerConfig: appRouter, theme: appTheme);
   }
 }

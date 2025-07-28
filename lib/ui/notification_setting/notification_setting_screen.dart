@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lottoz/ui/notification_setting/provider/notification_setting_notifier.dart';
 import 'package:lottoz/ui/notification_setting/provider/notification_setting_state_provider.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class NotificationSettingScreen extends ConsumerWidget {
   const NotificationSettingScreen({super.key});
@@ -20,6 +21,15 @@ class NotificationSettingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(notificationSettingNotifierProvider.notifier);
     final state = ref.watch(notificationSettingNotifierProvider);
+
+    ref.listen(notificationSettingNotifierProvider, (prev, next) {
+      if (prev?.event != next.event) {
+        if (next.event is ShowAppSettingInfoDialog) {
+          _showAppSettingInfoDialog(context: context, notifier: notifier);
+          notifier.clearEvent();
+        }
+      }
+    });
 
     return Scaffold(
       appBar: LottoAppBar(
@@ -136,6 +146,44 @@ class NotificationSettingScreen extends ConsumerWidget {
           currentAmPm: state.purchaseTimeAmPm,
           currentHour: state.purchaseTimeHour,
           currentMinute: state.purchaseTimeMinute,
+        );
+      },
+    );
+  }
+
+  _showAppSettingInfoDialog({
+    required BuildContext context,
+    required NotificationSettingNotifier notifier,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('알림 권한 허용 요청'),
+          titleTextStyle: subtitle1,
+          content: const Text('알림 기능을 사용하기 위해서 알림 권한이 필요합니다.'),
+          contentTextStyle: bodyM,
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: Text('취소', style: subtitle3.copyWith(fontWeight: FontWeight.w700)),
+            ),
+            TextButton(
+              onPressed: () async {
+                context.pop();
+                final isGranted = await openAppSettings();
+                if (isGranted) {
+                  notifier.fetchNotificationSetting();
+                }
+              },
+              child: Text(
+                '권한 설정',
+                style: subtitle3.copyWith(fontWeight: FontWeight.w700, color: graphBlue),
+              ),
+            ),
+          ],
         );
       },
     );
