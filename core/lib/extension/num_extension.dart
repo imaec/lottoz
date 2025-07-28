@@ -21,6 +21,8 @@ extension IntExtension on int {
 
     return '${buffer.toString()}원';
   }
+
+  String padZero() => toString().padLeft(2, '0');
 }
 
 extension DoubleExtension on double {

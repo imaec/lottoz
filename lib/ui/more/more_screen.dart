@@ -155,7 +155,6 @@ class MoreScreen extends ConsumerWidget {
   }
 
   Widget _appSettings({required MoreNotifier notifier, required MoreState state}) {
-    // todo : 알림 설정 추가
     return Builder(
       builder: (context) {
         return Padding(
@@ -191,6 +190,22 @@ class MoreScreen extends ConsumerWidget {
                     children: [
                       const Text('통계 회차 설정', style: bodyM),
                       Text('${state.statisticsSize}회', style: subtitle2),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  appRouter.push('/notificationSetting');
+                },
+                behavior: HitTestBehavior.translucent,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('알림 설정', style: bodyM),
+                      SvgIcon(asset: arrowRightIcon, size: 24),
                     ],
                   ),
                 ),

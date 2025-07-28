@@ -6,6 +6,7 @@ import 'package:lottoz/ui/lotto_detail/lotto_detail_screen.dart';
 import 'package:lottoz/ui/main/main_screen.dart';
 import 'package:lottoz/ui/more/more_screen.dart';
 import 'package:lottoz/ui/my_number/my_number_screen.dart';
+import 'package:lottoz/ui/notification_setting/notification_setting_screen.dart';
 import 'package:lottoz/ui/qr/qr_scanner_screen.dart';
 import 'package:lottoz/ui/recommend/recommend_screen.dart';
 import 'package:lottoz/ui/statistics/statistics_screen.dart';
@@ -32,6 +33,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/qrScanner',
       builder: (context, state) => const QrScannerScreen(),
+    ),
+    GoRoute(
+      path: '/notificationSetting',
+      builder: (context, state) => const NotificationSettingScreen(),
     ),
   ],
 );
