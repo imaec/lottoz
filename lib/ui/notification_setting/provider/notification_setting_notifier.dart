@@ -1,3 +1,4 @@
+import 'package:domain/domain.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NotificationSettingState {
@@ -44,13 +45,35 @@ class NotificationSettingState {
 }
 
 class NotificationSettingNotifier extends StateNotifier<NotificationSettingState> {
-  NotificationSettingNotifier() : super(NotificationSettingState.init());
+  final SettingRepository repository;
 
-  toggleCheckNotification({required bool isOn}) {
+  NotificationSettingNotifier({required this.repository}) : super(NotificationSettingState.init());
+
+  fetchNotificationSetting() async {
+    final futures = await Future.wait([
+      repository.isCheckLottoNotificationOn(),
+      repository.isPurchaseNotificationOn(),
+      repository.getPurchaseNotificationTime(),
+    ]);
+
+    final purchaseNotificationTime = futures[2] as PurchaseNotificationTimeDto;
+    state = state.copyWith(
+      isCheckOn: futures[0] as bool,
+      isPurchaseOn: futures[1] as bool,
+      purchaseTimeDayOfWeek: purchaseNotificationTime.dayOfWeek,
+      purchaseTimeAmPm: purchaseNotificationTime.amPm,
+      purchaseTimeHour: purchaseNotificationTime.hour,
+      purchaseTimeMinute: purchaseNotificationTime.minute,
+    );
+  }
+
+  toggleCheckNotification({required bool isOn}) async {
+    await repository.updateCheckLottoNotification(isOn: isOn);
     state = state.copyWith(isCheckOn: isOn);
   }
 
-  togglePurchaseNotification({required bool isOn}) {
+  togglePurchaseNotification({required bool isOn}) async {
+    await repository.updatePurchaseNotification(isOn: isOn);
     state = state.copyWith(isPurchaseOn: isOn);
   }
 
@@ -58,8 +81,16 @@ class NotificationSettingNotifier extends StateNotifier<NotificationSettingState
     required String dayOfWeek,
     required String amPm,
     required int hour,
-    required int minute
-  }) {
+    required int minute,
+  }) async {
+    await repository.updatePurchaseNotificationTime(
+      purchaseNotificationTime: PurchaseNotificationTimeDto(
+        dayOfWeek: dayOfWeek,
+        amPm: amPm,
+        hour: hour,
+        minute: minute,
+      ),
+    );
     state = state.copyWith(
       purchaseTimeDayOfWeek: dayOfWeek,
       purchaseTimeAmPm: amPm,
