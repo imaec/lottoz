@@ -2,6 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:core/extension/num_extension.dart';
 import 'package:core/utils/lotto_utils.dart';
 import 'package:designsystem/assets/icons.dart';
+import 'package:designsystem/component/ads/banner_ad_widget.dart';
+import 'package:designsystem/component/ads/banner_type.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
 import 'package:designsystem/component/number/number.dart';
@@ -100,6 +102,7 @@ class StatisticsScreenState extends ConsumerState<StatisticsScreen>
             },
           ),
         ),
+        BannerAdWidget(bannerType: StatisticsBanner()),
         state.lottoNumbers.isEmpty
             ? const Expanded(child: Center(child: CircularProgressIndicator()))
             : Expanded(

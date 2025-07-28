@@ -2,6 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:core/extension/num_extension.dart';
 import 'package:core/utils/lotto_utils.dart';
 import 'package:designsystem/assets/icons.dart';
+import 'package:designsystem/component/ads/banner_ad.dart';
+import 'package:designsystem/component/ads/banner_ad_widget.dart';
+import 'package:designsystem/component/ads/banner_type.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
@@ -10,6 +13,7 @@ import 'package:designsystem/theme/fonts.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottoz/ui/lotto_detail/provider/lotto_detail_state_provider.dart';
 
 class LottoDetailScreen extends ConsumerStatefulWidget {
@@ -22,12 +26,37 @@ class LottoDetailScreen extends ConsumerStatefulWidget {
 }
 
 class LottoDetailScreenState extends ConsumerState<LottoDetailScreen> {
+  AdSize? _adSize;
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
       ref.read(lottoDetailNotifierProvider.notifier).fetchLottoDetail(lotto: widget.lotto);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final size = MediaQuery.of(context).size;
+    _adSize = AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(size.width.truncate() - 40);
+
+    detailAdaptiveBannerAd = BannerAd(
+      adUnitId: DetailAdaptiveBanner().adUnitId,
+      size: _adSize ?? AdSize.mediumRectangle,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          debugPrint(' ## onAdLoaded : ${ad.adUnitId}');
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint(' ## 배너 광고 로드 실패: $error');
+          ad.dispose();
+        },
+      ),
+    )..load();
   }
 
   @override
@@ -39,6 +68,7 @@ class LottoDetailScreenState extends ConsumerState<LottoDetailScreen> {
         hasBack: true,
       ),
       body: _lottoDetailBody(),
+      bottomNavigationBar: BannerAdWidget(bannerType: DetailBanner()),
     );
   }
 
@@ -52,7 +82,7 @@ class LottoDetailScreenState extends ConsumerState<LottoDetailScreen> {
               _lottoNumbers(),
               const HorizontalDivider(),
               _lottoWinPrice(),
-              const HorizontalDivider(),
+              BannerAdWidget(bannerType: DetailAdaptiveBanner()),
               _lottoAnalyze(),
               const HorizontalDivider(),
               _lottoStores(),

@@ -1,8 +1,10 @@
+import 'package:designsystem/component/ads/banner_ad.dart';
 import 'package:designsystem/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:locator/get_it.dart';
 import 'package:lottoz/router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,12 +21,14 @@ void backgroundNotificationTapHandler(NotificationResponse response) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.instance.initialize();
   await Supabase.initialize(
     url: 'https://cmmlmrmpmjhedsnpsjyg.supabase.co',
     anonKey: 'sb_publishable_guT4BXWCOdjRMybmFzcRZA_7d3ql3-j',
   );
   await initNotifications();
   await requestIOSPermissions();
+  initBanner();
   initLocator();
 
   SystemChrome.setSystemUIOverlayStyle(

@@ -1,5 +1,7 @@
 import 'package:core/core.dart';
 import 'package:designsystem/assets/icons.dart';
+import 'package:designsystem/component/ads/banner_ad_widget.dart';
+import 'package:designsystem/component/ads/banner_type.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
 import 'package:designsystem/theme/colors.dart';
@@ -88,6 +90,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: BannerAdWidget(bannerType: SettingBanner()),
     );
   }
 

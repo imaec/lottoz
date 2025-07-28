@@ -1,4 +1,6 @@
 import 'package:designsystem/assets/icons.dart';
+import 'package:designsystem/component/ads/banner_ad_widget.dart';
+import 'package:designsystem/component/ads/banner_type.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
@@ -34,21 +36,30 @@ class MoreScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: const LottoAppBar(title: '더보기'),
-      body: _moreBody(notifier: notifier, state: state),
+      body: Column(
+        children: [
+          Expanded(
+            child: _moreBody(notifier: notifier, state: state),
+          ),
+          BannerAdWidget(bannerType: MoreBanner()),
+        ],
+      ),
     );
   }
 
   Widget _moreBody({required MoreNotifier notifier, required MoreState state}) {
     return Stack(
       children: [
-        Column(
-          children: [
-            _myNumbers(notifier: notifier),
-            const HorizontalDivider(),
-            _appSettings(notifier: notifier, state: state),
-            const HorizontalDivider(),
-            _appInfos(),
-          ],
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              _myNumbers(notifier: notifier),
+              const HorizontalDivider(),
+              _appSettings(notifier: notifier, state: state),
+              const HorizontalDivider(),
+              _appInfos(),
+            ],
+          ),
         ),
         state.isLoading
             ? Container(

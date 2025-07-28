@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:core/core.dart';
 import 'package:designsystem/assets/icons.dart';
+import 'package:designsystem/component/ads/banner_ad_widget.dart';
+import 'package:designsystem/component/ads/banner_type.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
 import 'package:designsystem/component/divider/horizontal_divider.dart';
 import 'package:designsystem/component/media/svg_icon.dart';
@@ -38,6 +40,7 @@ class NotificationSettingScreen extends ConsumerWidget {
         hasBack: true,
       ),
       body: _notificationSettingBody(context: context, notifier: notifier, state: state),
+      bottomNavigationBar: BannerAdWidget(bannerType: SettingBanner()),
     );
   }
 

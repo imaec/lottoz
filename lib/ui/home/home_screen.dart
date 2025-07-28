@@ -11,7 +11,9 @@ import 'package:lottoz/provider/lotto_state_provider.dart';
 import 'package:lottoz/router/go_router.dart';
 
 part 'home_store_list.dart';
+
 part 'lastest_round_winning_numbers.dart';
+
 part 'latest_rounds.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -21,7 +23,14 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final lottoState = ref.watch(lottoNotifierProvider);
 
-    return Scaffold(body: _homeBody(lottoState: lottoState));
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(child: _homeBody(lottoState: lottoState)),
+          BannerAdWidget(bannerType: HomeBanner()),
+        ],
+      ),
+    );
   }
 
   _homeBody({required LottoState lottoState}) {

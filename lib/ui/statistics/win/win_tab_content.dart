@@ -12,13 +12,15 @@ Widget _winTabContent({required StatisticsNotifier notifier, required Statistics
       ),
       const HorizontalDivider(),
       Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _winAverages(winStatistics: state.winStatistics),
-            const HorizontalDivider(),
-            _winStatistics(winStatistics: state.winStatistics),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _winAverages(winStatistics: state.winStatistics),
+              const HorizontalDivider(),
+              _winStatistics(winStatistics: state.winStatistics),
+            ],
+          ),
         ),
       ),
     ],
