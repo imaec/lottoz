@@ -1,11 +1,16 @@
-allprojects {
+buildscript {
+    ext.kotlin_version = '2.1.10'
     repositories {
         google()
         mavenCentral()
     }
+
+//    dependencies {
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//    }
 }
 
-buildscript {
+allprojects {
     repositories {
         google()
         mavenCentral()
@@ -22,4 +27,8 @@ subprojects {
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ["-Xlint:-options"]
 }

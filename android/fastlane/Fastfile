@@ -1,0 +1,33 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build and upload APK to AppTester"
+  lane :release do
+    gradle(task: "assembleRelease")
+
+    firebase_app_distribution(
+      app: "1:751054819007:android:05d9aa4b530a77f880800a",
+      groups: "tester",
+      android_artifact_path: "../build/app/outputs/apk/release/app-release.apk",
+      firebase_cli_token: "1//0ghnMaXsIDEzRCgYIARAAGBASNwF-L9IrYlVsRWTQaRZ7VCrFthjz5GMPOise9U_hfU6oD3SOUhtl-8_g3vz4AySkjDDppoA004U"
+    )
+  end
+
+  desc "Build and upload AAB to Google Play"
+  lane :deploy do
+    gradle(
+      task: "bundle",
+      build_type: "Release"
+    )
+
+    supply(
+      aab: "../build/app/outputs/bundle/release/app-release.aab",
+      track: "internal", # 또는 production, beta, alpha
+      skip_upload_metadata: true,
+      skip_upload_changelogs: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_metadata: true
+    )
+  end
+end

@@ -1,0 +1,9 @@
+app_identifier("info.devalor.lottoz") # The bundle identifier of your app
+apple_id("devalor.kim@gmail.com") # Your Apple Developer Portal username
+
+itc_team_id("128020920") # App Store Connect Team ID
+team_id("33SMA9QUU9") # Developer Portal Team ID
+
+# fastlane spaceauth -u devalor.kim@gmail.com
+# 출력된 FASTLANE_SESSION 문자열 복사
+# export FASTLANE_SESSION='출력된 문자열'

@@ -1,6 +1,7 @@
 import 'package:designsystem/component/ads/app_open_ad.dart';
 import 'package:designsystem/component/ads/ad.dart';
 import 'package:designsystem/theme/theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -24,14 +25,27 @@ void backgroundNotificationTapHandler(NotificationResponse response) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.instance.initialize();
+
+  // Firebase 초기화
+  await Firebase.initializeApp();
+
+  // Supabase 초기화
   await Supabase.initialize(
     url: 'https://cmmlmrmpmjhedsnpsjyg.supabase.co',
     anonKey: 'sb_publishable_guT4BXWCOdjRMybmFzcRZA_7d3ql3-j',
   );
+
+  // Local Notification 초기화
   await initNotifications();
+
+  // iOS 알림 권한 요청
   await requestIOSPermissions();
+
+  // Ad Mob 초기화
+  await MobileAds.instance.initialize();
   if (isAdEnable) initAd();
+
+  // get_it 초기화
   initLocator();
 
   SystemChrome.setSystemUIOverlayStyle(

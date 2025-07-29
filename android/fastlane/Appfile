@@ -1,0 +1,2 @@
+json_key_file("/Users/hansik/Downloads/lottoz_resource/settings/google_play_api_key.json")
+package_name("info.devalor.lottoz")

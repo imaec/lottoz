@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "751054819007",
+    "project_id": "lottoz-467408",
+    "storage_bucket": "lottoz-467408.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751054819007:android:05d9aa4b530a77f880800a",
+        "android_client_info": {
+          "package_name": "info.devalor.lottoz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQo9SKgDH6QV5Zly-Qce1cw-VwAcJ_VmA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

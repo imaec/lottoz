@@ -1,0 +1,25 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Build and upload App to TestFlight"
+  lane :release do
+    build_app(
+      scheme: "Runner",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "info.devalor.lottoz" => "lottoz-distribution-profile"
+        }
+      }
+    )
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Build and upload ipa to AppStoreConnect"
+  lane :deploy do
+
+  end
+end
