@@ -211,7 +211,7 @@ class _NotificationSettingScreenState extends ConsumerState<NotificationSettingS
               onPressed: () {
                 context.pop();
               },
-              child: Text('취소', style: subtitle3.copyWith(fontWeight: FontWeight.w700)),
+              child: Text('취소', style: subtitle2.copyWith(fontWeight: FontWeight.w700)),
             ),
             TextButton(
               onPressed: () {
@@ -220,7 +220,7 @@ class _NotificationSettingScreenState extends ConsumerState<NotificationSettingS
               },
               child: Text(
                 '권한 설정',
-                style: subtitle3.copyWith(fontWeight: FontWeight.w700, color: graphBlue),
+                style: subtitle2.copyWith(fontWeight: FontWeight.w700, color: graphBlue),
               ),
             ),
           ],

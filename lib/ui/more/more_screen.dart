@@ -1,3 +1,4 @@
+import 'package:core/utils/url_utils.dart';
 import 'package:designsystem/assets/icons.dart';
 import 'package:designsystem/component/ads/banner_ad_widget.dart';
 import 'package:designsystem/component/ads/banner_type.dart';
@@ -12,6 +13,7 @@ import 'package:designsystem/theme/colors.dart';
 import 'package:designsystem/theme/fonts.dart';
 import 'package:domain/model/setting/backup_type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottoz/router/go_router.dart';
@@ -80,28 +82,15 @@ class MoreScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text('내 번호', style: h4),
-              ),
-              const SizedBox(height: 8),
-              GestureDetector(
+              _moreMenuSubject(subject: '내 번호'),
+              _moreMenuItem(
+                menu: '내 번호 확인하기',
                 onTap: () {
                   appRouter.push('/myNumber');
                 },
-                behavior: HitTestBehavior.translucent,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('내 번호 확인하기', style: bodyM),
-                      SvgIcon(asset: arrowRightIcon, size: 24),
-                    ],
-                  ),
-                ),
               ),
-              GestureDetector(
+              _moreMenuItem(
+                menu: '번호 내보내기',
                 onTap: () {
                   _showBackupBottomSheet(
                     context: context,
@@ -110,19 +99,9 @@ class MoreScreen extends ConsumerWidget {
                     isBackup: true,
                   );
                 },
-                behavior: HitTestBehavior.translucent,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('내보내기', style: bodyM),
-                      SvgIcon(asset: arrowRightIcon, size: 24),
-                    ],
-                  ),
-                ),
               ),
-              GestureDetector(
+              _moreMenuItem(
+                menu: '번호 가져오기',
                 onTap: () {
                   _showBackupBottomSheet(
                     context: context,
@@ -131,33 +110,12 @@ class MoreScreen extends ConsumerWidget {
                     isBackup: false,
                   );
                 },
-                behavior: HitTestBehavior.translucent,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('가져오기', style: bodyM),
-                      SvgIcon(asset: arrowRightIcon, size: 24),
-                    ],
-                  ),
-                ),
               ),
-              GestureDetector(
+              _moreMenuItem(
+                menu: 'QR 코드로 당첨 확인하기',
                 onTap: () {
                   appRouter.push('/qrScanner');
                 },
-                behavior: HitTestBehavior.translucent,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('QR 코드로 당첨 확인하기', style: bodyM),
-                      SvgIcon(asset: arrowRightIcon, size: 24),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),
@@ -174,12 +132,10 @@ class MoreScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text('앱 설정', style: h4),
-              ),
-              const SizedBox(height: 8),
-              GestureDetector(
+              _moreMenuSubject(subject: '앱 설정'),
+              _moreMenuItem(
+                menu: '회차 설정',
+                rightWidget: Text('${state.statisticsSize}회', style: subtitle2),
                 onTap: () {
                   showNumberPicker(
                     context: context,
@@ -194,33 +150,12 @@ class MoreScreen extends ConsumerWidget {
                     },
                   );
                 },
-                behavior: HitTestBehavior.translucent,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('통계 회차 설정', style: bodyM),
-                      Text('${state.statisticsSize}회', style: subtitle2),
-                    ],
-                  ),
-                ),
               ),
-              GestureDetector(
+              _moreMenuItem(
+                menu: '알림 설정',
                 onTap: () {
                   appRouter.push('/notificationSetting');
                 },
-                behavior: HitTestBehavior.translucent,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('알림 설정', style: bodyM),
-                      SvgIcon(asset: arrowRightIcon, size: 24),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),
@@ -235,29 +170,57 @@ class MoreScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Text('앱 정보', style: h4),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('앱 버전', style: bodyM),
-                FutureBuilder(
-                  future: PackageInfo.fromPlatform(),
-                  builder: (context, snapshot) {
-                    final info = snapshot.data;
+          _moreMenuSubject(subject: '앱 정보'),
+          _moreMenuItem(
+            menu: '앱 버전',
+            rightWidget: FutureBuilder(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                final info = snapshot.data;
 
-                    return Text(info != null ? info.version : '', style: subtitle2);
-                  },
-                ),
-              ],
+                return Text(info != null ? info.version : '', style: subtitle2);
+              },
             ),
+            onTap: () {},
+          ),
+          Builder(
+            builder: (context) {
+              return _moreMenuItem(
+                menu: '문의',
+                onTap: () async {
+                  final result = await launchUrl(url: 'mailto:devalor.kim@gmail.com');
+                  if (!result && context.mounted) {
+                    _showContactDialog(context: context);
+                  }
+                },
+              );
+            },
           ),
         ],
+      ),
+    );
+  }
+
+  _moreMenuSubject({required String subject}) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8),
+      child: Text(subject, style: h4),
+    );
+  }
+
+  _moreMenuItem({required String menu, required Function() onTap, Widget? rightWidget}) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.translucent,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(menu, style: bodyM),
+            rightWidget ?? const SvgIcon(asset: arrowRightIcon, size: 24),
+          ],
+        ),
       ),
     );
   }
@@ -351,6 +314,42 @@ class MoreScreen extends ConsumerWidget {
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  _showContactDialog({required BuildContext context}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('문의하기'),
+          titleTextStyle: subtitle1,
+          content: const Text(
+            '사용할 수 있는 메일 앱이 없습니다.\n아래 이메일로 문의 해주세요.\n\n'
+            'devalor.kim@gmail.com',
+          ),
+          contentTextStyle: bodyM,
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: Text('취소', style: subtitle2.copyWith(fontWeight: FontWeight.w700)),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+                Clipboard.setData(const ClipboardData(text: 'devalor.kim@gmail.com'));
+                showSnackBar(context: context, message: '이메일이 복사 되었습니다.');
+              },
+              child: Text(
+                '복사',
+                style: subtitle2.copyWith(fontWeight: FontWeight.w700, color: graphBlue),
+              ),
+            ),
+          ],
         );
       },
     );

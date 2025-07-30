@@ -92,7 +92,7 @@ class HomeScreen extends ConsumerWidget {
                 },
                 child: Text(
                   '불편하지만 계속 사용하기',
-                  style: subtitle3.copyWith(fontWeight: FontWeight.w700, color: graphBlue),
+                  style: subtitle2.copyWith(fontWeight: FontWeight.w700, color: graphBlue),
                 ),
               ),
               TextButton(
@@ -103,7 +103,7 @@ class HomeScreen extends ConsumerWidget {
                     exit(0);
                   }
                 },
-                child: Text('앱 종료', style: subtitle3.copyWith(fontWeight: FontWeight.w700)),
+                child: Text('앱 종료', style: subtitle2.copyWith(fontWeight: FontWeight.w700)),
               ),
             ],
           ),
@@ -131,7 +131,7 @@ class HomeScreen extends ConsumerWidget {
                 },
                 child: Text(
                   '불편하지만 계속 사용하기',
-                  style: subtitle3.copyWith(fontWeight: FontWeight.w700, color: graphBlue),
+                  style: subtitle2.copyWith(fontWeight: FontWeight.w700, color: graphBlue),
                 ),
               ),
               TextButton(
@@ -142,7 +142,7 @@ class HomeScreen extends ConsumerWidget {
                     exit(0);
                   }
                 },
-                child: Text('앱 종료', style: subtitle3.copyWith(fontWeight: FontWeight.w700)),
+                child: Text('앱 종료', style: subtitle2.copyWith(fontWeight: FontWeight.w700)),
               ),
             ],
           ),
