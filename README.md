@@ -16,6 +16,8 @@
 LottoZ는 Flutter로 개발된 로또 번호 추천 및 관리 애플리케이션입니다. 사용자에게 통계 기반의 번호 추천, 번호 생성 및 저장, QR 코드 당첨 확인 등 다양한 기능을
 제공하여 로또 경험을 향상시킵니다.
 
+<br>
+
 ## 🏛️ 아키텍처 및 기술 스택
 
 이 프로젝트는 클린 아키텍처(Clean Architecture)를 기반으로 한 **모듈형 구조**를 채택하여 코드의 재사용성, 유지보수성, 확장성을 높였습니다.
@@ -71,7 +73,7 @@ lottoz/
 
 |                     홈                      |                     회차 분석                      |                           통계                           | 추천 번호                                                |
 |:------------------------------------------:|:----------------------------------------------:|:------------------------------------------------------:|------------------------------------------------------|
-| ![Screenshot_Home](URL_TO_HOME_SCREENSHOT) | ![Screenshot_Detail](URL_TO_DETAIL_SCREENSHOT) | ![Screenshot_Statistics](URL_TO_Statistics_SCREENSHOT) | ![Screenshot_Recommend](URL_TO_Recommend_SCREENSHOT) |
+| <img width="1179" height="2556" alt="IMG_6688" src="https://github.com/user-attachments/assets/6e754098-26f1-4a3c-bd6e-602c736e644e" /> | <img width="1179" height="2556" alt="IMG_6689" src="https://github.com/user-attachments/assets/164503af-f773-4695-a264-d7288713680d" /> | <img width="1179" height="2556" alt="IMG_6690" src="https://github.com/user-attachments/assets/5a89e08b-8573-4b93-8d8f-59ccf757d8e9" /> | <img width="1179" height="2556" alt="IMG_6693" src="https://github.com/user-attachments/assets/f398c43f-0948-4c2c-b154-fa194f3f84eb" /> |
 
 <br>
 
@@ -81,18 +83,22 @@ lottoz/
 - 과거 당첨 통계와 데이터를 심층 분석하여 최적의 번호 조합을 추천합니다.
 - 다양한 필터와 알고리즘을 통해 과학적으로 당첨 확률이 높은 번호를 만나보세요.
 <br>
+
 ### **⚙️ 나만의 맞춤 번호 생성**
 - 완전 자동, 반자동, 수동 등 원하는 방식으로 자유롭게 번호를 생성할 수 있습니다.
 - 고정수, 제외수 등 고급 옵션을 설정하여 나만의 전략으로 번호를 조합해보세요.
 <br>
+
 ###  **📱 SCAN & GO! QR 당첨 확인 및 번호 관리**
 - 로또 용지의 QR 코드를 스캔하여 빠르고 정확하게 당첨 여부를 확인할 수 있습니다.
 - 생성하거나 스캔한 모든 번호는 '내 번호' 목록에 자동으로 저장되어 편리하게 관리할 수 있습니다.
 <br>
+
 ### **📊 한눈에 보는 당첨 통계**
 - 회차별 당첨 번호, 1등 당첨금, 당첨자 수 등 상세한 정보를 제공합니다.
 - 번호별 출현 횟수, 색상 통계 등 다양한 시각 자료를 통해 로또 패턴을 분석해 보세요.
 <br>
+
 ### **☁️ 안전한 데이터 백업 및 복원**
 - 소중한 '내 번호' 데이터를 Google Drive와 iCloud에 연동하여 안전하게 클라우드에 백업합니다.
 - 기기를 변경하거나 앱을 재설치해도 언제든지 데이터를 간편하게 복원할 수 있습니다.
