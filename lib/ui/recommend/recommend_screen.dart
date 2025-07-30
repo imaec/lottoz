@@ -175,11 +175,10 @@ class RecommendScreen extends ConsumerWidget {
   }
 
   Widget _recommendNumbers({required RecommendNotifier notifier, required RecommendState state}) {
-    final unIncludedNumbers = state.unIncludedNumbers.sorted(
-      (prevNumber, nextNumber) => prevNumber.compareTo(nextNumber),
-    );
+    final unIncludedNumbers = state.unIncludedNumbers.sorted((prev, next) => prev.compareTo(next));
     final includedNumbers = List<int?>.generate(6 - state.includedNumbers.length, (i) => null)
-      ..insertAll(0, state.includedNumbers.toList());
+      ..insertAll(0, state.includedNumbers.toList())
+      ..sort((prev, next) => (prev ?? 100).compareTo(next ?? 100));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),

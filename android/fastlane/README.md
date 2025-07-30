@@ -21,15 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane android release
 ```
 
-Build and upload AAB to Google Play
-
-### android beta
-
-```sh
-[bundle exec] fastlane android beta
-```
-
-Submit a new Beta Build to Crashlytics Beta
+Build and upload APK to AppTester
 
 ### android deploy
 
@@ -37,7 +29,7 @@ Submit a new Beta Build to Crashlytics Beta
 [bundle exec] fastlane android deploy
 ```
 
-Deploy a new version to the Google Play
+Build and upload AAB to Google Play
 
 ----
 
