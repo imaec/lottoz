@@ -35,32 +35,32 @@ extension BannerTypeExtension on BannerType {
     switch (this) {
       case HomeBanner():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/8395987389'
-            : 'ca-app-pub-9816471715610408/4022129114';
+            ? 'ca-app-pub-7147836151485354/7058074734'
+            : 'ca-app-pub-7147836151485354/6292003573';
       case StatisticsBanner():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/1722767822'
-            : 'ca-app-pub-9816471715610408/1395965773';
+            ? 'ca-app-pub-7147836151485354/1478660593'
+            : 'ca-app-pub-7147836151485354/2352758564';
       case RecommendBanner():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/2970053276'
-            : 'ca-app-pub-9816471715610408/5087297764';
+            ? 'ca-app-pub-7147836151485354/9165578922'
+            : 'ca-app-pub-7147836151485354/1841407072';
       case MoreBanner():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/1656971602'
-            : 'ca-app-pub-9816471715610408/7769802435';
+            ? 'ca-app-pub-7147836151485354/2962917052'
+            : 'ca-app-pub-7147836151485354/9528325401';
       case SettingBanner():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/9343889939'
-            : 'ca-app-pub-9816471715610408/4590256709';
+            ? 'ca-app-pub-7147836151485354/5226333913'
+            : 'ca-app-pub-7147836151485354/2380463128';
       case DetailBanner():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/6608764003'
-            : 'ca-app-pub-9816471715610408/9749932664';
+            ? 'ca-app-pub-7147836151485354/3913252249'
+            : 'ca-app-pub-7147836151485354/1067381455';
       case DetailAdaptiveBanner():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/9330629259'
-            : 'ca-app-pub-9816471715610408/3319754672';
+            ? 'ca-app-pub-7147836151485354/1227379153'
+            : 'ca-app-pub-7147836151485354/2328707839';
     }
   }
 

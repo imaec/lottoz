@@ -17,16 +17,16 @@ extension InterstitialTypeExtension on InterstitialType {
     switch (this) {
       case DetailInterstitial():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/7905032798'
-            : 'ca-app-pub-9816471715610408/6526154909';
+            ? 'ca-app-pub-7147836151485354/2899337875'
+            : 'ca-app-pub-7147836151485354/8702544492';
       case RecommendInterstitial():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/6125047263'
-            : 'ca-app-pub-9816471715610408/3277175030';
+            ? 'ca-app-pub-7147836151485354/2077759533'
+            : 'ca-app-pub-7147836151485354/4839654246';
       case BackupInterstitial():
         return Platform.isAndroid
-            ? 'ca-app-pub-9816471715610408/9026542772'
-            : 'ca-app-pub-9816471715610408/4963174685';
+            ? 'ca-app-pub-7147836151485354/5589080394'
+            : 'ca-app-pub-7147836151485354/5940982920';
     }
   }
 }

@@ -13,7 +13,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart';
 
-const bool isAdEnable = false;
+const bool isAdEnable = true;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();

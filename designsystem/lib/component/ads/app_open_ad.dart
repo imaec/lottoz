@@ -13,8 +13,8 @@ loadAppOpenAd({Function? onAdLoaded}) {
     adUnitId: kDebugMode
         ? 'ca-app-pub-3940256099942544/9257395921'
         : (Platform.isAndroid
-              ? 'ca-app-pub-9816471715610408/5645700962'
-              : 'ca-app-pub-9816471715610408/1465399912'),
+              ? 'ca-app-pub-7147836151485354/4787350214'
+              : 'ca-app-pub-7147836151485354/8215243734'),
     request: const AdRequest(),
     adLoadCallback: AppOpenAdLoadCallback(
       onAdLoaded: (ad) {
