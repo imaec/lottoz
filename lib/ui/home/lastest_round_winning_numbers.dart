@@ -81,13 +81,15 @@ Widget _latestRoundWinningNumbers({required LottoDto lottoDto}) {
                         child: Text('1등', style: subtitle2.copyWith(color: white)),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        width: 220,
-                        child: Text(
-                          '${lottoDto.firstWinamnt.comma()} '
-                          '(약 ${lottoDto.firstWinamnt.to100Million()}억) 원',
-                          style: subtitle2.copyWith(color: gray600),
-                          textAlign: TextAlign.end,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            '${lottoDto.firstWinamnt.comma()} '
+                            '(약 ${lottoDto.firstWinamnt.to100Million()}억) 원',
+                            style: subtitle2.copyWith(color: gray600),
+                            textAlign: TextAlign.end,
+                          ),
                         ),
                       ),
                     ],
