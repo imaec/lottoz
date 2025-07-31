@@ -103,8 +103,9 @@ class LottoDetailScreenState extends ConsumerState<LottoDetailScreen> {
   }
 
   Widget _lottoNumbers() {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
+      constraints: const BoxConstraints(maxWidth: 540),
       child: Column(
         children: [
           Row(

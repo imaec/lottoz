@@ -15,8 +15,9 @@ Widget _latestRoundWinningNumbers({required LottoDto lottoDto}) {
       appRouter.push('/detail', extra: lottoDto);
     },
     behavior: HitTestBehavior.translucent,
-    child: Padding(
+    child: Container(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 36),
+      constraints: const BoxConstraints(maxWidth: 432),
       child: Column(
         children: [
           Text(lottoDto.drwNoDate, style: bodyS.copyWith(color: gray600)),

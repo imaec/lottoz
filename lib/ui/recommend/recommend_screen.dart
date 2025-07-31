@@ -231,7 +231,9 @@ class RecommendScreen extends ConsumerWidget {
           const SizedBox(height: 32),
           Builder(
             builder: (context) {
-              final itemWidth = (MediaQuery.of(context).size.width - 80) / 6;
+              double screenWith = MediaQuery.of(context).size.width;
+              screenWith = screenWith <= 420 ? screenWith : 420;
+              final itemWidth = (screenWith - 80) / 6;
 
               return SizedBox(
                 height: itemWidth,

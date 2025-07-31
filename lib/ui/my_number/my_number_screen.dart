@@ -70,7 +70,9 @@ class MyNumberScreenState extends ConsumerState<MyNumberScreen> {
       itemCount: myLottoNumbers.length,
       itemBuilder: (context, index) {
         final myLotto = myLottoNumbers[index];
-        final itemWidth = (mediaQuery.size.width - 80) / 6;
+        double screenWith = MediaQuery.of(context).size.width;
+        screenWith = screenWith <= 420 ? screenWith : 420;
+        final itemWidth = (screenWith - 80) / 6;
 
         return Slidable(
           key: ValueKey(myLotto.id),

@@ -64,17 +64,21 @@ class LatestRoundListScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 16),
-            Row(
-              children:
-                  lotto.numbers.mapIndexed((index, number) {
-                      return _latestRoundNumber(number: number);
-                    }).toList()
-                    ..add(const SvgIcon(asset: plusIcon, size: 20))
-                    ..add(_latestRoundNumber(number: lotto.bnusNo)),
+            Container(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: Row(
+                children:
+                    lotto.numbers.mapIndexed((index, number) {
+                        return _latestRoundNumber(number: number);
+                      }).toList()
+                      ..add(const SvgIcon(asset: plusIcon, size: 20))
+                      ..add(_latestRoundNumber(number: lotto.bnusNo)),
+              ),
             ),
             const SizedBox(height: 32),
-            SizedBox(
+            Container(
               width: double.infinity,
+              constraints: const BoxConstraints(maxWidth: 500),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
