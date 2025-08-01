@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:core/utils/url_utils.dart';
 import 'package:designsystem/assets/icons.dart';
+import 'package:designsystem/component/ads/banner_ad_widget.dart';
+import 'package:designsystem/component/ads/banner_type.dart';
 import 'package:designsystem/component/ads/interstitial_ad.dart';
 import 'package:designsystem/component/ads/interstitial_type.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
@@ -46,8 +48,8 @@ class MoreScreen extends ConsumerWidget {
           Expanded(
             child: _moreBody(notifier: notifier, state: state),
           ),
-          // BannerAdWidget(bannerType: MoreBanner()),
-          isAdEnable ? _donateWidget() : const SizedBox(),
+          BannerAdWidget(bannerType: MoreBanner()),
+          // isAdEnable ? _donateWidget() : const SizedBox(),
         ],
       ),
     );

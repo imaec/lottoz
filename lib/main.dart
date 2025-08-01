@@ -1,3 +1,4 @@
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:designsystem/component/ads/app_open_ad.dart';
 import 'package:designsystem/component/ads/ad.dart';
 import 'package:designsystem/theme/theme.dart';
@@ -13,7 +14,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart';
 
-const bool isAdEnable = false;
+const bool isAdEnable = true;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -26,23 +27,24 @@ void backgroundNotificationTapHandler(NotificationResponse response) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Firebase 초기화
-  await Firebase.initializeApp();
+  // 초기화
+  await Future.wait([
+    // Firebase 초기화
+    Firebase.initializeApp(),
+    // Supabase 초기화
+    Supabase.initialize(
+      url: 'https://cmmlmrmpmjhedsnpsjyg.supabase.co',
+      anonKey: 'sb_publishable_guT4BXWCOdjRMybmFzcRZA_7d3ql3-j',
+    ),
+    // Local Notification 초기화
+    initNotifications(),
+    // iOS 알림 권한 요청
+    _requestIOSPermissions(),
+    _requestATT(),
+    // Ad Mob 초기화
+    MobileAds.instance.initialize(),
+  ]);
 
-  // Supabase 초기화
-  await Supabase.initialize(
-    url: 'https://cmmlmrmpmjhedsnpsjyg.supabase.co',
-    anonKey: 'sb_publishable_guT4BXWCOdjRMybmFzcRZA_7d3ql3-j',
-  );
-
-  // Local Notification 초기화
-  await initNotifications();
-
-  // iOS 알림 권한 요청
-  await requestIOSPermissions();
-
-  // Ad Mob 초기화
-  await MobileAds.instance.initialize();
   if (isAdEnable) initAd();
 
   // get_it 초기화
@@ -79,10 +81,17 @@ Future<void> initNotifications() async {
   );
 }
 
-Future<void> requestIOSPermissions() async {
+Future<void> _requestIOSPermissions() async {
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
       ?.requestPermissions(alert: true, badge: false, sound: false);
+}
+
+Future<void> _requestATT() async {
+  final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+  if (status == TrackingStatus.notDetermined) {
+    await AppTrackingTransparency.requestTrackingAuthorization();
+  }
 }
 
 class LottoZApp extends StatefulWidget {

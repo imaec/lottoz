@@ -12,11 +12,15 @@ class BannerAdWidget extends StatelessWidget {
     if (bannerType.bannerAd == null) return const SizedBox.shrink();
 
     final height = bannerType.bannerAd!.size.height.toDouble();
-    return Container(
-      alignment: Alignment.center,
-      width: bannerType.bannerAd!.size.width.toDouble(),
-      height: height > 0 ? height : (bannerType.isAdaptive ? 300 : 90),
-      child: AdWidget(ad: bannerType.bannerAd!),
-    );
+    final isLoaded = bannerType.bannerAd!.responseInfo?.responseId != null;
+
+    return isLoaded
+        ? Container(
+            alignment: Alignment.center,
+            width: bannerType.bannerAd!.size.width.toDouble(),
+            height: height > 0 ? height : (bannerType.isAdaptive ? 300 : 90),
+            child: AdWidget(ad: bannerType.bannerAd!),
+          )
+        : const SizedBox();
   }
 }
