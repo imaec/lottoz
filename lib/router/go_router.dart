@@ -9,6 +9,7 @@ import 'package:lottoz/ui/my_number/my_number_screen.dart';
 import 'package:lottoz/ui/notification_setting/notification_setting_screen.dart';
 import 'package:lottoz/ui/qr/qr_scanner_screen.dart';
 import 'package:lottoz/ui/recommend/recommend_screen.dart';
+import 'package:lottoz/ui/remove_ad/remove_ad_screen.dart';
 import 'package:lottoz/ui/statistics/statistics_screen.dart';
 
 final appRouter = GoRouter(
@@ -37,6 +38,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/notificationSetting',
       builder: (context, state) => const NotificationSettingScreen(),
+    ),
+    GoRoute(
+      path: '/removeAd',
+      builder: (context, state) => const RemoveAdScreen(),
     ),
   ],
 );

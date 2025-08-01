@@ -1,7 +1,7 @@
+import 'dart:io';
+
 import 'package:core/utils/url_utils.dart';
 import 'package:designsystem/assets/icons.dart';
-import 'package:designsystem/component/ads/banner_ad_widget.dart';
-import 'package:designsystem/component/ads/banner_type.dart';
 import 'package:designsystem/component/ads/interstitial_ad.dart';
 import 'package:designsystem/component/ads/interstitial_type.dart';
 import 'package:designsystem/component/app_bar/lotto_app_bar.dart';
@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottoz/main.dart';
 import 'package:lottoz/router/go_router.dart';
 import 'package:lottoz/ui/more/provider/more_notifier.dart';
 import 'package:lottoz/ui/more/provider/more_state_provider.dart';
@@ -45,7 +46,8 @@ class MoreScreen extends ConsumerWidget {
           Expanded(
             child: _moreBody(notifier: notifier, state: state),
           ),
-          BannerAdWidget(bannerType: MoreBanner()),
+          // BannerAdWidget(bannerType: MoreBanner()),
+          isAdEnable ? _donateWidget() : const SizedBox(),
         ],
       ),
     );
@@ -157,6 +159,14 @@ class MoreScreen extends ConsumerWidget {
                   appRouter.push('/notificationSetting');
                 },
               ),
+              isAdEnable
+                  ? _moreMenuItem(
+                      menu: '광고 제거',
+                      onTap: () {
+                        appRouter.push('/removeAd');
+                      },
+                    )
+                  : const SizedBox(),
             ],
           ),
         );
@@ -165,27 +175,27 @@ class MoreScreen extends ConsumerWidget {
   }
 
   Widget _appInfos() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _moreMenuSubject(subject: '앱 정보'),
-          _moreMenuItem(
-            menu: '앱 버전',
-            rightWidget: FutureBuilder(
-              future: PackageInfo.fromPlatform(),
-              builder: (context, snapshot) {
-                final info = snapshot.data;
+    return Builder(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _moreMenuSubject(subject: '앱 정보'),
+              _moreMenuItem(
+                menu: '앱 버전',
+                rightWidget: FutureBuilder(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    final info = snapshot.data;
 
-                return Text(info != null ? info.version : '', style: subtitle2);
-              },
-            ),
-            onTap: () {},
-          ),
-          Builder(
-            builder: (context) {
-              return _moreMenuItem(
+                    return Text(info != null ? info.version : '', style: subtitle2);
+                  },
+                ),
+                onTap: () {},
+              ),
+              _moreMenuItem(
                 menu: '문의',
                 onTap: () async {
                   final result = await launchUrl(url: 'mailto:devalor.kim@gmail.com');
@@ -193,11 +203,11 @@ class MoreScreen extends ConsumerWidget {
                     _showContactDialog(context: context);
                   }
                 },
-              );
-            },
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -222,6 +232,46 @@ class MoreScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  _donateWidget() {
+    return Builder(
+      builder: (context) {
+        return GestureDetector(
+          onTap: () {
+            _showDonateBottomSheet(context: context);
+          },
+          behavior: HitTestBehavior.translucent,
+          child: Container(
+            width: double.infinity,
+            height: 56,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              color: gray700,
+              boxShadow: [
+                BoxShadow(color: white, blurRadius: 32, spreadRadius: 16, offset: Offset(0, -16)),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Text('☕️', style: TextStyle(fontSize: 24)),
+                      const SizedBox(width: 10),
+                      Text('개발자 후원 해주기', style: subtitle2.copyWith(color: white)),
+                    ],
+                  ),
+                  const SvgIcon(asset: arrowRightIcon, size: 24, color: white),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -350,6 +400,88 @@ class MoreScreen extends ConsumerWidget {
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  _showDonateBottomSheet({required BuildContext context}) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      builder: (context) {
+        return Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Text('개발자 후원 해주기', style: h4, textAlign: TextAlign.center),
+              ),
+              const HorizontalDivider(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      context.pop();
+                      if (Platform.isAndroid) {
+                        // todo : 구글 인앱 결제
+                      } else {
+                        // todo : iOS 인앱 결제
+                      }
+                    },
+                    behavior: HitTestBehavior.translucent,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('개발자에게 커피 한 잔', style: subtitle2.copyWith(color: gray700)),
+                          Text('₩2,200', style: bodyM.copyWith(color: gray500)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const HorizontalDivider(),
+                  GestureDetector(
+                    onTap: () async {
+                      context.pop();
+                      if (Platform.isAndroid) {
+                        // todo : 구글 인앱 결제
+                      } else {
+                        // todo : iOS 인앱 결제
+                      }
+                    },
+                    behavior: HitTestBehavior.translucent,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('개발자에게 로또 한 장', style: subtitle2.copyWith(color: gray700)),
+                          Text('₩5,500', style: bodyM.copyWith(color: gray500)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
