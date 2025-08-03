@@ -27,7 +27,7 @@ LottoZ는 Flutter로 개발된 로또 번호 추천 및 관리 애플리케이�
 - **Framework**: Flutter
 - **Language**: Dart
 - **Backend & DB**: Firebase (Firestore, Authentication)
-- **State Management**: Provider
+- **State Management**: Riverpod
 - **Dependency Injection**: get_it
 - **Font**: Pretendard
 
