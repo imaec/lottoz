@@ -40,7 +40,7 @@ BannerAd _getBanner(BannerType bannerType) {
     request: const AdRequest(),
     listener: BannerAdListener(
       onAdFailedToLoad: (ad, error) {
-        debugPrint('  [ERROR] 배너 광고 로드 실패: $error');
+        debugPrint('  [ERROR] 배너 광고 로드 실패(${bannerType.adUnitId})\n\t\t$error');
         ad.dispose();
       },
     ),

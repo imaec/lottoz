@@ -9,12 +9,13 @@ bool _suppressAppOpenAd = false;
 DateTime? _lastAdShownTime;
 
 loadAppOpenAd({Function? onAdLoaded}) {
+  final adUnitId = kDebugMode
+      ? 'ca-app-pub-3940256099942544/9257395921'
+      : (Platform.isAndroid
+      ? 'ca-app-pub-7147836151485354/4787350214'
+      : 'ca-app-pub-7147836151485354/8215243734');
   AppOpenAd.load(
-    adUnitId: kDebugMode
-        ? 'ca-app-pub-3940256099942544/9257395921'
-        : (Platform.isAndroid
-              ? 'ca-app-pub-7147836151485354/4787350214'
-              : 'ca-app-pub-7147836151485354/8215243734'),
+    adUnitId: adUnitId,
     request: const AdRequest(),
     adLoadCallback: AppOpenAdLoadCallback(
       onAdLoaded: (ad) {
@@ -22,7 +23,7 @@ loadAppOpenAd({Function? onAdLoaded}) {
         onAdLoaded?.call();
       },
       onAdFailedToLoad: (error) {
-        debugPrint('  [ERROR] 앱 열기 광고 로드 실패: $error');
+        debugPrint('  [ERROR] 앱 열기 광고 로드 실패($adUnitId)\n\t\t$error');
       },
     ),
   );

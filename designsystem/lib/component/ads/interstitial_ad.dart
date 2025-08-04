@@ -24,7 +24,7 @@ loadInterstitialAd({required InterstitialType interstitialType}) {
         }
       },
       onAdFailedToLoad: (error) {
-        debugPrint('  [ERROR] 전면 광고 로드 실패 : $error');
+        debugPrint('  [ERROR] 전면 광고 로드 실패(${interstitialType.adUnitId})\n\t\t$error');
       },
     ),
   );
