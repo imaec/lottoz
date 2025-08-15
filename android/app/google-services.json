@@ -12,7 +12,28 @@
           "package_name": "info.devalor.lottoz"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "751054819007-2f1vfrpicbtthuop8pcndij2enp1phsd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.devalor.lottoz",
+            "certificate_hash": "db3d9c9ce30f59a329545ce6f0bcb40f63183941"
+          }
+        },
+        {
+          "client_id": "751054819007-9k95q2g9p5jbuoujoo8nq4vrhs7gdtom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.devalor.lottoz",
+            "certificate_hash": "b8e50243e251303f75cbb31f583811caefd12fa5"
+          }
+        },
+        {
+          "client_id": "751054819007-9hrf5v3de867tvs0nsgb3jnvefqkfkru.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDQo9SKgDH6QV5Zly-Qce1cw-VwAcJ_VmA"
@@ -20,9 +41,23 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751054819007-9hrf5v3de867tvs0nsgb3jnvefqkfkru.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "751054819007-kmhkuav3thn3hluem2u64t70222uc87u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "info.devalor.lottoz",
+                "app_store_id": "6749249547"
+              }
+            }
+          ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-9816471715610408~8256386586"
     }
   ],
   "configuration_version": "1"

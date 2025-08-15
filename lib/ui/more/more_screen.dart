@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:core/utils/url_utils.dart';
 import 'package:designsystem/assets/icons.dart';
+import 'package:designsystem/component/ads/app_open_ad.dart';
 import 'package:designsystem/component/ads/banner_ad_widget.dart';
 import 'package:designsystem/component/ads/banner_type.dart';
 import 'package:designsystem/component/ads/interstitial_ad.dart';
@@ -18,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottoz/main.dart';
 import 'package:lottoz/router/go_router.dart';
 import 'package:lottoz/ui/more/provider/more_notifier.dart';
 import 'package:lottoz/ui/more/provider/more_state_provider.dart';
@@ -237,45 +235,45 @@ class MoreScreen extends ConsumerWidget {
     );
   }
 
-  _donateWidget() {
-    return Builder(
-      builder: (context) {
-        return GestureDetector(
-          onTap: () {
-            _showDonateBottomSheet(context: context);
-          },
-          behavior: HitTestBehavior.translucent,
-          child: Container(
-            width: double.infinity,
-            height: 56,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              color: gray700,
-              boxShadow: [
-                BoxShadow(color: white, blurRadius: 32, spreadRadius: 16, offset: Offset(0, -16)),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Text('☕️', style: TextStyle(fontSize: 24)),
-                      const SizedBox(width: 10),
-                      Text('개발자 후원 해주기', style: subtitle2.copyWith(color: white)),
-                    ],
-                  ),
-                  const SvgIcon(asset: arrowRightIcon, size: 24, color: white),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // _donateWidget() {
+  //   return Builder(
+  //     builder: (context) {
+  //       return GestureDetector(
+  //         onTap: () {
+  //           _showDonateBottomSheet(context: context);
+  //         },
+  //         behavior: HitTestBehavior.translucent,
+  //         child: Container(
+  //           width: double.infinity,
+  //           height: 56,
+  //           alignment: Alignment.center,
+  //           decoration: const BoxDecoration(
+  //             color: gray700,
+  //             boxShadow: [
+  //               BoxShadow(color: white, blurRadius: 32, spreadRadius: 16, offset: Offset(0, -16)),
+  //             ],
+  //           ),
+  //           child: Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 20),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Row(
+  //                   children: [
+  //                     const Text('☕️', style: TextStyle(fontSize: 24)),
+  //                     const SizedBox(width: 10),
+  //                     Text('개발자 후원 해주기', style: subtitle2.copyWith(color: white)),
+  //                   ],
+  //                 ),
+  //                 const SvgIcon(asset: arrowRightIcon, size: 24, color: white),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   _showBackupBottomSheet({
     required BuildContext context,
@@ -341,6 +339,7 @@ class MoreScreen extends ConsumerWidget {
                     onTap: () async {
                       context.pop();
                       bool result;
+                      isAppOpenAddEnable = false;
                       if (isBackup) {
                         result = await notifier.backupMyNumbers(backupType: BackupType.googleDrive);
                       } else {
@@ -352,6 +351,8 @@ class MoreScreen extends ConsumerWidget {
                         await Future.delayed(const Duration(milliseconds: 500));
                         BackupInterstitial().showInterstitialAd();
                       }
+                      await Future.delayed(const Duration(milliseconds: 1000));
+                      isAppOpenAddEnable = true;
                     },
                     behavior: HitTestBehavior.translucent,
                     child: Padding(
@@ -407,85 +408,85 @@ class MoreScreen extends ConsumerWidget {
     );
   }
 
-  _showDonateBottomSheet({required BuildContext context}) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      builder: (context) {
-        return Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text('개발자 후원 해주기', style: h4, textAlign: TextAlign.center),
-              ),
-              const HorizontalDivider(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      context.pop();
-                      if (Platform.isAndroid) {
-                        // todo : 구글 인앱 결제
-                      } else {
-                        // todo : iOS 인앱 결제
-                      }
-                    },
-                    behavior: HitTestBehavior.translucent,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('개발자에게 커피 한 잔', style: subtitle2.copyWith(color: gray700)),
-                          Text('₩2,200', style: bodyM.copyWith(color: gray500)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const HorizontalDivider(),
-                  GestureDetector(
-                    onTap: () async {
-                      context.pop();
-                      if (Platform.isAndroid) {
-                        // todo : 구글 인앱 결제
-                      } else {
-                        // todo : iOS 인앱 결제
-                      }
-                    },
-                    behavior: HitTestBehavior.translucent,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('개발자에게 로또 한 장', style: subtitle2.copyWith(color: gray700)),
-                          Text('₩5,500', style: bodyM.copyWith(color: gray500)),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // _showDonateBottomSheet({required BuildContext context}) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.only(
+  //         topLeft: Radius.circular(16),
+  //         topRight: Radius.circular(16),
+  //       ),
+  //     ),
+  //     builder: (context) {
+  //       return Container(
+  //         width: double.infinity,
+  //         decoration: const BoxDecoration(
+  //           color: white,
+  //           borderRadius: BorderRadius.only(
+  //             topLeft: Radius.circular(16),
+  //             topRight: Radius.circular(16),
+  //           ),
+  //         ),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             const Padding(
+  //               padding: EdgeInsets.symmetric(vertical: 16),
+  //               child: Text('개발자 후원 해주기', style: h4, textAlign: TextAlign.center),
+  //             ),
+  //             const HorizontalDivider(),
+  //             Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 GestureDetector(
+  //                   onTap: () async {
+  //                     context.pop();
+  //                     if (Platform.isAndroid) {
+  //                       // todo : 구글 인앱 결제
+  //                     } else {
+  //                       // todo : iOS 인앱 결제
+  //                     }
+  //                   },
+  //                   behavior: HitTestBehavior.translucent,
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                       children: [
+  //                         Text('개발자에게 커피 한 잔', style: subtitle2.copyWith(color: gray700)),
+  //                         Text('₩2,200', style: bodyM.copyWith(color: gray500)),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const HorizontalDivider(),
+  //                 GestureDetector(
+  //                   onTap: () async {
+  //                     context.pop();
+  //                     if (Platform.isAndroid) {
+  //                       // todo : 구글 인앱 결제
+  //                     } else {
+  //                       // todo : iOS 인앱 결제
+  //                     }
+  //                   },
+  //                   behavior: HitTestBehavior.translucent,
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                       children: [
+  //                         Text('개발자에게 로또 한 장', style: subtitle2.copyWith(color: gray700)),
+  //                         Text('₩5,500', style: bodyM.copyWith(color: gray500)),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }

@@ -31,7 +31,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.457286197125-rt41p0qvc1rfll0e4qr982j3ufdq5g9a</string>
+				<string>com.googleusercontent.apps.751054819007-kmhkuav3thn3hluem2u64t70222uc87u</string>
 			</array>
 		</dict>
 	</array>
@@ -191,7 +191,7 @@
     </dict>
     </array>
 	<key>GIDClientID</key>
-	<string>457286197125-rt41p0qvc1rfll0e4qr982j3ufdq5g9a.apps.googleusercontent.com</string>
+    <string>751054819007-kmhkuav3thn3hluem2u64t70222uc87u.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

@@ -32,24 +32,31 @@ loadInterstitialAd({required InterstitialType interstitialType}) {
 
 extension InterstitialTypeExtension on InterstitialType {
   showInterstitialAd() {
+    isAppOpenAddEnable = false;
     final interstitialAd = this.interstitialAd;
     count++;
     if (interstitialAd == null || count % 3 != 0) return;
 
     interstitialAd.fullScreenContentCallback = FullScreenContentCallback(
-      onAdWillDismissFullScreenContent: (ad) {
+      onAdWillDismissFullScreenContent: (ad) async {
         suppressAppOpenAdTemporarily();
+        await Future.delayed(const Duration(milliseconds: 1000));
+        isAppOpenAddEnable = true;
       },
-      onAdDismissedFullScreenContent: (ad) {
+      onAdDismissedFullScreenContent: (ad) async {
         suppressAppOpenAdTemporarily();
         ad.dispose();
         _resetInterstitialAd();
         loadInterstitialAd(interstitialType: this);
+        await Future.delayed(const Duration(milliseconds: 1000));
+        isAppOpenAddEnable = true;
       },
-      onAdFailedToShowFullScreenContent: (ad, error) {
+      onAdFailedToShowFullScreenContent: (ad, error) async {
         ad.dispose();
         _resetInterstitialAd();
         loadInterstitialAd(interstitialType: this);
+        await Future.delayed(const Duration(milliseconds: 1000));
+        isAppOpenAddEnable = true;
       },
     );
     interstitialAd.show();

@@ -73,15 +73,17 @@ class MoreNotifier extends StateNotifier<MoreState> {
 
     state = state.copyWith(isLoading: true);
 
-    await settingRepository.backupMyNumbers(
+    final result = await settingRepository.backupMyNumbers(
       myLottoNumbers: myLottoNumbers,
       backupType: backupType,
       onError: (message) {
         _showError(message: message);
       },
     );
-    state = state.copyWith(event: ShowSnackBar(message: '백업이 완료되었습니다.'), isLoading: false);
-    return true;
+    if (result > 0) {
+      state = state.copyWith(event: ShowSnackBar(message: '백업이 완료되었습니다.'), isLoading: false);
+    }
+    return result > 0;
   }
 
   Future<bool> restoreMyNumbers({required BackupType backupType}) async {
@@ -101,8 +103,10 @@ class MoreNotifier extends StateNotifier<MoreState> {
       myLottoNumbers: lottoNumbers[0].removeDuplicates(lottoNumbers[1]),
     );
 
-    state = state.copyWith(event: ShowSnackBar(message: '내 번호를 가져왔습니다.'), isLoading: false);
-    return true;
+    if (lottoNumbers.length > 1 && lottoNumbers[1].isNotEmpty) {
+      state = state.copyWith(event: ShowSnackBar(message: '내 번호를 가져왔습니다.'), isLoading: false);
+    }
+    return lottoNumbers.length > 1 && lottoNumbers[1].isNotEmpty;
   }
 
   _showError({String? message}) {

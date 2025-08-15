@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+bool isAppOpenAddEnable = true;
 AppOpenAd? _appOpenAd;
 bool _isShowingAd = false;
 bool _suppressAppOpenAd = false;
@@ -37,6 +38,7 @@ suppressAppOpenAdTemporarily() {
 }
 
 showAppOpenAdIfAvailable() {
+  if (!isAppOpenAddEnable) return;
   // 30초 이내 재표시 방지
   if (_lastAdShownTime != null &&
       DateTime.now().difference(_lastAdShownTime!) < const Duration(seconds: 30)) {
