@@ -161,14 +161,14 @@ class MoreScreen extends ConsumerWidget {
                   appRouter.push('/notificationSetting');
                 },
               ),
-              isAdEnable
-                  ? _moreMenuItem(
-                      menu: '광고 제거',
-                      onTap: () {
-                        appRouter.push('/removeAd');
-                      },
-                    )
-                  : const SizedBox(),
+              // isAdEnable
+              //     ? _moreMenuItem(
+              //         menu: '광고 제거',
+              //         onTap: () {
+              //           appRouter.push('/removeAd');
+              //         },
+              //       )
+              //     : const SizedBox(),
             ],
           ),
         );

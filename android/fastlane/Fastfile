@@ -22,7 +22,7 @@ platform :android do
 
     supply(
       aab: "../build/app/outputs/bundle/release/app-release.aab",
-      track: "alpha", # production, beta, alpha, internal
+      track: "production", # production, beta, alpha, internal
       skip_upload_metadata: true,
       skip_upload_changelogs: false,
       skip_upload_images: true,
